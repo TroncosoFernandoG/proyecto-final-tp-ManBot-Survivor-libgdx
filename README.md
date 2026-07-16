@@ -35,4 +35,12 @@ Toda la documentación conceptual, mecánicas de juego, personajes, armas, proto
 ### Pasos para Ejecutar
 1. **Clonar el repositorio:**
    ```bash
-   git clone [https://github.com/TU_USUARIO/manbot-survivor.git](https://github.com/TU_USUARIO/manbot-survivor.git)
+   git clone [ https://github.com/TroncosoFernandoG/proyecto-final-tp-ManBot-Survivor-libgdx.git]( https://github.com/TroncosoFernandoG/proyecto-final-tp-ManBot-Survivor-libgdx.git)
+2. **Importar en el IDE:**
+Abre IntelliJ IDEA.  
+Ve a File > Open... y navega hasta la carpeta del proyecto clonado.  Selecciona el archivo build.gradle y elige Open as Project.  Espera a que el gestor Gradle descargue todas las dependencias y termine de importar.  Lanzar la Aplicación:  Despliega la carpeta del módulo lwjgl3.  Busca la clase Lwjgl3Launcher.java. Haz clic derecho y selecciona Run 'Lwjgl3Launcher.main()' para ejecutar el juego en tu PC.
+
+##📈 Estado Actual del Proyecto
+* **Fase:** Primera Pre-Entrega (Configuración Inicial del Proyecto y Repositorio).
+* **Avance:** Estructura base de LibGDX inicializada mediante gdx-liftoff, configuraciones de dependencias funcionales, control de versiones y documentación en la Wiki activados.
+   
