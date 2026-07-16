@@ -22,7 +22,7 @@
 ## 📖 Propuesta Detallada y Documentación
 Toda la documentación conceptual, mecánicas de juego, personajes, armas, protocolos de red y detalles académicos se encuentran en la Wiki oficial del proyecto.
 
-🔗 **[Ver la Propuesta Completa en la Wiki]((https://github.com/TroncosoFernandoG/proyecto-final-tp-ManBot-Survivor-libgdx/wiki/Propuesta-del-Proyecto-%E2%80%90-ManBot-Survivor/9a73ce4d0af7e64e2e7dc5af1b72ffabf98dcc73))**
+🔗 **[Ver la Propuesta Completa en la Wiki](https://github.com/TroncosoFernandoG/proyecto-final-tp-ManBot-Survivor-libgdx/wiki/Propuesta-del-Proyecto-%E2%80%90-ManBot-Survivor/9a73ce4d0af7e64e2e7dc5af1b72ffabf98dcc73)**
 
 ---
 
