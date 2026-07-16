@@ -1,33 +1,38 @@
-# ManBot Survivor
+# ManBot Survivor 🤖🎮
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+**ManBot Survivor** es un videojuego roguelite de supervivencia en 2D con vista cenital (top-down) desarrollado en Java. El jugador controla un robot en una instalación industrial abandonada y debe sobrevivir a hordas constantes de enemigos mecánicos que se vuelven más fuertes con el tiempo. El videojuego incluye un modo multijugador cooperativo en red local (LAN).
 
-This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
+---
 
-## Platforms
+## 👥 Integrantes del Grupo
+* **Sebastian Iuliano**
+* **Thomas Nielsen**
+* **Fernando Troncoso**
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
+---
 
-## Gradle
+## 🛠️ Tecnologías Principales
+* **Lenguaje:** Java 21
+* **Framework:** LibGDX (v1.14.2)
+* **Plataforma Objetivo:** PC (Escritorio / Desktop LWJGL3)
+* **Herramientas de Diseño:** Software Tiled (Mapas) y Aseprite (Pixel Art)
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+---
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
+## 📖 Propuesta Detallada y Documentación
+Toda la documentación conceptual, mecánicas de juego, personajes, armas, protocolos de red y detalles académicos se encuentran en la Wiki oficial del proyecto.
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+🔗 **[Ver la Propuesta Completa en la Wiki](../../wiki/Propuesta-del-Proyecto---ManBot-Survivor)**
+
+---
+
+## 🚀 Instrucciones de Compilación y Ejecución
+
+### Requisitos Previos
+* Tener instalado **Java JDK 21** o superior.
+* Contar con un IDE compatible (se recomienda **IntelliJ IDEA**).
+
+### Pasos para Ejecutar
+1. **Clonar el repositorio:**
+   ```bash
+   git clone [https://github.com/TU_USUARIO/manbot-survivor.git](https://github.com/TU_USUARIO/manbot-survivor.git)
