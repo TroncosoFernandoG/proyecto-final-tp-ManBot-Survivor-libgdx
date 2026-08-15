@@ -3,14 +3,11 @@
 
 Todos los cambios significativos en este proyecto serán documentados en este archivo siguiendo el formato estándar de *Keep a Changelog*.
 
-## [Unreleased]
+## [1.0.0] - 2026-07-15
 
----
-
-## [0.1.0] - 2026-07-15
-### Added
+### Agregado
 * Creación y estructuración inicial del proyecto con LibGDX Liftoff (Java 21 y LibGDX 1.14.2).
-* Configuración del archivo `.gitignore` optimizado para LibGDX, Gradle e IDEs (IntelliJ IDEA / Eclipse).
+* Configuración del archivo `.gitignore` optimizado para LibGDX, Gradle e IDEs.
 * Inicialización del repositorio de control de versiones en GitHub y adición de colaboradores.
-* Creación del archivo `README.md` con la presentación inicial del proyecto y guías de ejecución.
-* Activación y redacción de la Wiki del proyecto con la propuesta técnica formal.
+* Creación del archivo `README.md` con la presentación del proyecto y comandos de ejecución.
+* Activación de la Wiki del proyecto configurando la propuesta principal en la página Home.
