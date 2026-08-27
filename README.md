@@ -1,6 +1,6 @@
 # ManBot Survivor 🤖🎮
 
-**ManBot Survivor** es un videojuego roguelite de supervivencia en 2D con vista cenital (top-down) desarrollado en Java. El jugador controla un robot que se encuentra atrapado en una fábrica abandonada invadida por hordas de robots enemigos defectuosos, donde deberá sobrevivir el mayor tiempo posible recolectando chips de energía (XP), subiendo de nivel y eligiendo mejoras aleatorias. Además, cuenta con un modo cooperativo multijugador en red local (LAN) sincronizado en tiempo real mediante sockets TCP/UDP.
+**ManBot Survivor** es un videojuego roguelite de supervivencia en 2D con vista cenital (top-down) desarrollado en Java 21 y LibGDX. El jugador controla un robot en una instalación industrial invadida por hordas mecánicas, donde debe sobrevivir recolectando chips de energía (XP), subiendo de nivel y seleccionando mejoras aleatorias. Cuenta además con un modo cooperativo multijugador en red local (LAN) sincronizado en tiempo real.
 
 ---
 
@@ -23,7 +23,7 @@
 ## 📖 Propuesta Detallada del Proyecto
 Toda la documentación conceptual, mecánicas de juego, personajes, armas, protocolos de red y detalles académicos se encuentran en la Wiki oficial del proyecto:
 
-🔗 **[Ver la Propuesta Completa en la Wiki]([../../wiki](https://github.com/TroncosoFernandoG/proyecto-final-tp-ManBot-Survivor-libgdx/wiki))**
+🔗 **[Ver la Propuesta Completa en la Wiki](https://github.com/TroncosoFernandoG/proyecto-final-tp-ManBot-Survivor-libgdx/wiki/Home)**
 
 ---
 
@@ -31,14 +31,14 @@ Toda la documentación conceptual, mecánicas de juego, personajes, armas, proto
 
 ### Requisitos Previos
 * Tener instalado **Java JDK 21**.
-* Contar con un IDE compatible (se recomienda **IntelliJ IDEA**).
+* Contar con un IDE compatible (**Eclipse IDE** o **IntelliJ IDEA**).
 
-### Pasos para Clonal y Ejecutar
+### Pasos para Clonar y Ejecutar
 
-1. **Clonar el repositorio:**
+**Clonar el repositorio e ingresar a la carpeta del proyecto:**
    ```bash
-   git clone [https://github.com/TroncosoFernandoG/proyecto-final-tp-ManBot-Survivor-libgd.git](https://github.com/TroncosoFernandoG/proyecto-final-tp-ManBot-Survivor-libgd.git)
-   Ejecutar desde la terminal mediante Gradle Wrapper:
+   git clone [https://github.com/TroncosoFernandoG/proyecto-final-tp-ManBot-Survivor-libgdx.git](https://github.com/TroncosoFernandoG/proyecto-final-tp-ManBot-Survivor-libgdx.git)
+   cd proyecto-final-tp-ManBot-Survivor-libgdx
 
 **En Windows:**
 
