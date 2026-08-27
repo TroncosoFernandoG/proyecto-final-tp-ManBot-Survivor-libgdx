@@ -39,24 +39,38 @@ Toda la documentación conceptual, mecánicas de juego, personajes, armas, proto
    ```bash
    git clone [https://github.com/TroncosoFernandoG/proyecto-final-tp-ManBot-Survivor-libgdx.git](https://github.com/TroncosoFernandoG/proyecto-final-tp-ManBot-Survivor-libgdx.git)
    cd proyecto-final-tp-ManBot-Survivor-libgdx
+ ```
+### Ejecutar desde Eclipse IDE:
 
-**En Windows:**
+Abrir Eclipse y seleccionar File > Import....
 
-.\gradlew.bat lwjgl3:run
+Elegir Gradle > Existing Gradle Project y hacer clic en Next.
 
-**En Linux / macOS:**
+En Root Directory, seleccionar la carpeta raíz del proyecto clonado y hacer clic en Finish.
+
+Una vez importado el proyecto, desplegar la carpeta del módulo lwjgl3.
+
+Navegar hasta src/main/java/com/manbotsurvivor/game/lwjgl3/Lwjgl3Launcher.java.
+
+Hacer clic derecho sobre Lwjgl3Launcher.java y seleccionar Run As > Java Application.
+
+### Ejecutar desde IntelliJ IDEA:
+
+Abrir IntelliJ IDEA.
+
+Seleccionar File > Open... y elegir el archivo build.gradle en la raíz.
+
+Navegar hasta el módulo lwjgl3 y ejecutar la clase principal Lwjgl3Launcher.java.
+
+### Ejecutar en Windows mediante Terminal (Gradle Wrapper):
+
+gradlew.bat lwjgl3:run
+
+### Ejecutar en Linux / macOS mediante Terminal (Gradle Wrapper):
 
 ./gradlew lwjgl3:run
 
-2. **Ejecutar desde el IDE (IntelliJ IDEA):**
-
-* Abrir IntelliJ IDEA.
-* Seleccionar File > Open... y elegir el archivo build.gradle en la raíz del proyecto.
-* Una vez finalizada la importación, navegar hasta el módulo lwjgl3.
-* Ejecutar la clase principal Lwjgl3Launcher.java.
-
-## 📈 Estado Actual del Proyecto
-**Fase:** Primera Pre-Entrega (Configuración Inicial del Proyecto y Repositorio).
-
+### 📈 Estado Actual del Proyecto
+Fase: Pre-Entrega Corregida (Configuración del Repositorio, Entorno Java 21 y Documentación).
 
 ---
