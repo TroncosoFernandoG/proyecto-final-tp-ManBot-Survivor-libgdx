@@ -9,6 +9,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class Principal extends Game {
     public SpriteBatch batch;
 
+    //aura 
+    
     @Override
     public void create() {
         batch = new SpriteBatch();
