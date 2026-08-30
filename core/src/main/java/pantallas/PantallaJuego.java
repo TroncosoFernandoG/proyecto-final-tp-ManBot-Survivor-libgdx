@@ -41,8 +41,17 @@ public class PantallaJuego implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
         jugador.actualizar(delta);
-        jugador.dibujar(camaraJuego);
+        
+        game.batch.setProjectionMatrix(camaraJuego.combined);
+
+        game.batch.begin();
+
+        jugador.dibujar(camaraJuego, game.batch);
+
+        game.batch.end();
+
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+
         hud.stage.draw();
     }
 

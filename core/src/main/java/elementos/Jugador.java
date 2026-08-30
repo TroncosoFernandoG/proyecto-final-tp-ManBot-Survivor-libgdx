@@ -2,6 +2,11 @@ package elementos;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 
 public class Jugador {
 	
@@ -10,7 +15,9 @@ public class Jugador {
 	private float velocidad;
 	private float ancho;
 	private float alto;
-	private ShapeRenderer formaJugador;
+	private Texture texturaJugador;
+	private Animation<TextureRegion> animacionJugador;
+	private float tiempoAnimacion;
 	private ControladorEntrada controladorEntrada;
 	
 	public Jugador(float posicionX, float posicionY, float velocidad, ControladorEntrada controladorEntrada) {
@@ -21,7 +28,29 @@ public class Jugador {
 	    this.controladorEntrada = controladorEntrada;
 	    this.ancho = 32;
 	    this.alto = 32;
-	    formaJugador = new ShapeRenderer();
+	    
+	    texturaJugador = new Texture("manbot.png");
+
+	    TextureRegion[][] cuadros = TextureRegion.split(
+	            texturaJugador,
+	            64,
+	            64
+	    );
+
+	    TextureRegion[] cuadrosAnimacion = new TextureRegion[5];
+
+	    for (int i = 0; i < 5; i++) {
+	        cuadrosAnimacion[i] = cuadros[0][i];
+	    }
+
+	    animacionJugador = new Animation<TextureRegion>(
+	            0.15f,
+	            cuadrosAnimacion
+	    );
+
+	    animacionJugador.setPlayMode(Animation.PlayMode.LOOP);
+
+	    tiempoAnimacion = 0;
 	    
 	}
 	
@@ -69,19 +98,29 @@ public class Jugador {
 	    if (controladorEntrada.estaDerecha()) {
 	        movimientoX += velocidad * delta;
 	    }
+	    
+	    tiempoAnimacion += delta;
+	    
 	    mover(movimientoX, movimientoY);
 	}
 	
-	public void dibujar(OrthographicCamera camaraJuego) {
-		formaJugador.setProjectionMatrix(camaraJuego.combined);
-	    formaJugador.begin(ShapeRenderer.ShapeType.Filled);
-	    formaJugador.setColor(1, 1, 1, 1);
-	    formaJugador.rect(posicionX, posicionY, ancho, alto);
-	    formaJugador.end();
+	public void dibujar(OrthographicCamera camaraJuego, SpriteBatch lote) {
+
+	    lote.setProjectionMatrix(camaraJuego.combined);
+
+	    TextureRegion cuadroActual = animacionJugador.getKeyFrame(tiempoAnimacion);
+
+	    lote.draw(
+	        cuadroActual,
+	        posicionX,
+	        posicionY,
+	        ancho,
+	        alto
+	    );
 	}
 	
 	public void disponer() {
-	    formaJugador.dispose();
+	    texturaJugador.dispose();
 	}
 	
 }

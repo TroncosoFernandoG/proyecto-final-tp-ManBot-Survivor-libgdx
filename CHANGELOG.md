@@ -1,5 +1,22 @@
 **Todos los cambios significativos en este proyecto serán documentados en este archivo siguiendo el formato estándar de "Keep a Changelog".**
 
+## [1.3.0] - 2026-08-30
+
+### Agregado
+
+* Incorporación del spritesheet de ManBot como recurso gráfico del personaje.
+* Implementación de una animación mediante la clase Animation de LibGDX.
+* División del spritesheet en cinco cuadros de animación de 64x64 píxeles.
+* Incorporación de reproducción continua de los cuadros mediante el modo LOOP.
+* Incorporación del control del tiempo de animación mediante delta.
+
+### Modificado
+
+* Reemplazo de la representación temporal del jugador mediante ShapeRenderer por el spritesheet de ManBot.
+* Modificación del sistema de renderizado del jugador para utilizar SpriteBatch.
+* Integración de la animación del personaje con la cámara del juego.
+* Actualización de la liberación de recursos del jugador para liberar la textura utilizada por ManBot.
+
 ## [1.2.0] - 2026-08-30
 
 ### Agregado
