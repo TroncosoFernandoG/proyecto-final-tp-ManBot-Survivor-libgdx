@@ -10,13 +10,13 @@ import com.manbotsurvivor.game.ManBotSurvivor;
 
 import escenas.Hud;
 
-public class PlaySreen implements Screen {
+public class PantallaJuego implements Screen {
     private ManBotSurvivor game;
     private OrthographicCamera camaraJuego;
     private Viewport gamePort;
     private Hud hud;
     
-    public PlaySreen(ManBotSurvivor game) {
+    public PantallaJuego(ManBotSurvivor game) {
         this.game = game;
         camaraJuego = new OrthographicCamera();
         gamePort = new FitViewport(ManBotSurvivor.V_WIDTH, ManBotSurvivor.V_HEIGHT, camaraJuego);

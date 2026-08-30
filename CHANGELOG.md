@@ -1,7 +1,17 @@
+## [1.1.0] - 2026-08-30
 
+### Agregado
+* Implementación de la pantalla principal del juego.
+* Incorporación de la navegación entre el menú y la pantalla de juego.
+* Agregado del inicio de partida mediante la tecla ENTER.
+* Agregado de la opción para salir del juego mediante la tecla ESC.
+* Incorporación de un FitViewport para mantener la proporción de la interfaz al modificar el tamaño de la ventana.
+
+### Modificado
+* Organización de la pantalla de juego dentro del paquete pantallas.
+* Renombrado de PlaySreen a PantallaJuego.
+* Actualización de las referencias a la pantalla de juego en ManBotSurvivor.
 # Registro de Cambios (Changelog) - ManBot Survivor
-
-Todos los cambios significativos en este proyecto serán documentados en este archivo siguiendo el formato estándar de *Keep a Changelog*.
 
 ## [1.0.0] - 2026-07-15
 
