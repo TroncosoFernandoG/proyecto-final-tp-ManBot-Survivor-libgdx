@@ -1,3 +1,24 @@
+**Todos los cambios significativos en este proyecto serán documentados en este archivo siguiendo el formato estándar de "Keep a Changelog".**
+
+## [1.2.0] - 2026-08-30
+
+### Agregado
+
+* Implementación de la clase Jugador para representar al personaje dentro del juego.
+* Implementación de la clase ControladorEntrada mediante InputAdapter de LibGDX.
+* Incorporación del movimiento del personaje mediante las teclas W, A, S y D.
+* Incorporación del movimiento diagonal mediante la combinación de teclas.
+* Implementación del movimiento independiente de los FPS utilizando delta.
+* Incorporación de una representación visual temporal del jugador mediante ShapeRenderer.
+* Incorporación de límites de movimiento para impedir que el jugador salga del área virtual del juego.
+
+### Modificado
+
+* Conexión del jugador con la pantalla de juego y el sistema de entrada de LibGDX.
+* Integración del jugador con la cámara del juego y el FitViewport.
+* Incorporación de la liberación de los recursos utilizados por el jugador.
+
+
 ## [1.1.0] - 2026-08-30
 
 ### Agregado
