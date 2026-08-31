@@ -15,17 +15,24 @@ public class Jugador {
 	private float velocidad;
 	private float ancho;
 	private float alto;
+	
+	private float limiteMapaAncho;
+	private float limiteMapaAlto;
+	
 	private Texture texturaJugador;
 	private Animation<TextureRegion> animacionJugador;
 	private float tiempoAnimacion;
+	private boolean mirandoDerecha;
 	private ControladorEntrada controladorEntrada;
 	
-	public Jugador(float posicionX, float posicionY, float velocidad, ControladorEntrada controladorEntrada) {
+	public Jugador(float posicionX, float posicionY, float velocidad, ControladorEntrada controladorEntrada, float limiteMapaAncho, float limiteMapaAlto) {
 
 	    this.posicionX = posicionX;
 	    this.posicionY = posicionY;
 	    this.velocidad = velocidad;
 	    this.controladorEntrada = controladorEntrada;
+	    this.limiteMapaAncho = limiteMapaAncho;
+	    this.limiteMapaAlto = limiteMapaAlto;
 	    this.ancho = 32;
 	    this.alto = 32;
 	    
@@ -48,9 +55,10 @@ public class Jugador {
 	            cuadrosAnimacion
 	    );
 
-	    animacionJugador.setPlayMode(Animation.PlayMode.LOOP);
+	    animacionJugador.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
 
 	    tiempoAnimacion = 0;
+	    mirandoDerecha = true;
 	    
 	}
 	
@@ -73,11 +81,12 @@ public class Jugador {
 	    if (posicionY < 0) {
 	        posicionY = 0;
 	    }
-	    if (posicionX + ancho > com.manbotsurvivor.game.ManBotSurvivor.V_WIDTH) {
-	        posicionX = com.manbotsurvivor.game.ManBotSurvivor.V_WIDTH - ancho;
+	    if (posicionX + ancho > limiteMapaAncho) {
+	        posicionX = limiteMapaAncho - ancho;
 	    }
-	    if (posicionY + alto > com.manbotsurvivor.game.ManBotSurvivor.V_HEIGHT) {
-	        posicionY = com.manbotsurvivor.game.ManBotSurvivor.V_HEIGHT - alto;
+
+	    if (posicionY + alto > limiteMapaAlto) {
+	        posicionY = limiteMapaAlto - alto;
 	    }
 	}
 	
@@ -86,21 +95,40 @@ public class Jugador {
 	    float movimientoX = 0;
 	    float movimientoY = 0;
 
-	    if (controladorEntrada.estaArriba()) {
+	    if (controladorEntrada.estaArriba() ||
+	        controladorEntrada.consumirPulsacionArriba()) {
+
 	        movimientoY += velocidad * delta;
 	    }
-	    if (controladorEntrada.estaAbajo()) {
+
+	    if (controladorEntrada.estaAbajo() ||
+	        controladorEntrada.consumirPulsacionAbajo()) {
+
 	        movimientoY -= velocidad * delta;
 	    }
-	    if (controladorEntrada.estaIzquierda()) {
+
+	    if (controladorEntrada.estaIzquierda() ||
+	        controladorEntrada.consumirPulsacionIzquierda()) {
+
 	        movimientoX -= velocidad * delta;
+	        mirandoDerecha = false;
 	    }
-	    if (controladorEntrada.estaDerecha()) {
+
+	    if (controladorEntrada.estaDerecha() ||
+	        controladorEntrada.consumirPulsacionDerecha()) {
+
 	        movimientoX += velocidad * delta;
+	        mirandoDerecha = true;
 	    }
-	    
-	    tiempoAnimacion += delta;
-	    
+
+	    boolean estaMoviendose = movimientoX != 0 || movimientoY != 0;
+
+	    if (estaMoviendose) {
+	        tiempoAnimacion += delta;
+	    } else {
+	        tiempoAnimacion = 0;
+	    }
+
 	    mover(movimientoX, movimientoY);
 	}
 	
@@ -108,8 +136,12 @@ public class Jugador {
 
 	    lote.setProjectionMatrix(camaraJuego.combined);
 
-	    TextureRegion cuadroActual = animacionJugador.getKeyFrame(tiempoAnimacion);
+	    TextureRegion cuadroActual = new TextureRegion(animacionJugador.getKeyFrame(tiempoAnimacion));
 
+	    if (!mirandoDerecha) {
+	        cuadroActual.flip(true, false);
+	    }
+	    
 	    lote.draw(
 	        cuadroActual,
 	        posicionX,

@@ -1,5 +1,20 @@
 **Todos los cambios significativos en este proyecto serán documentados en este archivo siguiendo el formato estándar de "Keep a Changelog".**
 
+## [1.4.0] - 2026-08-31
+
+### Agregado
+
+* Integración del mapa creado con Tiled como entorno principal de juego.
+* Implementación del renderizado del mapa mediante OrthogonalTiledMapRenderer.
+* Implementación de una cámara que sigue al jugador durante el desplazamiento.
+* Adaptación de los límites de movimiento del jugador al tamaño real del mapa.
+* Limitación de la cámara para evitar que muestre zonas fuera de los límites del mapa.
+
+### Modificado
+
+* Actualización de PantallaJuego para integrar el mapa y la cámara.
+* Actualización de Jugador para utilizar las dimensiones del mapa como límites de movimiento.
+
 ## [1.3.0] - 2026-08-30
 
 ### Agregado
