@@ -33,25 +33,27 @@ public class PantallaJuego implements Screen {
 
         mapa = new Mapa();
 
-        anchoMapa = mapa.obtenerMapa().getProperties().get("width", Integer.class) * mapa.obtenerMapa().getProperties().get("tilewidth", Integer.class);
+        float limiteMapaAncho = 30 * 32;
+        float limiteMapaAlto = 20 * 32;
+        
+        anchoMapa = 30 * 32;
+        altoMapa = 20 * 32;
 
-        altoMapa = mapa.obtenerMapa().getProperties().get("height", Integer.class) * mapa.obtenerMapa().getProperties().get("tileheight", Integer.class);
-
-        jugador = new Jugador(200, 100, 100, controladorEntrada, anchoMapa, altoMapa);
+        jugador = new Jugador(200, 100, 100, controladorEntrada, limiteMapaAncho, limiteMapaAlto, mapa);
 
         camaraJuego = new OrthographicCamera();
 
-        gamePort = new FitViewport( ManBotSurvivor.V_WIDTH, ManBotSurvivor.V_HEIGHT, camaraJuego);
+        gamePort = new FitViewport(ManBotSurvivor.V_WIDTH, ManBotSurvivor.V_HEIGHT, camaraJuego);
 
-        camaraJuego.position.set(ManBotSurvivor.V_WIDTH / 2, ManBotSurvivor.V_HEIGHT / 2, 0 );
+        camaraJuego.position.set(ManBotSurvivor.V_WIDTH / 2, ManBotSurvivor.V_HEIGHT / 2, 0);
 
         camaraJuego.update();
 
-        renderizadorMapa = new OrthogonalTiledMapRenderer(mapa.obtenerMapa());
-        
-        hud = new Hud(game.batch);
+        renderizadorMapa = new OrthogonalTiledMapRenderer(
+            mapa.obtenerMapa()
+        );
 
-        mapa = new Mapa();
+        hud = new Hud(game.batch);
     }
 
     @Override

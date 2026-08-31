@@ -24,8 +24,9 @@ public class Jugador {
 	private float tiempoAnimacion;
 	private boolean mirandoDerecha;
 	private ControladorEntrada controladorEntrada;
+	private Mapa mapa;
 	
-	public Jugador(float posicionX, float posicionY, float velocidad, ControladorEntrada controladorEntrada, float limiteMapaAncho, float limiteMapaAlto) {
+	public Jugador(float posicionX, float posicionY, float velocidad, ControladorEntrada controladorEntrada, float limiteMapaAncho, float limiteMapaAlto, Mapa mapa) {
 
 	    this.posicionX = posicionX;
 	    this.posicionY = posicionY;
@@ -33,6 +34,7 @@ public class Jugador {
 	    this.controladorEntrada = controladorEntrada;
 	    this.limiteMapaAncho = limiteMapaAncho;
 	    this.limiteMapaAlto = limiteMapaAlto;
+	    this.mapa = mapa;
 	    this.ancho = 32;
 	    this.alto = 32;
 	    
@@ -72,15 +74,25 @@ public class Jugador {
 	
 	public void mover(float movimientoX, float movimientoY) {
 
-	    posicionX += movimientoX;
-	    posicionY += movimientoY;
+	    float nuevaPosicionX = posicionX + movimientoX;
+	    float nuevaPosicionY = posicionY + movimientoY;
+
+	    if (!mapa.hayColision(nuevaPosicionX, posicionY, ancho, alto)) {
+	        posicionX = nuevaPosicionX;
+	    }
+
+	    if (!mapa.hayColision(posicionX, nuevaPosicionY, ancho, alto)) {
+	        posicionY = nuevaPosicionY;
+	    }
 
 	    if (posicionX < 0) {
 	        posicionX = 0;
 	    }
+
 	    if (posicionY < 0) {
 	        posicionY = 0;
 	    }
+
 	    if (posicionX + ancho > limiteMapaAncho) {
 	        posicionX = limiteMapaAncho - ancho;
 	    }
@@ -88,6 +100,7 @@ public class Jugador {
 	    if (posicionY + alto > limiteMapaAlto) {
 	        posicionY = limiteMapaAlto - alto;
 	    }
+
 	}
 	
 	public void actualizar(float delta) {

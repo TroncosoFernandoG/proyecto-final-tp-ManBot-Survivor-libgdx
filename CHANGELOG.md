@@ -1,5 +1,22 @@
 **Todos los cambios significativos en este proyecto serán documentados en este archivo siguiendo el formato estándar de "Keep a Changelog".**
 
+## [1.5.0] - 2026-08-31
+
+### Agregado
+
+* Implementación de la carga y renderizado del mapa mediante Tiled.
+* Incorporación de la clase Mapa para gestionar el mapa y sus elementos.
+* Implementación de la capa de obstáculos para detectar colisiones.
+* Incorporación de colisiones entre el jugador y los obstáculos del mapa.
+* Implementación del seguimiento del jugador mediante la cámara.
+* Limitación de la cámara para evitar mostrar zonas fuera de los límites del mapa.
+
+### Modificado
+
+* Actualización de PantallaJuego para cargar y renderizar el mapa.
+* Actualización de Jugador para utilizar el mapa en la detección de colisiones.
+* Ajuste de los límites de movimiento del jugador según las dimensiones del mapa.
+
 ## [1.4.1] - 2026-08-31
 
 ### Modificado
