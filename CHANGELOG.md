@@ -1,5 +1,13 @@
 **Todos los cambios significativos en este proyecto serán documentados en este archivo siguiendo el formato estándar de "Keep a Changelog".**
 
+## [1.4.1] - 2026-08-31
+
+### Modificado
+
+* Corrección de la configuración del mapa en Tiled.
+* Ajuste del tamaño del mapa a 30 tiles de ancho por 20 tiles de alto.
+* Ajuste del tamaño de los tiles para mantener una escala adecuada con el entorno del juego.
+
 ## [1.4.0] - 2026-08-31
 
 ### Agregado
