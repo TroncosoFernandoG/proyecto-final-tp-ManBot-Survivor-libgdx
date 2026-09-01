@@ -1,13 +1,12 @@
-## [1.5.0] - 2026-08-31
+## [1.6.0] - Implementación de enemigos
 
-### Agregado
+### Añadido
+- Implementación de la clase `Enemigo`.
+- Incorporación de los datos básicos necesarios para representar enemigos.
+- Preparación de la estructura del enemigo para su integración con el jugador y el mapa.
 
-* Creación de la clase Enemigo.
-* Incorporación de la posición, velocidad y dimensiones del enemigo.
-* Agregado del movimiento básico del enemigo.
-* Incorporación del sistema de persecución hacia el jugador.
-* Agregado del método de actualización del enemigo.
-* Incorporación de un método de dibujo temporal mediante ShapeRenderer.
+### Modificado
+- Actualización de `Jugador.java` para preparar la interacción con los enemigos.
 
 ## [1.5.0] - 2026-08-31
 
