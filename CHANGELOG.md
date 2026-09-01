@@ -1,4 +1,4 @@
-## [1.6.0] - Implementación de enemigos
+## [1.6.0] - 2026-08-31
 
 ### Añadido
 - Implementación de la clase `Enemigo`.
