@@ -40,22 +40,15 @@ public class Jugador {
 	    
 	    texturaJugador = new Texture("manbot.png");
 
-	    TextureRegion[][] cuadros = TextureRegion.split(
-	            texturaJugador,
-	            64,
-	            64
-	    );
+	    TextureRegion[][] cuadros = TextureRegion.split(texturaJugador, 64, 64);
 
 	    TextureRegion[] cuadrosAnimacion = new TextureRegion[5];
 
-	    for (int i = 0; i < 5; i++) {
+	    for (int i = 0; i < cuadrosAnimacion.length; i++) {
 	        cuadrosAnimacion[i] = cuadros[0][i];
 	    }
 
-	    animacionJugador = new Animation<TextureRegion>(
-	            0.15f,
-	            cuadrosAnimacion
-	    );
+	    animacionJugador = new Animation<TextureRegion>(0.15f, cuadrosAnimacion);
 
 	    animacionJugador.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
 
@@ -155,13 +148,7 @@ public class Jugador {
 	        cuadroActual.flip(true, false);
 	    }
 	    
-	    lote.draw(
-	        cuadroActual,
-	        posicionX,
-	        posicionY,
-	        ancho,
-	        alto
-	    );
+	    lote.draw(cuadroActual, posicionX, posicionY, ancho, alto);
 	}
 	
 	public void disponer() {

@@ -1,4 +1,13 @@
-**Todos los cambios significativos en este proyecto serán documentados en este archivo siguiendo el formato estándar de "Keep a Changelog".**
+## [1.5.0] - 2026-08-31
+
+### Agregado
+
+* Creación de la clase Enemigo.
+* Incorporación de la posición, velocidad y dimensiones del enemigo.
+* Agregado del movimiento básico del enemigo.
+* Incorporación del sistema de persecución hacia el jugador.
+* Agregado del método de actualización del enemigo.
+* Incorporación de un método de dibujo temporal mediante ShapeRenderer.
 
 ## [1.5.0] - 2026-08-31
 
