@@ -11,15 +11,17 @@ public class Enemigo {
 
 	    private float ancho;
 	    private float alto;
+	    
+	    private Mapa mapa;
 
-	    public Enemigo(float posicionX, float posicionY, float velocidad) {
+	    public Enemigo(float posicionX, float posicionY, float velocidad, Mapa mapa) {
 
 	        this.posicionX = posicionX;
 	        this.posicionY = posicionY;
 	        this.velocidad = velocidad;
-
 	        this.ancho = 32;
 	        this.alto = 32;
+	        this.mapa = mapa;
 	    }
 	    
 	    public float obtenerPosicionX() {
@@ -31,8 +33,17 @@ public class Enemigo {
 	    }
 
 	    public void mover(float movimientoX, float movimientoY) {
-	        posicionX += movimientoX;
-	        posicionY += movimientoY;
+
+	        float nuevaPosicionX = posicionX + movimientoX;
+	        float nuevaPosicionY = posicionY + movimientoY;
+
+	        if (!mapa.hayColision(nuevaPosicionX, posicionY, ancho, alto)) {
+	            posicionX = nuevaPosicionX;
+	        }
+
+	        if (!mapa.hayColision(posicionX, nuevaPosicionY, ancho, alto)) {
+	            posicionY = nuevaPosicionY;
+	        }
 	    }
 	    
 	    public void perseguir(Jugador jugador, float delta) {

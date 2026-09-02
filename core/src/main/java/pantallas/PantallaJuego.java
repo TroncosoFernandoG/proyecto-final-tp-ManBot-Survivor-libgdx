@@ -7,11 +7,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.manbotsurvivor.game.ManBotSurvivor;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import elementos.ControladorEntrada;
 import elementos.Jugador;
 import escenas.Hud;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import elementos.Mapa;
+import elementos.Enemigo;
 
 public class PantallaJuego implements Screen {
     private ManBotSurvivor game;
@@ -24,6 +26,8 @@ public class PantallaJuego implements Screen {
     private float altoMapa;
     private ControladorEntrada controladorEntrada;
     private Jugador jugador;
+    private Enemigo enemigo;
+    private ShapeRenderer formaEnemigo;
     
     public PantallaJuego(ManBotSurvivor game) {
 
@@ -40,6 +44,9 @@ public class PantallaJuego implements Screen {
         altoMapa = 20 * 32;
 
         jugador = new Jugador(200, 100, 100, controladorEntrada, limiteMapaAncho, limiteMapaAlto, mapa);
+        
+        enemigo = new Enemigo(400, 300, 50, mapa);
+        formaEnemigo = new ShapeRenderer();
 
         camaraJuego = new OrthographicCamera();
 
@@ -69,6 +76,7 @@ public class PantallaJuego implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         jugador.actualizar(delta);
+        enemigo.actualizar(delta, jugador);
         
         camaraJuego.position.set(jugador.obtenerPosicionX() + 16, jugador.obtenerPosicionY() + 16, 0);
         
@@ -103,6 +111,9 @@ public class PantallaJuego implements Screen {
         jugador.dibujar(camaraJuego, game.batch);
 
         game.batch.end();
+        
+        formaEnemigo.setProjectionMatrix(camaraJuego.combined);
+        enemigo.dibujar(formaEnemigo);
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 
@@ -137,5 +148,7 @@ public class PantallaJuego implements Screen {
         mapa.dispose();
 
         renderizadorMapa.dispose();
+        
+        formaEnemigo.dispose();
     }
 }

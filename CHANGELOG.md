@@ -1,3 +1,19 @@
+## [1.6.1] - 2026-09-02
+
+### Agregado
+
+* Integración del enemigo dentro de PantallaJuego.
+* Actualización del enemigo en cada ciclo del juego.
+* Incorporación del dibujo temporal del enemigo mediante ShapeRenderer.
+* Implementación de colisiones entre el enemigo y los obstáculos del mapa.
+
+### Modificado
+
+* Actualización de Enemigo para recibir una referencia al mapa.
+* Modificación del movimiento del enemigo para comprobar colisiones antes de cambiar su posición.
+* Actualización de PantallaJuego para crear, actualizar y dibujar al enemigo.
+* Incorporación de la liberación de los recursos utilizados para dibujar al enemigo.
+
 ## [1.6.0] - 2026-08-31
 
 ### Añadido
