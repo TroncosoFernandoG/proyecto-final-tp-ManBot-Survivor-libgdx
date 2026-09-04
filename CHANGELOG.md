@@ -1,3 +1,12 @@
+## [1.8.1] - 2026-09-04
+
+### Modificado
+- Actualización del menú principal.
+- Eliminación del título "MANBOT SURVIVOR".
+- Reubicación de las opciones del menú para mejorar su distribución visual.
+- Ajuste del tamaño de fuente de las opciones.
+- Uso del fondo `fondo_menu.png` en el menú principal.
+
 ## [1.8.0] - 2026-09-04
 
 ### Agregado

@@ -1,91 +1,151 @@
 package pantallas;
 
-	import com.badlogic.gdx.Gdx;
-	import com.badlogic.gdx.Input;
-	import com.badlogic.gdx.Screen;
-	import com.badlogic.gdx.graphics.GL20;
-	import com.badlogic.gdx.graphics.OrthographicCamera;
-	import com.badlogic.gdx.graphics.g2d.BitmapFont;
-	import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
-	import com.manbotsurvivor.game.ManBotSurvivor;
+import com.manbotsurvivor.game.ManBotSurvivor;
 
-	public class PantallaMenu implements Screen {
+public class PantallaMenu implements Screen {
 
-	    private final ManBotSurvivor juego;
+    private final ManBotSurvivor juego;
 
-	    private final OrthographicCamera camara;
-	    private final FitViewport vista;
+    private final OrthographicCamera camara;
+    private final FitViewport vista;
 
-	    private final BitmapFont fuente;
+    private final BitmapFont fuente;
 
-	    public PantallaMenu(ManBotSurvivor juego) {
-	    	this.juego = juego;
-	        camara = new OrthographicCamera();
-	        vista = new FitViewport(ManBotSurvivor.V_WIDTH, ManBotSurvivor.V_HEIGHT, camara);
-	        fuente = new BitmapFont();
-	    }
+    private Texture fondo;
 
-	    @Override
-	    public void show() {
-	    }
+    private int opcionSeleccionada;
 
-	    @Override
-	    public void render(float delta) {
+    private final String[] opciones = {
+        "NUEVA PARTIDA",
+        "OPCIONES",
+        "SALIR"
+    };
 
-	        Gdx.gl.glClearColor(0.03f, 0.04f, 0.05f, 1);
+    public PantallaMenu(ManBotSurvivor juego) {
 
-	        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        this.juego = juego;
 
-	        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+        camara = new OrthographicCamera();
 
-	            juego.comenzarPartida();
+        vista = new FitViewport(ManBotSurvivor.V_WIDTH, ManBotSurvivor.V_HEIGHT, camara);
 
-	            return;
-	        }
+        fuente = new BitmapFont();
 
-	        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        fondo = new Texture("fondo_menu.png");
 
-	            Gdx.app.exit();
+        opcionSeleccionada = 0;
+    }
 
-	            return;
-	        }
+    @Override
+    public void show() {
+    }
 
-	        juego.batch.setProjectionMatrix(camara.combined);
+    @Override
+    public void render(float delta) {
 
-	        juego.batch.begin();
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-	        fuente.draw(juego.batch, "MANBOT SURVIVOR", 135, 140);
+        camara.update();
 
-	        fuente.draw(juego.batch,"SUPERVIVENCIA 2D", 145, 115);
+        juego.batch.setProjectionMatrix(camara.combined);
 
-	        fuente.draw(juego.batch, "ENTER - JUGAR", 155, 75);
+        juego.batch.begin();
 
-	        fuente.draw(juego.batch, "ESC - SALIR", 160, 50);
+        juego.batch.draw(fondo, 0, 0, ManBotSurvivor.V_WIDTH,ManBotSurvivor.V_HEIGHT);
 
-	        juego.batch.end();
-	    }
+        fuente.getData().setScale(1.2f);
 
-	    @Override
-	    public void resize(int ancho, int alto) {
+        for (int i = 0; i < opciones.length; i++) {
 
-	        vista.update(ancho, alto, true);
-	    }
+            float posicionY = 75 - (i * 30);
 
-	    @Override
-	    public void pause() {
-	    }
+            String texto = opciones[i];
 
-	    @Override
-	    public void resume() {
-	    }
+            if (i == opcionSeleccionada) {
+                texto = "> " + texto + " <";
+            }
 
-	    @Override
-	    public void hide() {
-	    }
+            fuente.draw(juego.batch, texto, 165, posicionY);
+        }
 
-	    @Override
-	    public void dispose() {
-	        fuente.dispose();
-	    }
-	}
+        juego.batch.end();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+
+            opcionSeleccionada--;
+
+            if (opcionSeleccionada < 0) {
+            		opcionSeleccionada = opciones.length - 1;
+            }
+        }
+
+        
+        if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+
+            opcionSeleccionada++;
+
+            if (opcionSeleccionada >= opciones.length) {
+                opcionSeleccionada = 0;
+            }
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+
+            seleccionarOpcion();
+        }
+    }
+
+    private void seleccionarOpcion() {
+
+        switch (opcionSeleccionada) {
+
+        case 0:
+            juego.comenzarPartida();
+            break;
+
+        case 1:
+            System.out.println("Menu de opciones pendiente.");
+            break;
+
+        case 2:
+            Gdx.app.exit();
+            break;
+        }
+    }
+
+    @Override
+    public void resize(int ancho, int alto) {
+
+        vista.update(ancho, alto, true);
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
+
+    @Override
+    public void hide() {
+    }
+
+    @Override
+    public void dispose() {
+
+        fuente.dispose();
+        fondo.dispose();
+    }
+}
+
