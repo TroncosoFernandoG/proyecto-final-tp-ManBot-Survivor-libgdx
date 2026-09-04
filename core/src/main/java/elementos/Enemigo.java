@@ -1,6 +1,8 @@
 package elementos;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.Color;
+
 
 public class Enemigo {
 
@@ -11,6 +13,7 @@ public class Enemigo {
 
 	    private float ancho;
 	    private float alto;
+	    private int vida;
 	    
 	    private Mapa mapa;
 
@@ -21,6 +24,7 @@ public class Enemigo {
 	        this.velocidad = velocidad;
 	        this.ancho = 32;
 	        this.alto = 32;
+	        this.vida = 3;
 	        this.mapa = mapa;
 	    }
 	    
@@ -32,6 +36,18 @@ public class Enemigo {
 	        return posicionY;
 	    }
 
+	    public void recibirDaño(int daño) {
+	    	vida-=daño;
+	    	
+	    	if(vida<0) {
+	    		vida=0;
+	    	}
+	    }
+	    
+	    public boolean estaVivo() {
+	    	return vida>0;
+	    }
+	    
 	    public void mover(float movimientoX, float movimientoY) {
 
 	        float nuevaPosicionX = posicionX + movimientoX;
@@ -77,6 +93,7 @@ public class Enemigo {
 
 	        forma.begin(ShapeRenderer.ShapeType.Filled);
 
+	        forma.setColor(Color.GRAY);
 	        forma.rect(posicionX, posicionY, ancho, alto);
 
 	        forma.end();

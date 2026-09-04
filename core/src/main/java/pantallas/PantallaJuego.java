@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.manbotsurvivor.game.ManBotSurvivor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import elementos.ChipEnergia;
 import elementos.ControladorEntrada;
 import elementos.Jugador;
 import escenas.Hud;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import elementos.Mapa;
 import elementos.Enemigo;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class PantallaJuego implements Screen {
     private ManBotSurvivor game;
@@ -28,14 +30,19 @@ public class PantallaJuego implements Screen {
     private ControladorEntrada controladorEntrada;
     private Jugador jugador;
     private ArrayList<Enemigo> enemigos;
+    private ArrayList<ChipEnergia> chipsEnergia;
     private ShapeRenderer formaEnemigo;
+    private float tiempoAtaque;
+    private final float intervaloAtaque = 1.5f;
     
     public PantallaJuego(ManBotSurvivor game) {
 
         this.game = game;
 
         enemigos = new ArrayList<>();
+        chipsEnergia = new ArrayList<>();
         controladorEntrada = new ControladorEntrada();
+        
 
         mapa = new Mapa();
 
@@ -51,6 +58,7 @@ public class PantallaJuego implements Screen {
         enemigos.add(new Enemigo(100, 300, 50, mapa));
         enemigos.add(new Enemigo(300, 200, 50, mapa));
         formaEnemigo = new ShapeRenderer();
+        tiempoAtaque = 0;
 
         camaraJuego = new OrthographicCamera();
 
@@ -82,12 +90,51 @@ public class PantallaJuego implements Screen {
             double distancia = Math.sqrt(
                 diferenciaX * diferenciaX + diferenciaY * diferenciaY
             );
-            if (distancia < distanciaMinima) {
+            if (enemigo.estaVivo() && distancia < distanciaMinima) {
                 distanciaMinima = distancia;
                 enemigoMasCercano = enemigo;
             }
         }
         return enemigoMasCercano;
+    }
+    
+    private void atacar() {
+        Enemigo enemigoCercano = obtenerEnemigoMasCercano();
+        
+        if (enemigoCercano != null) {
+            enemigoCercano.recibirDaño(1);
+        }
+    }
+    
+    private void eliminarEnemigosMuertos() {
+
+        Iterator<Enemigo> iterador = enemigos.iterator();
+        while (iterador.hasNext()) {
+            Enemigo enemigo = iterador.next();
+            if (!enemigo.estaVivo()) {
+            	ChipEnergia chip = new ChipEnergia(enemigo.obtenerPosicionX(), enemigo.obtenerPosicionY());
+            	chipsEnergia.add(chip);
+            	
+                iterador.remove();
+            }
+        }
+    }
+    
+    private void recogerChips() {
+
+        Iterator<ChipEnergia> iterador = chipsEnergia.iterator();
+
+        while (iterador.hasNext()) {
+
+            ChipEnergia chip = iterador.next();
+
+            if (chip.hayColision(jugador.obtenerPosicionX(), jugador.obtenerPosicionY(), jugador.obtenerAncho(), jugador.obtenerAlto())) {
+
+                jugador.ganarExperiencia(chip.obtenerExperiencia());
+                
+                iterador.remove();
+            }
+        }
     }
     
     @Override
@@ -101,6 +148,15 @@ public class PantallaJuego implements Screen {
         for (Enemigo enemigo : enemigos) {
             enemigo.actualizar(delta, jugador);
         }
+        
+        tiempoAtaque += delta;
+
+        if (tiempoAtaque >= intervaloAtaque) {
+            atacar();
+            tiempoAtaque = 0;
+        }
+        eliminarEnemigosMuertos();
+        recogerChips();
         
         camaraJuego.position.set(jugador.obtenerPosicionX() + 16, jugador.obtenerPosicionY() + 16, 0);
         
@@ -137,10 +193,13 @@ public class PantallaJuego implements Screen {
         game.batch.end();
         
         formaEnemigo.setProjectionMatrix(camaraJuego.combined);
+        
         for (Enemigo enemigo : enemigos) {
             enemigo.dibujar(formaEnemigo);
         }
-        
+        for (ChipEnergia chip : chipsEnergia) {
+            chip.dibujar(formaEnemigo);
+        }
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 

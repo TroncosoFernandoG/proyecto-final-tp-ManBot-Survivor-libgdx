@@ -15,6 +15,7 @@ public class Jugador {
 	private float velocidad;
 	private float ancho;
 	private float alto;
+	private int experiencia;
 	
 	private float limiteMapaAncho;
 	private float limiteMapaAlto;
@@ -37,6 +38,7 @@ public class Jugador {
 	    this.mapa = mapa;
 	    this.ancho = 32;
 	    this.alto = 32;
+	    this.experiencia = 0;
 	    
 	    texturaJugador = new Texture("manbot.png");
 
@@ -63,6 +65,22 @@ public class Jugador {
 
 	public float obtenerPosicionY() {
 	    return posicionY;
+	}
+	
+	public float obtenerAncho() {
+	    return ancho;
+	}
+
+	public float obtenerAlto() {
+	    return alto;
+	}
+	
+	public void ganarExperiencia(int cantidad) {
+	    experiencia += cantidad;
+	}
+	
+	public int obtenerExperiencia() {
+	    return experiencia;
 	}
 	
 	public void mover(float movimientoX, float movimientoY) {

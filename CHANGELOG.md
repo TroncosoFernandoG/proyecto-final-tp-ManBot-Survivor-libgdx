@@ -1,3 +1,24 @@
+## [1.7.0] - 2026-09-04
+
+### Agregado
+
+* Implementación del ataque automático de ManBot hacia el enemigo más cercano.
+* Incorporación de un intervalo de 1,5 segundos entre ataques.
+* Implementación del sistema de daño y eliminación de enemigos.
+* Incorporación de los chips de energía al derrotar enemigos.
+* Implementación de la recolección de chips mediante colisión con ManBot.
+* Incorporación del sistema de experiencia obtenida al recoger chips.
+* Implementación de 10 puntos de experiencia por cada chip recogido.
+* Representación temporal de los chips de energía mediante ShapeRenderer.
+
+### Modificado
+
+* Actualización de PantallaJuego para administrar los chips de energía.
+* Incorporación de métodos en Jugador para obtener su ancho y alto.
+* Actualización del sistema de eliminación de enemigos para generar un chip de energía al derrotarlos.
+* Actualización del sistema de renderizado para mostrar los chips de energía.
+* Actualización del sistema de interacción para eliminar los chips una vez recogidos.
+
 ## [1.6.2] - 2026-09-04
 
 ### Agregado
