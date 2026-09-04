@@ -2,7 +2,12 @@ package elementos;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.Color;
-
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Rectangle;
 
 public class Enemigo {
 
@@ -15,6 +20,10 @@ public class Enemigo {
 	    private float alto;
 	    private int vida;
 	    
+	    private Texture texturaEnemigo;
+	    private Animation<TextureRegion> animacionEnemigo;
+	    private float tiempoAnimacion;
+	    
 	    private Mapa mapa;
 
 	    public Enemigo(float posicionX, float posicionY, float velocidad, Mapa mapa) {
@@ -26,6 +35,22 @@ public class Enemigo {
 	        this.alto = 32;
 	        this.vida = 3;
 	        this.mapa = mapa;
+	        
+	        texturaEnemigo = new Texture("dronebasico.png");
+
+	        TextureRegion[][] cuadros = TextureRegion.split(texturaEnemigo, 32, 32);
+
+	        TextureRegion[] cuadrosAnimacion = new TextureRegion[4];
+
+	        for (int i = 0; i < cuadrosAnimacion.length; i++) {
+	            cuadrosAnimacion[i] = cuadros[0][i];
+	        }
+
+	        animacionEnemigo = new Animation<TextureRegion>(0.15f, cuadrosAnimacion);
+
+	        animacionEnemigo.setPlayMode(Animation.PlayMode.LOOP);
+
+	        tiempoAnimacion = 0;
 	    }
 	    
 	    public float obtenerPosicionX() {
@@ -35,6 +60,14 @@ public class Enemigo {
 	    public float obtenerPosicionY() {
 	        return posicionY;
 	    }
+	    
+	    public float obtenerAncho() {
+		    return ancho;
+		}
+
+		public float obtenerAlto() {
+		    return alto;
+		}
 
 	    public void recibirDaño(int daño) {
 	    	vida-=daño;
@@ -48,16 +81,16 @@ public class Enemigo {
 	    	return vida>0;
 	    }
 	    
-	    public void mover(float movimientoX, float movimientoY) {
+	    public void mover(float movimientoX, float movimientoY, Jugador jugador) {
 
 	        float nuevaPosicionX = posicionX + movimientoX;
 	        float nuevaPosicionY = posicionY + movimientoY;
 
-	        if (!mapa.hayColision(nuevaPosicionX, posicionY, ancho, alto)) {
+	        if (!mapa.hayColision(nuevaPosicionX, posicionY, ancho, alto) && !hayColisionConJugador(nuevaPosicionX, posicionY, jugador)) {
 	            posicionX = nuevaPosicionX;
 	        }
 
-	        if (!mapa.hayColision(posicionX, nuevaPosicionY, ancho, alto)) {
+	        if (!mapa.hayColision(posicionX, nuevaPosicionY, ancho, alto) && !hayColisionConJugador(posicionX, nuevaPosicionY, jugador)) {
 	            posicionY = nuevaPosicionY;
 	        }
 	    }
@@ -86,22 +119,28 @@ public class Enemigo {
 	            movimientoY = -velocidad * delta;
 	        }
 
-	        mover(movimientoX, movimientoY);
+	        mover(movimientoX, movimientoY, jugador);
 	    }
 	    
-	    public void dibujar(ShapeRenderer forma) {
+	    private boolean hayColisionConJugador(float nuevaPosicionX, float nuevaPosicionY, Jugador jugador) {
+	        Rectangle areaEnemigo = new Rectangle( nuevaPosicionX, nuevaPosicionY, ancho, alto);
+	        Rectangle areaJugador = new Rectangle( jugador.obtenerPosicionX(), jugador.obtenerPosicionY(), jugador.obtenerAncho(), jugador.obtenerAlto());
+	        return areaEnemigo.overlaps(areaJugador);
+	    }
+	    
+	    public void dibujar(OrthographicCamera camaraJuego, SpriteBatch lote) {
 
-	        forma.begin(ShapeRenderer.ShapeType.Filled);
+	    	lote.setProjectionMatrix(camaraJuego.combined);
 
-	        forma.setColor(Color.GRAY);
-	        forma.rect(posicionX, posicionY, ancho, alto);
+	        TextureRegion cuadroActual = animacionEnemigo.getKeyFrame(tiempoAnimacion);
 
-	        forma.end();
+	        lote.draw(cuadroActual, posicionX, posicionY, ancho, alto);
 	    }
 	    
 	    public void actualizar(float delta, Jugador jugador) {
 
 	        perseguir(jugador, delta);
+	        tiempoAnimacion += delta;
 	    }
 }
 

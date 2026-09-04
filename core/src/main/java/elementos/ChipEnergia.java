@@ -40,7 +40,6 @@ public class ChipEnergia {
 	    }
 	    
 	    public boolean hayColision(float posicionJugadorX, float posicionJugadorY, float anchoJugador, float altoJugador) {
-
 	    	return posicionX < posicionJugadorX + anchoJugador &&
 	    			posicionX + ancho > posicionJugadorX &&
 	    			posicionY < posicionJugadorY + altoJugador &&

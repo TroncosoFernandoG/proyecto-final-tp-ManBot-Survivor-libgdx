@@ -1,3 +1,18 @@
+## [1.7.1] - 2026-09-04
+
+### Agregado
+
+* Incorporación de spritesheet animado para los enemigos.
+* Incorporación de una representación visual para los disparos.
+* Implementación de detección de colisión entre el disparo y el enemigo.
+* Implementación de colisión entre los enemigos y ManBot.
+
+### Modificado
+
+* Actualización de Enemigo para utilizar animaciones mediante spritesheet.
+* Actualización del movimiento de los enemigos para evitar atravesar al jugador.
+* Actualización del sistema de disparo para comprobar colisiones con los enemigos.
+
 ## [1.7.0] - 2026-09-04
 
 ### Agregado

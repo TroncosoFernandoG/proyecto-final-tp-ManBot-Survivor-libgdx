@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.manbotsurvivor.game.ManBotSurvivor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import elementos.ChipEnergia;
 import elementos.ControladorEntrada;
 import elementos.Jugador;
@@ -34,6 +35,13 @@ public class PantallaJuego implements Screen {
     private ShapeRenderer formaEnemigo;
     private float tiempoAtaque;
     private final float intervaloAtaque = 1.5f;
+    private boolean hayDisparo;
+    private float posicionDisparoX;
+    private float posicionDisparoY;
+    private Enemigo enemigoObjetivoDisparo;
+    private float direccionDisparoX;
+    private float direccionDisparoY;
+    private float velocidadDisparo;
     
     public PantallaJuego(ManBotSurvivor game) {
 
@@ -59,6 +67,13 @@ public class PantallaJuego implements Screen {
         enemigos.add(new Enemigo(300, 200, 50, mapa));
         formaEnemigo = new ShapeRenderer();
         tiempoAtaque = 0;
+        hayDisparo = false;
+        posicionDisparoX = 0;
+        posicionDisparoY = 0;
+        enemigoObjetivoDisparo = null;
+        direccionDisparoX = 0;
+        direccionDisparoY = 0;
+        velocidadDisparo = 200;
 
         camaraJuego = new OrthographicCamera();
 
@@ -103,7 +118,56 @@ public class PantallaJuego implements Screen {
         
         if (enemigoCercano != null) {
             enemigoCercano.recibirDaño(1);
+            hayDisparo = true;
+
+            posicionDisparoX = jugador.obtenerPosicionX() + jugador.obtenerAncho() / 2;
+            posicionDisparoY = jugador.obtenerPosicionY() + jugador.obtenerAlto() / 2;
+            
+            enemigoObjetivoDisparo = enemigoCercano;
+            float diferenciaX = enemigoObjetivoDisparo.obtenerPosicionX() - posicionDisparoX;
+            float diferenciaY = enemigoObjetivoDisparo.obtenerPosicionY() - posicionDisparoY;
+            float distancia = (float) Math.sqrt(diferenciaX * diferenciaX + diferenciaY * diferenciaY);
+            direccionDisparoX = diferenciaX / distancia;
+            direccionDisparoY = diferenciaY / distancia;
         }
+    }
+    
+    private void actualizarDisparo(float delta) {
+        if (!hayDisparo) {
+            return;
+        }
+        posicionDisparoX += direccionDisparoX * velocidadDisparo * delta;
+        posicionDisparoY += direccionDisparoY * velocidadDisparo * delta;
+    }
+    
+    private void comprobarColisionDisparo() {
+
+        if (!hayDisparo || enemigoObjetivoDisparo == null) {
+            return;
+        }
+
+        Rectangle areaDisparo = new Rectangle( posicionDisparoX, posicionDisparoY, 6, 6);
+        Rectangle areaEnemigo = new Rectangle( enemigoObjetivoDisparo.obtenerPosicionX(), enemigoObjetivoDisparo.obtenerPosicionY(),
+            enemigoObjetivoDisparo.obtenerAncho(), enemigoObjetivoDisparo.obtenerAlto());
+
+        if (areaDisparo.overlaps(areaEnemigo)) {
+            hayDisparo = false;
+            enemigoObjetivoDisparo = null;
+        }
+
+    }
+    
+    private void dibujarDisparo() {
+
+        if (hayDisparo) {
+
+            formaEnemigo.begin(ShapeRenderer.ShapeType.Filled);
+            formaEnemigo.setColor(com.badlogic.gdx.graphics.Color.RED);
+            formaEnemigo.rect(posicionDisparoX, posicionDisparoY, 6, 6);
+            formaEnemigo.end();
+
+        }
+
     }
     
     private void eliminarEnemigosMuertos() {
@@ -155,6 +219,8 @@ public class PantallaJuego implements Screen {
             atacar();
             tiempoAtaque = 0;
         }
+        actualizarDisparo(delta);
+        comprobarColisionDisparo();
         eliminarEnemigosMuertos();
         recogerChips();
         
@@ -192,11 +258,16 @@ public class PantallaJuego implements Screen {
 
         game.batch.end();
         
-        formaEnemigo.setProjectionMatrix(camaraJuego.combined);
+        game.batch.setProjectionMatrix(camaraJuego.combined);
         
+        game.batch.begin();
         for (Enemigo enemigo : enemigos) {
-            enemigo.dibujar(formaEnemigo);
+            enemigo.dibujar(camaraJuego, game.batch);
         }
+        game.batch.end();
+        
+        formaEnemigo.setProjectionMatrix(camaraJuego.combined);
+        dibujarDisparo();
         for (ChipEnergia chip : chipsEnergia) {
             chip.dibujar(formaEnemigo);
         }
