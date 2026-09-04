@@ -1,3 +1,20 @@
+## [1.7.2] - 2026-09-04
+
+### Agregado
+
+* Incorporación de hitboxes para los enemigos.
+* Implementación de colisiones entre enemigos para evitar que se superpongan.
+* Incorporación de un sistema de daño de los enemigos hacia ManBot.
+* Incorporación de un tiempo de espera entre daños para evitar múltiples impactos por segundo.
+* Incorporación del sistema de vida de ManBot, con una vida máxima de 100 puntos.
+
+### Modificado
+
+* Actualización de Enemigo para comprobar colisiones con otros enemigos durante su movimiento.
+* Actualización de Enemigo para detectar el contacto con ManBot y aplicar daño.
+* Actualización de Jugador para administrar su vida actual y vida máxima.
+* Actualización del movimiento de los enemigos para mantener separadas sus hitboxes.
+
 ## [1.7.1] - 2026-09-04
 
 ### Agregado

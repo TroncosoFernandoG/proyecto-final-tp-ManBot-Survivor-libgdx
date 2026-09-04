@@ -210,7 +210,7 @@ public class PantallaJuego implements Screen {
 
         jugador.actualizar(delta);
         for (Enemigo enemigo : enemigos) {
-            enemigo.actualizar(delta, jugador);
+            enemigo.actualizar(delta, jugador, enemigos);
         }
         
         tiempoAtaque += delta;
