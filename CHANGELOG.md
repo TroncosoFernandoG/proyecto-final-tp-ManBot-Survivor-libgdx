@@ -1,3 +1,16 @@
+## [1.6.2] - 2026-09-04
+
+### Agregado
+
+* Incorporación de un ArrayList para gestionar múltiples enemigos.
+* Implementación de la detección del enemigo más cercano a ManBot.
+* Implementación del cálculo de distancia entre ManBot y los enemigos.
+
+### Modificado
+
+* Actualización de PantallaJuego para recorrer y actualizar múltiples enemigos.
+* Actualización de PantallaJuego para dibujar múltiples enemigos.
+
 ## [1.6.1] - 2026-09-02
 
 ### Agregado

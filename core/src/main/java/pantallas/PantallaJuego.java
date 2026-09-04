@@ -14,6 +14,7 @@ import escenas.Hud;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import elementos.Mapa;
 import elementos.Enemigo;
+import java.util.ArrayList;
 
 public class PantallaJuego implements Screen {
     private ManBotSurvivor game;
@@ -26,13 +27,14 @@ public class PantallaJuego implements Screen {
     private float altoMapa;
     private ControladorEntrada controladorEntrada;
     private Jugador jugador;
-    private Enemigo enemigo;
+    private ArrayList<Enemigo> enemigos;
     private ShapeRenderer formaEnemigo;
     
     public PantallaJuego(ManBotSurvivor game) {
 
         this.game = game;
 
+        enemigos = new ArrayList<>();
         controladorEntrada = new ControladorEntrada();
 
         mapa = new Mapa();
@@ -45,7 +47,9 @@ public class PantallaJuego implements Screen {
 
         jugador = new Jugador(200, 100, 100, controladorEntrada, limiteMapaAncho, limiteMapaAlto, mapa);
         
-        enemigo = new Enemigo(400, 300, 50, mapa);
+        enemigos.add(new Enemigo(400, 300, 50, mapa));
+        enemigos.add(new Enemigo(100, 300, 50, mapa));
+        enemigos.add(new Enemigo(300, 200, 50, mapa));
         formaEnemigo = new ShapeRenderer();
 
         camaraJuego = new OrthographicCamera();
@@ -68,6 +72,24 @@ public class PantallaJuego implements Screen {
     	Gdx.input.setInputProcessor(controladorEntrada);
     }
 
+    private Enemigo obtenerEnemigoMasCercano() {
+        Enemigo enemigoMasCercano = null;
+        double distanciaMinima = Double.MAX_VALUE;
+
+        for (Enemigo enemigo : enemigos) {
+            double diferenciaX = enemigo.obtenerPosicionX() - jugador.obtenerPosicionX();
+            double diferenciaY = enemigo.obtenerPosicionY() - jugador.obtenerPosicionY();
+            double distancia = Math.sqrt(
+                diferenciaX * diferenciaX + diferenciaY * diferenciaY
+            );
+            if (distancia < distanciaMinima) {
+                distanciaMinima = distancia;
+                enemigoMasCercano = enemigo;
+            }
+        }
+        return enemigoMasCercano;
+    }
+    
     @Override
     public void render(float delta) {
 
@@ -76,7 +98,9 @@ public class PantallaJuego implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         jugador.actualizar(delta);
-        enemigo.actualizar(delta, jugador);
+        for (Enemigo enemigo : enemigos) {
+            enemigo.actualizar(delta, jugador);
+        }
         
         camaraJuego.position.set(jugador.obtenerPosicionX() + 16, jugador.obtenerPosicionY() + 16, 0);
         
@@ -113,7 +137,10 @@ public class PantallaJuego implements Screen {
         game.batch.end();
         
         formaEnemigo.setProjectionMatrix(camaraJuego.combined);
-        enemigo.dibujar(formaEnemigo);
+        for (Enemigo enemigo : enemigos) {
+            enemigo.dibujar(formaEnemigo);
+        }
+        
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 
