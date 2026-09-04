@@ -1,3 +1,20 @@
+## [1.9.0] - 2026-09-04
+
+### Agregado
+
+* Incorporación de una nueva pantalla de opciones accesible desde el menú principal.
+* Incorporación de la opción para regresar al menú principal desde la pantalla de opciones.
+* Incorporación de indicaciones visuales para volver al menú desde la pantalla de opciones.
+* Incorporación de la opción de pausa durante la partida mediante la tecla ESC.
+* Incorporación de la opción para volver al menú principal desde la pantalla de pausa mediante la tecla M.
+
+### Modificado
+
+* Actualización del menú principal para permitir el acceso a la pantalla de opciones.
+* Actualización del manejo de entradas para controlar la pausa, reanudación y regreso al menú principal.
+* Actualización del manejo de la tecla M para evitar que una pulsación realizada durante la partida quede pendiente al entrar en pausa.
+* Actualización de la navegación entre las diferentes pantallas y estados del juego.
+
 ## [1.8.1] - 2026-09-04
 
 ### Modificado

@@ -114,7 +114,7 @@ public class PantallaMenu implements Screen {
             break;
 
         case 1:
-            System.out.println("Menu de opciones pendiente.");
+        	juego.setScreen(new PantallaOpciones(juego));
             break;
 
         case 2:

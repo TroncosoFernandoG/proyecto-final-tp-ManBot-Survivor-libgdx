@@ -14,6 +14,7 @@ import elementos.ControladorEntrada;
 import elementos.Jugador;
 import escenas.Hud;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import elementos.Mapa;
 import elementos.Enemigo;
 import java.util.ArrayList;
@@ -36,12 +37,14 @@ public class PantallaJuego implements Screen {
     private float tiempoAtaque;
     private final float intervaloAtaque = 1.5f;
     private boolean hayDisparo;
+    private boolean juegoPausado;
     private float posicionDisparoX;
     private float posicionDisparoY;
     private Enemigo enemigoObjetivoDisparo;
     private float direccionDisparoX;
     private float direccionDisparoY;
     private float velocidadDisparo;
+    private BitmapFont fuentePausa;
     
     public PantallaJuego(ManBotSurvivor game) {
 
@@ -68,6 +71,8 @@ public class PantallaJuego implements Screen {
         formaEnemigo = new ShapeRenderer();
         tiempoAtaque = 0;
         hayDisparo = false;
+        juegoPausado = false;
+        fuentePausa = new BitmapFont();
         posicionDisparoX = 0;
         posicionDisparoY = 0;
         enemigoObjetivoDisparo = null;
@@ -211,11 +216,26 @@ public class PantallaJuego implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        jugador.actualizar(delta);
-        for (Enemigo enemigo : enemigos) {
-            enemigo.actualizar(delta, jugador, enemigos);
+        
+        if (controladorEntrada.consumirPulsacionEscape()) {
+            juegoPausado = !juegoPausado;
         }
+
+        if (juegoPausado && controladorEntrada.consumirPulsacionM()) {
+            game.setScreen(new PantallaMenu(game));
+            return;
+        }
+        
+        if (!juegoPausado) {
+            controladorEntrada.consumirPulsacionM();
+        }
+        
+        if (!juegoPausado) {
+        	jugador.actualizar(delta);
+        
+        	for (Enemigo enemigo : enemigos) {
+            enemigo.actualizar(delta, jugador, enemigos);
+        	}
         
         tiempoAtaque += delta;
 
@@ -227,6 +247,7 @@ public class PantallaJuego implements Screen {
         comprobarColisionDisparo();
         eliminarEnemigosMuertos();
         recogerChips();
+        }
         
         camaraJuego.position.set(jugador.obtenerPosicionX() + 16, jugador.obtenerPosicionY() + 16, 0);
         
@@ -276,11 +297,25 @@ public class PantallaJuego implements Screen {
             chip.dibujar(formaEnemigo);
         }
         
+        if (!juegoPausado) {
         hud.actualizar(delta);
+        }
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 
         hud.stage.draw();
+        
+        if (juegoPausado) {
+            game.batch.begin();
+            
+            fuentePausa.getData().setScale(2);
+            fuentePausa.draw(game.batch, "PAUSA", 150, 155);
+            fuentePausa.getData().setScale(0.9f);
+            fuentePausa.draw(game.batch, "ESC - Continuar", 150, 105);
+            fuentePausa.draw(game.batch, "M - Volver al menu", 150, 85);
+            
+            game.batch.end();
+        }
     }
 
     @Override
