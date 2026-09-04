@@ -1,3 +1,18 @@
+## [1.8.0] - 2026-09-04
+
+### Agregado
+
+* Incorporación de contador de enemigos eliminados en el HUD.
+* Incorporación de registro de enemigos eliminados en Jugador.
+
+### Modificado
+
+* Actualización del tiempo de supervivencia para mostrarlo en formato MM:SS.
+* Actualización en tiempo real de la vida del jugador en el HUD.
+* Actualización en tiempo real de la experiencia del jugador en el HUD.
+* Actualización en tiempo real del tiempo de supervivencia.
+* Actualización en tiempo real del contador de enemigos eliminados.
+
 ## [1.7.2] - 2026-09-04
 
 ### Agregado

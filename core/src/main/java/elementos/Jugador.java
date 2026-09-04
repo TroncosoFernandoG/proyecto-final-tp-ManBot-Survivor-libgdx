@@ -16,6 +16,7 @@ public class Jugador {
 	private float ancho;
 	private float alto;
 	private int experiencia;
+	private int enemigosEliminados;
 	private int vida;
 	private final int vidaMaxima;
 	
@@ -41,6 +42,7 @@ public class Jugador {
 	    this.ancho = 32;
 	    this.alto = 32;
 	    this.experiencia = 0;
+	    this.enemigosEliminados = 0;
 	    this.vidaMaxima = 100;
 	    this.vida = vidaMaxima;
 	    
@@ -85,6 +87,14 @@ public class Jugador {
 	
 	public int obtenerExperiencia() {
 	    return experiencia;
+	}
+	
+	public void registrarEnemigoEliminado() {
+	    enemigosEliminados++;
+	}
+
+	public int obtenerEnemigosEliminados() {
+	    return enemigosEliminados;
 	}
 	
 	public void recibirDaño(int daño) {

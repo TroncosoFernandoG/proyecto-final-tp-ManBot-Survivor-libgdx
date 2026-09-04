@@ -87,7 +87,7 @@ public class PantallaJuego implements Screen {
             mapa.obtenerMapa()
         );
 
-        hud = new Hud(game.batch);
+        hud = new Hud(game.batch, jugador);
     }
 
     @Override
@@ -175,10 +175,14 @@ public class PantallaJuego implements Screen {
         Iterator<Enemigo> iterador = enemigos.iterator();
         while (iterador.hasNext()) {
             Enemigo enemigo = iterador.next();
+
             if (!enemigo.estaVivo()) {
-            	ChipEnergia chip = new ChipEnergia(enemigo.obtenerPosicionX(), enemigo.obtenerPosicionY());
-            	chipsEnergia.add(chip);
-            	
+                ChipEnergia chip = new ChipEnergia(enemigo.obtenerPosicionX(), enemigo.obtenerPosicionY());
+
+                chipsEnergia.add(chip);
+
+                jugador.registrarEnemigoEliminado();
+
                 iterador.remove();
             }
         }
@@ -271,6 +275,8 @@ public class PantallaJuego implements Screen {
         for (ChipEnergia chip : chipsEnergia) {
             chip.dibujar(formaEnemigo);
         }
+        
+        hud.actualizar(delta);
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 

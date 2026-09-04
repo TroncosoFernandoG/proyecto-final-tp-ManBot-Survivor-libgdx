@@ -11,52 +11,66 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.manbotsurvivor.game.ManBotSurvivor;
 
+import elementos.Jugador;
+
 public class Hud {
 
 	public Stage stage;
 	private Viewport viewport;
+	private BitmapFont fuente;
+	private Jugador jugador;
+	private float tiempo;
 	
-	private Integer temporizadorMundo;
-	private float contadorTiempo;
-	private Integer score;
+	Label vidaLabel;
+	Label experienciaLabel;
+	Label tiempoLabel;
+	Label enemigosEliminadosLabel;
 	
-	Label countdownLabel;
-	Label scoreLabel;
-	Label timeLabel;
-	Label levelLabel;
-	Label worldLabel;
-	Label manbotLabel;
-	
-	public Hud(SpriteBatch sb) {
+	public Hud(SpriteBatch sb, Jugador jugador) {
 		
-		temporizadorMundo = 300;
-		contadorTiempo = 0;
-		score = 0;
+		this.jugador = jugador;
 		
 		viewport = new FitViewport(ManBotSurvivor.V_WIDTH, ManBotSurvivor.V_HEIGHT, new OrthographicCamera());
 		stage = new Stage(viewport, sb);
 		
+		fuente = new BitmapFont();	
+		this.tiempo = 0;
+		
 		Table table = new Table(); 
-		table.top();
+		table.top().left();
 		table.setFillParent(true);
 		
-		countdownLabel = new Label(String.format("%03d", temporizadorMundo), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-		scoreLabel = new Label(String.format("%06d", score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-		timeLabel = new Label("TIEMPO", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-		levelLabel = new Label("1-1", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-		worldLabel = new Label("MUNDO", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-		manbotLabel = new Label("ManBotSurvivor", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-	
-		table.add(manbotLabel).expandX().padTop(10);
-		table.add(worldLabel).expandX().padTop(10);
-		table.add(timeLabel).expandX().padTop(10);
+		vidaLabel = new Label("Vida: 100/100",  new Label.LabelStyle(fuente, Color.WHITE));
+		experienciaLabel = new Label("XP: 0/100", new Label.LabelStyle(fuente, Color.WHITE));
+		tiempoLabel = new Label("Tiempo: 00:00", new Label.LabelStyle(fuente, Color.WHITE));
+		enemigosEliminadosLabel = new Label("Enemigos: 0", new Label.LabelStyle(fuente, Color.WHITE));
+		
+		table.add(vidaLabel).left().padTop(10).padLeft(10);
 		table.row();
-		table.add(scoreLabel).expandX();
-		table.add(levelLabel).expandX();
-		table.add(countdownLabel).expandX();
+		table.add(experienciaLabel).left().padLeft(10);
+		table.row();
+		table.add(tiempoLabel).left().padLeft(10);
+		table.row();
+		table.add(enemigosEliminadosLabel).left().padLeft(10);
 		
 		stage.addActor(table);
 		
+	}
+	
+	public void actualizar(float delta) {
+
+	    tiempo += delta;
+
+	    int minutos = (int) (tiempo / 60);
+	    int segundos = (int) (tiempo % 60);
+
+	    vidaLabel.setText("Vida: " + jugador.obtenerVida() + "/" + jugador.obtenerVidaMaxima());
+
+	    experienciaLabel.setText("XP: " + jugador.obtenerExperiencia() + "/100");
+
+	    tiempoLabel.setText(String.format("Tiempo: %02d:%02d", minutos, segundos));
+
+	    enemigosEliminadosLabel.setText("Enemigos: " + jugador.obtenerEnemigosEliminados());
 	}
 	
 }
