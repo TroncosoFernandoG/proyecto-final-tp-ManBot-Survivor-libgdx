@@ -1,3 +1,19 @@
+## [1.10.0] - 2026-09-04
+
+### Agregado
+
+* Incorporación de música de fondo mediante el archivo Boss Battle.wav.
+* Creación de la clase GestorAudio para administrar la música del juego.
+
+### Modificado
+
+* Se agregó un sistema de control de volumen desde la pantalla de opciones.
+* El volumen puede aumentarse o disminuirse en intervalos del 10%.
+* Se agregó una representación visual del volumen mediante una barra y un porcentaje.
+* Se agregó la opción para silenciar y volver a activar el audio.
+* El sistema conserva el nivel de volumen seleccionado al volver a activar el audio.
+* La música se mantiene reproduciéndose al cambiar entre el menú y la partida.
+
 ## [1.9.0] - 2026-09-04
 
 ### Agregado
