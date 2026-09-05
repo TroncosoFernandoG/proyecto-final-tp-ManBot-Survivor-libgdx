@@ -73,4 +73,5 @@ gradlew.bat lwjgl3:run
 ### 📈 Estado Actual del Proyecto
 Fase: Pre-Entrega Corregida (Configuración del Repositorio, Entorno Java 21 y Documentación).
 
+Video demostrativo del juego: https://drive.google.com/file/d/1Sw6xuegg1Jv8D2z4C_fNviF33AA4sXh3/view?usp=sharing
 ---
