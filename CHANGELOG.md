@@ -1,3 +1,11 @@
+## [1.10.1] - 2026-09-18
+
+### Modificado
+
+* Correccion del Git Clone y actualizacion de estado del proyecto en el README.
+* Sincronizacion de la version establecida en el CHANGELOG con la version de gradle.properties.
+
+
 ## [1.10.0] - 2026-09-04
 
 ### Agregado
