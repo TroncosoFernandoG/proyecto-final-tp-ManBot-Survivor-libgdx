@@ -37,7 +37,7 @@ Toda la documentación conceptual, mecánicas de juego, personajes, armas, proto
 
 **Clonar el repositorio e ingresar a la carpeta del proyecto:**
    ```bash
-   git clone [https://github.com/TroncosoFernandoG/proyecto-final-tp-ManBot-Survivor-libgdx.git](https://github.com/TroncosoFernandoG/proyecto-final-tp-ManBot-Survivor-libgdx.git)
+   git clone https://github.com/TroncosoFernandoG/proyecto-final-tp-ManBot-Survivor-libgdx.git
    cd proyecto-final-tp-ManBot-Survivor-libgdx
  ```
 ### Ejecutar desde Eclipse IDE:
@@ -71,7 +71,7 @@ gradlew.bat lwjgl3:run
 ./gradlew lwjgl3:run
 
 ### 📈 Estado Actual del Proyecto
-Fase: Pre-Entrega Corregida (Configuración del Repositorio, Entorno Java 21 y Documentación).
+Fase: Segunda Pre-entrega completada (Version Beta jugable de Manbot Survivor).
 
 Video demostrativo del juego: https://drive.google.com/file/d/1Sw6xuegg1Jv8D2z4C_fNviF33AA4sXh3/view?usp=sharing
 ---
