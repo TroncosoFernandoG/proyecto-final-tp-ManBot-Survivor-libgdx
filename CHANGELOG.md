@@ -1,3 +1,17 @@
+## [1.11.1] - 2026-09-20
+
+### Modificado
+
+* Se unificó la convención de nombres de los atributos final de la clase Jugador, utilizando mayúsculas y guiones bajos.
+
+* Se unificó la convención de nombres de los atributos final de la clase Enemigo, utilizando mayúsculas y guiones bajos.
+
+* Se unificó la convención de nombres del atributo final de PantallaJuego, utilizando mayúsculas y guiones bajos.
+
+* Se unificó la convención de nombres de los atributos final de PantallaMenu, utilizando mayúsculas y guiones bajos.
+
+* Se actualizaron las referencias a los atributos modificados para mantener el funcionamiento del proyecto.
+
 ## [1.11.0] - 2026-09-20
 
 ### Modificado
