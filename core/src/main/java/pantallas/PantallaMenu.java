@@ -13,18 +13,18 @@ import com.manbotsurvivor.game.ManBotSurvivor;
 
 public class PantallaMenu implements Screen {
 
-    private final ManBotSurvivor juego;
+    private final ManBotSurvivor JUEGO;
 
-    private final OrthographicCamera camara;
-    private final FitViewport vista;
+    private final OrthographicCamera CAMARA;
+    private final FitViewport VISTA;
 
-    private final BitmapFont fuente;
+    private final BitmapFont FUENTE;
 
     private Texture fondo;
 
     private int opcionSeleccionada;
 
-    private final String[] opciones = {
+    private final String[] OPCIONES = {
         "NUEVA PARTIDA",
         "OPCIONES",
         "SALIR"
@@ -32,13 +32,13 @@ public class PantallaMenu implements Screen {
 
     public PantallaMenu(ManBotSurvivor juego) {
 
-        this.juego = juego;
+        this.JUEGO = juego;
 
-        camara = new OrthographicCamera();
+        CAMARA = new OrthographicCamera();
 
-        vista = new FitViewport(ManBotSurvivor.V_WIDTH, ManBotSurvivor.V_HEIGHT, camara);
+        VISTA = new FitViewport(ManBotSurvivor.V_WIDTH, ManBotSurvivor.V_HEIGHT, CAMARA);
 
-        fuente = new BitmapFont();
+        FUENTE = new BitmapFont();
 
         fondo = new Texture("fondo_menu.png");
 
@@ -55,37 +55,37 @@ public class PantallaMenu implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        camara.update();
+        CAMARA.update();
 
-        juego.batch.setProjectionMatrix(camara.combined);
+        JUEGO.batch.setProjectionMatrix(CAMARA.combined);
 
-        juego.batch.begin();
+        JUEGO.batch.begin();
 
-        juego.batch.draw(fondo, 0, 0, ManBotSurvivor.V_WIDTH,ManBotSurvivor.V_HEIGHT);
+        JUEGO.batch.draw(fondo, 0, 0, ManBotSurvivor.V_WIDTH,ManBotSurvivor.V_HEIGHT);
 
-        fuente.getData().setScale(1.2f);
+        FUENTE.getData().setScale(1.2f);
 
-        for (int i = 0; i < opciones.length; i++) {
+        for (int i = 0; i < OPCIONES.length; i++) {
 
             float posicionY = 75 - (i * 30);
 
-            String texto = opciones[i];
+            String texto = OPCIONES[i];
 
             if (i == opcionSeleccionada) {
                 texto = "> " + texto + " <";
             }
 
-            fuente.draw(juego.batch, texto, 165, posicionY);
+            FUENTE.draw(JUEGO.batch, texto, 165, posicionY);
         }
 
-        juego.batch.end();
+        JUEGO.batch.end();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
 
             opcionSeleccionada--;
 
             if (opcionSeleccionada < 0) {
-            		opcionSeleccionada = opciones.length - 1;
+            		opcionSeleccionada = OPCIONES.length - 1;
             }
         }
 
@@ -94,7 +94,7 @@ public class PantallaMenu implements Screen {
 
             opcionSeleccionada++;
 
-            if (opcionSeleccionada >= opciones.length) {
+            if (opcionSeleccionada >= OPCIONES.length) {
                 opcionSeleccionada = 0;
             }
         }
@@ -110,11 +110,11 @@ public class PantallaMenu implements Screen {
         switch (opcionSeleccionada) {
 
         case 0:
-            juego.comenzarPartida();
+            JUEGO.comenzarPartida();
             break;
 
         case 1:
-        	juego.setScreen(new PantallaOpciones(juego));
+        	JUEGO.setScreen(new PantallaOpciones(JUEGO));
             break;
 
         case 2:
@@ -126,7 +126,7 @@ public class PantallaMenu implements Screen {
     @Override
     public void resize(int ancho, int alto) {
 
-        vista.update(ancho, alto, true);
+        VISTA.update(ancho, alto, true);
     }
 
     @Override
@@ -144,7 +144,7 @@ public class PantallaMenu implements Screen {
     @Override
     public void dispose() {
 
-        fuente.dispose();
+        FUENTE.dispose();
         fondo.dispose();
     }
 }

@@ -35,7 +35,7 @@ public class PantallaJuego implements Screen {
     private ArrayList<ChipEnergia> chipsEnergia;
     private ShapeRenderer formaEnemigo;
     private float tiempoAtaque;
-    private final float intervaloAtaque = 1.5f;
+    private final float INTERVALO_ATAQUE = 1.5f;
     private boolean hayDisparo;
     private boolean juegoPausado;
     private float posicionDisparoX;
@@ -239,7 +239,7 @@ public class PantallaJuego implements Screen {
         
         tiempoAtaque += delta;
 
-        if (tiempoAtaque >= intervaloAtaque) {
+        if (tiempoAtaque >= INTERVALO_ATAQUE) {
             atacar();
             tiempoAtaque = 0;
         }

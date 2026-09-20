@@ -18,7 +18,7 @@ public class Jugador {
 	private int experiencia;
 	private int enemigosEliminados;
 	private int vida;
-	private final int vidaMaxima;
+	private final int VIDA_MAXIMA;
 	
 	private float limiteMapaAncho;
 	private float limiteMapaAlto;
@@ -43,8 +43,8 @@ public class Jugador {
 	    this.alto = 32;
 	    this.experiencia = 0;
 	    this.enemigosEliminados = 0;
-	    this.vidaMaxima = 100;
-	    this.vida = vidaMaxima;
+	    this.VIDA_MAXIMA = 100;
+	    this.vida = VIDA_MAXIMA;
 	    
 	    texturaJugador = new Texture("manbot.png");
 
@@ -111,7 +111,7 @@ public class Jugador {
 	}
 	
 	public int obtenerVidaMaxima() {
-	    return vidaMaxima;
+	    return VIDA_MAXIMA;
 	}
 
 	

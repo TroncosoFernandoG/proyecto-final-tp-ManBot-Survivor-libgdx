@@ -20,9 +20,9 @@ public class Enemigo {
 	    private float alto;
 	    private int vida;
 	    private Rectangle hitbox;
-	    private final int daño;
+	    private final int DAÑO;
 	    private float tiempoDesdeUltimoDaño;
-	    private final float tiempoEntreDaños;
+	    private final float TIEMPO_ENTRE_DAÑOS;
 	    
 	    private Texture texturaEnemigo;
 	    private Animation<TextureRegion> animacionEnemigo;
@@ -40,9 +40,9 @@ public class Enemigo {
 	        this.vida = 3;
 	        this.mapa = mapa;
 	        this.hitbox = new Rectangle(posicionX, posicionY, ancho, alto);
-	        this.daño = 10;
+	        this.DAÑO = 10;
 	        this.tiempoDesdeUltimoDaño = 1;
-	        this.tiempoEntreDaños = 1;
+	        this.TIEMPO_ENTRE_DAÑOS = 1;
 	        
 	        texturaEnemigo = new Texture("dronebasico.png");
 
@@ -82,7 +82,7 @@ public class Enemigo {
 		}
 
 		public int obtenerDaño() {
-		    return daño;
+		    return DAÑO;
 		}
 
 	    public void recibirDaño(int daño) {
@@ -103,9 +103,9 @@ public class Enemigo {
 
 	        Rectangle hitboxJugador = new Rectangle(jugador.obtenerPosicionX(), jugador.obtenerPosicionY(), jugador.obtenerAncho(), jugador.obtenerAlto());
 
-	        if (hitbox.overlaps(hitboxJugador) && tiempoDesdeUltimoDaño >= tiempoEntreDaños) {
+	        if (hitbox.overlaps(hitboxJugador) && tiempoDesdeUltimoDaño >= TIEMPO_ENTRE_DAÑOS) {
 
-	            jugador.recibirDaño(daño);
+	            jugador.recibirDaño(DAÑO);
 	            tiempoDesdeUltimoDaño = 0;
 	        }
 	    }
