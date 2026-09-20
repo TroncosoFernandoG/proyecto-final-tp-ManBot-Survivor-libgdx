@@ -1,3 +1,13 @@
+## [1.10.2] - 2026-09-20
+
+### Modificado
+* Se encapsuló el atributo stage de la clase Hud, cambiando su visibilidad de pública a privada.
+* Se agregó el método dibujar() para permitir que PantallaJuego solicite el renderizado del HUD sin acceder directamente a su Stage.
+* Se agregó el método resize() para actualizar el Viewport del HUD cuando cambia el tamaño de la ventana.
+* Se agregó el método obtenerCamara() para permitir que PantallaJuego utilice la cámara del HUD sin acceder directamente a su Stage.
+* Se agregó el método disponer() para liberar los recursos propios del HUD, incluyendo el Stage y la fuente utilizada.
+* Se modificó PantallaJuego para utilizar los nuevos métodos del HUD en lugar de acceder directamente a sus atributos internos.
+
 ## [1.10.1] - 2026-09-18
 
 ### Modificado

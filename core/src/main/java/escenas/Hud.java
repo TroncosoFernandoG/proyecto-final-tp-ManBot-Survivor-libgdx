@@ -15,7 +15,7 @@ import elementos.Jugador;
 
 public class Hud {
 
-	public Stage stage;
+	private Stage stage;
 	private Viewport viewport;
 	private BitmapFont fuente;
 	private Jugador jugador;
@@ -71,6 +71,23 @@ public class Hud {
 	    tiempoLabel.setText(String.format("Tiempo: %02d:%02d", minutos, segundos));
 
 	    enemigosEliminadosLabel.setText("Enemigos: " + jugador.obtenerEnemigosEliminados());
+	}
+	
+	public void dibujar() {
+	    stage.draw();
+	}
+	
+	public void resize(int ancho, int alto) {
+	    viewport.update(ancho, alto, true);
+	}
+	
+	public OrthographicCamera obtenerCamara() {
+	    return (OrthographicCamera) stage.getCamera();
+	}
+	
+	public void disponer() {
+	    stage.dispose();
+	    fuente.dispose();
 	}
 	
 }

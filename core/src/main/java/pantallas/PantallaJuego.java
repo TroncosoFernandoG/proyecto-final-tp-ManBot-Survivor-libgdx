@@ -301,9 +301,9 @@ public class PantallaJuego implements Screen {
         hud.actualizar(delta);
         }
 
-        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        game.batch.setProjectionMatrix(hud.obtenerCamara().combined);
 
-        hud.stage.draw();
+        hud.dibujar();
         
         if (juegoPausado) {
             game.batch.begin();
