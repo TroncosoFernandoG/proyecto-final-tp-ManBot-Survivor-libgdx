@@ -190,8 +190,6 @@ public class Jugador {
 	
 	public void dibujar(OrthographicCamera camaraJuego, SpriteBatch lote) {
 
-	    lote.setProjectionMatrix(camaraJuego.combined);
-
 	    TextureRegion cuadroActual = new TextureRegion(animacionJugador.getKeyFrame(tiempoAnimacion));
 
 	    if (!mirandoDerecha) {

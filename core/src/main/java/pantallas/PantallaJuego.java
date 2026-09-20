@@ -166,10 +166,8 @@ public class PantallaJuego implements Screen {
 
         if (hayDisparo) {
 
-            formaEnemigo.begin(ShapeRenderer.ShapeType.Filled);
             formaEnemigo.setColor(com.badlogic.gdx.graphics.Color.RED);
             formaEnemigo.rect(posicionDisparoX, posicionDisparoY, 6, 6);
-            formaEnemigo.end();
 
         }
 
@@ -280,22 +278,24 @@ public class PantallaJuego implements Screen {
         game.batch.begin();
 
         jugador.dibujar(camaraJuego, game.batch);
-
-        game.batch.end();
         
-        game.batch.setProjectionMatrix(camaraJuego.combined);
-        
-        game.batch.begin();
         for (Enemigo enemigo : enemigos) {
             enemigo.dibujar(camaraJuego, game.batch);
         }
         game.batch.end();
         
         formaEnemigo.setProjectionMatrix(camaraJuego.combined);
+
+        formaEnemigo.begin(ShapeRenderer.ShapeType.Filled);
+
         dibujarDisparo();
+
         for (ChipEnergia chip : chipsEnergia) {
             chip.dibujar(formaEnemigo);
         }
+
+        formaEnemigo.end();
+        
         
         if (!juegoPausado) {
         hud.actualizar(delta);

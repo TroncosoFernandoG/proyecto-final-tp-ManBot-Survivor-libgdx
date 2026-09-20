@@ -188,8 +188,6 @@ public class Enemigo {
 	    
 	    public void dibujar(OrthographicCamera camaraJuego, SpriteBatch lote) {
 
-	    	lote.setProjectionMatrix(camaraJuego.combined);
-
 	        TextureRegion cuadroActual = animacionEnemigo.getKeyFrame(tiempoAnimacion);
 
 	        lote.draw(cuadroActual, posicionX, posicionY, ancho, alto);
