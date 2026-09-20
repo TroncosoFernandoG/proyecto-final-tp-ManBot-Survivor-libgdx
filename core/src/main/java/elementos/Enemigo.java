@@ -103,8 +103,7 @@ public class Enemigo {
 
 	        Rectangle hitboxJugador = new Rectangle(jugador.obtenerPosicionX(), jugador.obtenerPosicionY(), jugador.obtenerAncho(), jugador.obtenerAlto());
 
-	        if (hitbox.overlaps(hitboxJugador)
-	                && tiempoDesdeUltimoDaño >= tiempoEntreDaños) {
+	        if (hitbox.overlaps(hitboxJugador) && tiempoDesdeUltimoDaño >= tiempoEntreDaños) {
 
 	            jugador.recibirDaño(daño);
 	            tiempoDesdeUltimoDaño = 0;
@@ -198,6 +197,10 @@ public class Enemigo {
 	        perseguir(jugador, delta, enemigos);
 	        intentarHacerDaño(jugador, delta);
 	        tiempoAnimacion += delta;
+	    }
+	    
+	    public void disponer() {
+	        texturaEnemigo.dispose();
 	    }
 }
 

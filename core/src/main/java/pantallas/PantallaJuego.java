@@ -185,6 +185,8 @@ public class PantallaJuego implements Screen {
                 chipsEnergia.add(chip);
 
                 jugador.registrarEnemigoEliminado();
+                
+                enemigo.disponer();
 
                 iterador.remove();
             }
@@ -343,10 +345,15 @@ public class PantallaJuego implements Screen {
 
         jugador.disponer();
 
-        mapa.dispose();
+        for (Enemigo enemigo : enemigos) {
+            enemigo.disponer();
+        }
 
+        hud.disponer();
+        fuentePausa.dispose();
+
+        mapa.dispose();
         renderizadorMapa.dispose();
-        
         formaEnemigo.dispose();
     }
 }

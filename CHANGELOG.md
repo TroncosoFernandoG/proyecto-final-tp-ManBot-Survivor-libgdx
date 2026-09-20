@@ -1,3 +1,19 @@
+## [1.11.0] - 2026-09-20
+
+### Modificado
+
+* Se modificó el método setScreen() de ManBotSurvivor para liberar los recursos de la pantalla anterior al cambiar de pantalla.
+
+* Se modificó el método dispose() de ManBotSurvivor para liberar los recursos de la pantalla actual al cerrar el juego.
+
+* Se agregó el método disponer() a la clase Enemigo para liberar la textura utilizada por cada enemigo.
+
+* Se modificó PantallaJuego para liberar las texturas de los enemigos al ser eliminados.
+
+* Se modificó el método dispose() de PantallaJuego para liberar los recursos restantes de la pantalla, incluyendo los enemigos activos, el HUD y la fuente de pausa.
+
+* Se mantuvo la separación de responsabilidades entre los recursos compartidos del juego y los recursos propios de cada pantalla.
+
 ## [1.10.2] - 2026-09-20
 
 ### Modificado
