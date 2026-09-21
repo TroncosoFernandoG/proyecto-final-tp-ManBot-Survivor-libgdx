@@ -143,19 +143,26 @@ public class Enemigo {
 	        float movimientoY = 0;
 
 	        if (diferenciaX > 0) {
-	            movimientoX = velocidad * delta;
+	            movimientoX = 1;
 	        }
 
 	        if (diferenciaX < 0) {
-	            movimientoX = -velocidad * delta;
+	            movimientoX = -1;
 	        }
 
 	        if (diferenciaY > 0) {
-	            movimientoY = velocidad * delta;
+	            movimientoY = 1;
 	        }
 
 	        if (diferenciaY < 0) {
-	            movimientoY = -velocidad * delta;
+	            movimientoY = -1;
+	        }
+	        
+	        float longitudMovimiento = (float) Math.sqrt(movimientoX * movimientoX + movimientoY * movimientoY);
+	        
+	        if (longitudMovimiento > 0) {
+	            movimientoX = movimientoX / longitudMovimiento * velocidad * delta;
+	            movimientoY = movimientoY / longitudMovimiento * velocidad * delta;
 	        }
 
 	        mover(movimientoX, movimientoY, jugador, enemigos);

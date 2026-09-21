@@ -1,3 +1,11 @@
+## [1.11.5] - 2026-09-21
+
+### Modificado
+
+* Correccion del movimiento diagonal del jugador para mantener una velocidad uniforme en todas las direcciones.
+* Correccion del movimiento diagonal de los enemigos para evitar que su velocidad aumente al perseguir en diagonal.
+* Normalizacion del movimiento del jugador y de los enemigos.
+
 ## [1.11.4] - 2026-09-21
 
 ### Modificado

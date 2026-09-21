@@ -154,27 +154,34 @@ public class Jugador {
 	    if (controladorEntrada.estaArriba() ||
 	        controladorEntrada.consumirPulsacionArriba()) {
 
-	        movimientoY += velocidad * delta;
+	    	 movimientoY += 1;
 	    }
 
 	    if (controladorEntrada.estaAbajo() ||
 	        controladorEntrada.consumirPulsacionAbajo()) {
 
-	        movimientoY -= velocidad * delta;
+	    	movimientoY -= 1;
 	    }
 
 	    if (controladorEntrada.estaIzquierda() ||
 	        controladorEntrada.consumirPulsacionIzquierda()) {
 
-	        movimientoX -= velocidad * delta;
+	    	movimientoX -= 1;
 	        mirandoDerecha = false;
 	    }
 
 	    if (controladorEntrada.estaDerecha() ||
 	        controladorEntrada.consumirPulsacionDerecha()) {
 
-	        movimientoX += velocidad * delta;
+	    	movimientoX += 1;
 	        mirandoDerecha = true;
+	    }
+	    
+	    float longitudMovimiento = (float) Math.sqrt(movimientoX * movimientoX + movimientoY * movimientoY);
+
+	    if (longitudMovimiento > 0) {
+	        movimientoX = movimientoX / longitudMovimiento * velocidad * delta;
+	        movimientoY = movimientoY / longitudMovimiento * velocidad * delta;
 	    }
 
 	    boolean estaMoviendose = movimientoX != 0 || movimientoY != 0;
