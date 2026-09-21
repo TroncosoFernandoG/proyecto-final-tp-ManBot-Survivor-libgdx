@@ -1,6 +1,14 @@
+## [1.11.3] - 2026-09-21
+
+### Modificado
+
+* Correccion del sistema de disparo para aplicar el daño al enemigo solamente cuando el proyectil impacta.
+* Correccion de la logica de ataque para separar la creacion del proyectil de la aplicacion del daño.
+* Ajuste de la deteccion de colisiones entre proyectiles y enemigos.
+
 ## [1.11.2] - 2026-09-21
 
-### Corregido
+### Modificado
 
 * Correccion de la carga de texturas de los enemigos para evitar cargar una copia de `dronebasico.png` por cada instancia.
 * Implementacion de una textura compartida entre los enemigos.

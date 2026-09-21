@@ -122,7 +122,6 @@ public class PantallaJuego implements Screen {
         Enemigo enemigoCercano = obtenerEnemigoMasCercano();
         
         if (enemigoCercano != null) {
-            enemigoCercano.recibirDaño(1);
             hayDisparo = true;
 
             posicionDisparoX = jugador.obtenerPosicionX() + jugador.obtenerAncho() / 2;
@@ -156,6 +155,7 @@ public class PantallaJuego implements Screen {
             enemigoObjetivoDisparo.obtenerAncho(), enemigoObjetivoDisparo.obtenerAlto());
 
         if (areaDisparo.overlaps(areaEnemigo)) {
+        	enemigoObjetivoDisparo.recibirDaño(1);
             hayDisparo = false;
             enemigoObjetivoDisparo = null;
         }
