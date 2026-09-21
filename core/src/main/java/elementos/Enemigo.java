@@ -24,7 +24,7 @@ public class Enemigo {
 	    private float tiempoDesdeUltimoDaño;
 	    private final float TIEMPO_ENTRE_DAÑOS;
 	    
-	    private Texture texturaEnemigo;
+	    private static Texture texturaEnemigo;
 	    private Animation<TextureRegion> animacionEnemigo;
 	    private float tiempoAnimacion;
 	    
@@ -43,9 +43,9 @@ public class Enemigo {
 	        this.DAÑO = 10;
 	        this.tiempoDesdeUltimoDaño = 1;
 	        this.TIEMPO_ENTRE_DAÑOS = 1;
-	        
+	        if (texturaEnemigo == null) {
 	        texturaEnemigo = new Texture("dronebasico.png");
-
+	        }
 	        TextureRegion[][] cuadros = TextureRegion.split(texturaEnemigo, 32, 32);
 
 	        TextureRegion[] cuadrosAnimacion = new TextureRegion[4];
@@ -199,8 +199,11 @@ public class Enemigo {
 	        tiempoAnimacion += delta;
 	    }
 	    
-	    public void disponer() {
-	        texturaEnemigo.dispose();
+	    public static void disponerTextura() {
+	        if (texturaEnemigo != null) {
+	            texturaEnemigo.dispose();
+	            texturaEnemigo = null;
+	        }
 	    }
 }
 

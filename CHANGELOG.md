@@ -1,3 +1,12 @@
+## [1.11.2] - 2026-09-21
+
+### Corregido
+
+* Correccion de la carga de texturas de los enemigos para evitar cargar una copia de `dronebasico.png` por cada instancia.
+* Implementacion de una textura compartida entre los enemigos.
+* Correccion de la liberacion de la textura compartida para evitar que los enemigos restantes pierdan su textura al eliminar un enemigo.
+* Correccion de la recarga de la textura al iniciar una nueva partida.
+
 ## [1.11.1] - 2026-09-20
 
 ### Modificado
