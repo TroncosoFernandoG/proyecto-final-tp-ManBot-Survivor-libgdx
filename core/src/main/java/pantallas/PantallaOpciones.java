@@ -1,7 +1,6 @@
 package pantallas;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -48,15 +47,15 @@ public class PantallaOpciones implements Screen{
 	            return;
 	        }
 	        
-	        if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+	        if (controladorEntrada.consumirPulsacionArriba()) {
 	            game.gestorAudio.subirVolumen();
 	        }
 
-	        if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+	        if (controladorEntrada.consumirPulsacionAbajo()) {
 	            game.gestorAudio.bajarVolumen();
 	        }
 
-	        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+	        if (controladorEntrada.consumirPulsacionM()) {
 	            game.gestorAudio.alternarSilencio();
 	        }
 

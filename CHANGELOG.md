@@ -1,3 +1,12 @@
+## [1.11.4] - 2026-09-21
+
+### Modificado
+
+* Unificacion del manejo de entradas en las pantallas del juego mediante `ControladorEntrada`.
+* Correccion del manejo de entradas de `PantallaMenu` para evitar consultas directas a `Gdx.input`.
+* Correccion del manejo de entradas de `PantallaOpciones` para utilizar `ControladorEntrada`.
+* Incorporacion del manejo de las teclas de navegacion y ENTER dentro de `ControladorEntrada`.
+
 ## [1.11.3] - 2026-09-21
 
 ### Modificado

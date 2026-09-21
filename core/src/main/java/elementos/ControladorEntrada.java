@@ -15,6 +15,7 @@ public class ControladorEntrada extends InputAdapter {
     private boolean pulsacionDerecha;
     private boolean pulsacionEscape;
     private boolean pulsacionM;
+    private boolean pulsacionEnter;
 
     @Override
     public boolean keyDown(int tecla) {
@@ -25,9 +26,17 @@ public class ControladorEntrada extends InputAdapter {
             arriba = true;
             pulsacionArriba = true;
             break;
+            
+        case com.badlogic.gdx.Input.Keys.UP:
+            pulsacionArriba = true;
+            break;
 
         case com.badlogic.gdx.Input.Keys.S:
             abajo = true;
+            pulsacionAbajo = true;
+            break;
+            
+        case com.badlogic.gdx.Input.Keys.DOWN:
             pulsacionAbajo = true;
             break;
 
@@ -47,6 +56,10 @@ public class ControladorEntrada extends InputAdapter {
             
         case com.badlogic.gdx.Input.Keys.M:
             pulsacionM = true;
+            break;
+            
+        case com.badlogic.gdx.Input.Keys.ENTER:
+            pulsacionEnter = true;
             break;
         }
 
@@ -146,6 +159,16 @@ public class ControladorEntrada extends InputAdapter {
 
         if (pulsacionM) {
             pulsacionM = false;
+            return true;
+        }
+
+        return false;
+    }
+    
+    public boolean consumirPulsacionEnter() {
+
+        if (pulsacionEnter) {
+            pulsacionEnter = false;
             return true;
         }
 

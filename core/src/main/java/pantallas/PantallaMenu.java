@@ -1,13 +1,13 @@
 package pantallas;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import elementos.ControladorEntrada;
 
 import com.manbotsurvivor.game.ManBotSurvivor;
 
@@ -17,7 +17,7 @@ public class PantallaMenu implements Screen {
 
     private final OrthographicCamera CAMARA;
     private final FitViewport VISTA;
-
+    private final ControladorEntrada CONTROLADOR_ENTRADA;
     private final BitmapFont FUENTE;
 
     private Texture fondo;
@@ -33,6 +33,7 @@ public class PantallaMenu implements Screen {
     public PantallaMenu(ManBotSurvivor juego) {
 
         this.JUEGO = juego;
+        CONTROLADOR_ENTRADA = new ControladorEntrada();
 
         CAMARA = new OrthographicCamera();
 
@@ -47,6 +48,7 @@ public class PantallaMenu implements Screen {
 
     @Override
     public void show() {
+    	Gdx.input.setInputProcessor(CONTROLADOR_ENTRADA);
     }
 
     @Override
@@ -80,7 +82,7 @@ public class PantallaMenu implements Screen {
 
         JUEGO.batch.end();
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+        if (CONTROLADOR_ENTRADA.consumirPulsacionArriba()) {
 
             opcionSeleccionada--;
 
@@ -90,7 +92,7 @@ public class PantallaMenu implements Screen {
         }
 
         
-        if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+        if (CONTROLADOR_ENTRADA.consumirPulsacionAbajo()) {
 
             opcionSeleccionada++;
 
@@ -99,7 +101,7 @@ public class PantallaMenu implements Screen {
             }
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+        if (CONTROLADOR_ENTRADA.consumirPulsacionEnter()) {
 
             seleccionarOpcion();
         }
@@ -139,6 +141,7 @@ public class PantallaMenu implements Screen {
 
     @Override
     public void hide() {
+    	 Gdx.input.setInputProcessor(null);
     }
 
     @Override
