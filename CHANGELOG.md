@@ -1,3 +1,14 @@
+## [1.11.6] - 2026-10-03
+
+### Modificado
+
+* Se modificó el movimiento de los enemigos en Enemigo.java.
+* Se eliminó la comprobación de colisión con el jugador al calcular el movimiento.
+* Ahora los enemigos pueden superponerse con el jugador.
+* Se mantiene la detección de colisiones con el mapa y con otros enemigos.
+* Se permite que intentarHacerDaño() detecte correctamente la superposición de los hitboxes.
+* Se corrigió el problema por el cual el jugador no recibía daño al quedarse quieto frente a un enemigo.
+
 ## [1.11.5] - 2026-09-21
 
 ### Modificado

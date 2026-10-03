@@ -117,15 +117,15 @@ public class Enemigo {
 
 	    	Rectangle futuraHitboxX = new Rectangle(nuevaPosicionX, posicionY, ancho, alto);
 
-	    	if (!mapa.hayColision(nuevaPosicionX, posicionY, ancho, alto) && !hayColisionConJugador(nuevaPosicionX, posicionY, jugador) 
-	    			&& !hayColisionConOtroEnemigo(futuraHitboxX, enemigos)) {
+	    	if (!mapa.hayColision(nuevaPosicionX, posicionY, ancho, alto)
+	    	        && !hayColisionConOtroEnemigo(futuraHitboxX, enemigos)) {
 
 	    	    posicionX = nuevaPosicionX;
 	    	}
 
 	    	Rectangle futuraHitboxY = new Rectangle(posicionX,nuevaPosicionY,ancho,alto);
 
-	    	if (!mapa.hayColision(posicionX, nuevaPosicionY, ancho, alto) && !hayColisionConJugador(posicionX, nuevaPosicionY, jugador)
+	    	if (!mapa.hayColision(posicionX, nuevaPosicionY, ancho, alto)
 	    	        && !hayColisionConOtroEnemigo(futuraHitboxY, enemigos)) {
 
 	    	    posicionY = nuevaPosicionY;
