@@ -218,7 +218,7 @@ public class PantallaJuego implements Screen {
         if (controladorEntrada.consumirPulsacionEscape()) {
             juegoPausado = !juegoPausado;
         }
-
+       
         if (juegoPausado && controladorEntrada.consumirPulsacionM()) {
             game.setScreen(new PantallaMenu(game));
             return;
@@ -322,6 +322,7 @@ public class PantallaJuego implements Screen {
     public void resize(int width, int height) {
     	
     	gamePort.update(width, height);
+    	hud.resize(width, height);
     	
     }
 

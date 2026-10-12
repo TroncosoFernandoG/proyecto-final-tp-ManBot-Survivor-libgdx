@@ -1,3 +1,19 @@
+## [1.11.7] - 2026-10-12
+
+### Modificado
+
+* Se unificó la versión declarada en gradle.properties con la versión del changelog.
+* Se corrigió el redimensionamiento de PantallaJuego para actualizar también el HUD.
+
+### Eliminado
+
+* Se eliminó la clase Imagen, que estaba vacía y no tenía referencias en el código revisado.
+
+### Verificado
+
+* Se comprobó que los atributos final respetan la convención de nombres establecida.
+
+
 ## [1.11.6] - 2026-10-03
 
 ### Modificado

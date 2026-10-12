@@ -174,9 +174,7 @@ public class Enemigo {
 	        return areaEnemigo.overlaps(areaJugador);
 	    }
 	    
-	    private boolean hayColisionConOtroEnemigo(
-	    	Rectangle futuraHitbox,
-	    	ArrayList<Enemigo> enemigos) {
+	    private boolean hayColisionConOtroEnemigo(Rectangle futuraHitbox, ArrayList<Enemigo> enemigos) {
 
 	        for (Enemigo enemigo : enemigos) {
 
