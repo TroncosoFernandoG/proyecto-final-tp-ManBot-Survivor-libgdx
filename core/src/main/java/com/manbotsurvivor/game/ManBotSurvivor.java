@@ -1,15 +1,17 @@
 package com.manbotsurvivor.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import pantallas.PantallaJuego;
 import pantallas.PantallaMenu;
+import pantallas.PantallaOpciones;
 import elementos.GestorAudio;
 
 import com.badlogic.gdx.Screen;
 
-public class ManBotSurvivor extends Game {
+public class ManBotSurvivor extends Game implements NavegacionPantallas{
 	public static final int V_WIDTH = 400;
 	public static final int V_HEIGHT = 208;
 	
@@ -20,12 +22,34 @@ public class ManBotSurvivor extends Game {
     public void create() {
         batch = new SpriteBatch();
         gestorAudio = new GestorAudio();
-        setScreen(new PantallaMenu(this));
+
+        mostrarMenu();
     }
     
+    @Override
     public void comenzarPartida() {
-
-        setScreen(new PantallaJuego(this));
+        setScreen(
+            new PantallaJuego(batch, this, V_WIDTH, V_HEIGHT)
+        );
+    }
+    
+    @Override
+    public void mostrarMenu() {
+        setScreen(
+            new PantallaMenu(batch, this, V_WIDTH, V_HEIGHT)
+        );
+    }
+    
+    @Override
+    public void mostrarOpciones() {
+        setScreen(
+            new PantallaOpciones(gestorAudio, this, V_WIDTH, V_HEIGHT)
+        );
+    }
+    
+    @Override
+    public void salir() {
+        Gdx.app.exit();
     }
 
     @Override
@@ -51,9 +75,14 @@ public class ManBotSurvivor extends Game {
         if (getScreen() != null) {
             getScreen().dispose();
         }
+        
+        if (gestorAudio != null) {
+            gestorAudio.disponer();
+        }
 
-        gestorAudio.disponer();
-        batch.dispose();
+        if (batch != null) {
+            batch.dispose();
+        }
     }
     
     

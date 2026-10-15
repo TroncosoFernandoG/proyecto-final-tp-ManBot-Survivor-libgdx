@@ -6,7 +6,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.manbotsurvivor.game.ManBotSurvivor;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.manbotsurvivor.game.NavegacionPantallas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import elementos.ChipEnergia;
@@ -21,7 +22,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class PantallaJuego implements Screen {
-    private ManBotSurvivor game;
+	private final SpriteBatch batch;
+	private final NavegacionPantallas navegacion;
+	private final int anchoVista;
+	private final int altoVista;
     private OrthographicCamera camaraJuego;
     private Viewport gamePort;
     private Hud hud;
@@ -46,9 +50,12 @@ public class PantallaJuego implements Screen {
     private float velocidadDisparo;
     private BitmapFont fuentePausa;
     
-    public PantallaJuego(ManBotSurvivor game) {
+    public PantallaJuego(SpriteBatch batch, NavegacionPantallas navegacion, int anchoVista, int altoVista) {
 
-        this.game = game;
+    	this.batch = batch;
+        this.navegacion = navegacion;
+        this.anchoVista = anchoVista;
+        this.altoVista = altoVista;
 
         enemigos = new ArrayList<>();
         chipsEnergia = new ArrayList<>();
@@ -82,9 +89,9 @@ public class PantallaJuego implements Screen {
 
         camaraJuego = new OrthographicCamera();
 
-        gamePort = new FitViewport(ManBotSurvivor.V_WIDTH, ManBotSurvivor.V_HEIGHT, camaraJuego);
+        gamePort = new FitViewport(anchoVista, altoVista, camaraJuego);
 
-        camaraJuego.position.set(ManBotSurvivor.V_WIDTH / 2, ManBotSurvivor.V_HEIGHT / 2, 0);
+        camaraJuego.position.set(anchoVista / 2, altoVista / 2, 0);
 
         camaraJuego.update();
 
@@ -92,7 +99,7 @@ public class PantallaJuego implements Screen {
             mapa.obtenerMapa()
         );
 
-        hud = new Hud(game.batch, jugador);
+        hud = new Hud(batch, jugador);
     }
 
     @Override
@@ -220,7 +227,7 @@ public class PantallaJuego implements Screen {
         }
        
         if (juegoPausado && controladorEntrada.consumirPulsacionM()) {
-            game.setScreen(new PantallaMenu(game));
+        	navegacion.mostrarMenu();
             return;
         }
         
@@ -273,16 +280,16 @@ public class PantallaJuego implements Screen {
         renderizadorMapa.setView(camaraJuego);
         renderizadorMapa.render();
 
-        game.batch.setProjectionMatrix(camaraJuego.combined);
+        batch.setProjectionMatrix(camaraJuego.combined);
 
-        game.batch.begin();
+        batch.begin();
 
-        jugador.dibujar(camaraJuego, game.batch);
+        jugador.dibujar(camaraJuego, batch);
         
         for (Enemigo enemigo : enemigos) {
-            enemigo.dibujar(camaraJuego, game.batch);
+            enemigo.dibujar(camaraJuego, batch);
         }
-        game.batch.end();
+        batch.end();
         
         formaEnemigo.setProjectionMatrix(camaraJuego.combined);
 
@@ -301,20 +308,20 @@ public class PantallaJuego implements Screen {
         hud.actualizar(delta);
         }
 
-        game.batch.setProjectionMatrix(hud.obtenerCamara().combined);
+        batch.setProjectionMatrix(hud.obtenerCamara().combined);
 
         hud.dibujar();
         
         if (juegoPausado) {
-            game.batch.begin();
+            batch.begin();
             
             fuentePausa.getData().setScale(2);
-            fuentePausa.draw(game.batch, "PAUSA", 150, 155);
+            fuentePausa.draw(batch, "PAUSA", 150, 155);
             fuentePausa.getData().setScale(0.9f);
-            fuentePausa.draw(game.batch, "ESC - Continuar", 150, 105);
-            fuentePausa.draw(game.batch, "M - Volver al menu", 150, 85);
+            fuentePausa.draw(batch, "ESC - Continuar", 150, 105);
+            fuentePausa.draw(batch, "M - Volver al menu", 150, 85);
             
-            game.batch.end();
+            batch.end();
         }
     }
 

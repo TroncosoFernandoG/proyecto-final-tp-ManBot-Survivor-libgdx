@@ -6,24 +6,28 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.manbotsurvivor.game.ManBotSurvivor;
+import com.manbotsurvivor.game.NavegacionPantallas;
 import elementos.ControladorEntrada;
+import elementos.GestorAudio;
 
 public class PantallaOpciones implements Screen{
 	
-	 	private ManBotSurvivor game;
+		private final NavegacionPantallas navegacion;
+		private final GestorAudio gestorAudio;
 	    private OrthographicCamera camara;
 	    private SpriteBatch lote;
 	    private BitmapFont fuente;
 	    private ControladorEntrada controladorEntrada;
 
-	    public PantallaOpciones(ManBotSurvivor game) {
+	    public PantallaOpciones(GestorAudio gestorAudio, NavegacionPantallas navegacion, int anchoPantalla, int altoPantalla) {
 
-	        this.game = game;
+	    	this.gestorAudio = gestorAudio;
+	        this.navegacion = navegacion;
+	        
 	        controladorEntrada = new ControladorEntrada();
 
 	        camara = new OrthographicCamera();
-	        camara.setToOrtho(false, ManBotSurvivor.V_WIDTH, ManBotSurvivor.V_HEIGHT);
+	        camara.setToOrtho(false, anchoPantalla, altoPantalla);
 
 	        lote = new SpriteBatch();
 	        fuente = new BitmapFont();
@@ -43,20 +47,20 @@ public class PantallaOpciones implements Screen{
 	        camara.update();
 	        
 	        if (controladorEntrada.consumirPulsacionEscape()) {
-	            game.setScreen(new PantallaMenu(game));
+	        	navegacion.mostrarMenu();
 	            return;
 	        }
 	        
 	        if (controladorEntrada.consumirPulsacionArriba()) {
-	            game.gestorAudio.subirVolumen();
+	            gestorAudio.subirVolumen();
 	        }
 
 	        if (controladorEntrada.consumirPulsacionAbajo()) {
-	            game.gestorAudio.bajarVolumen();
+	            gestorAudio.bajarVolumen();
 	        }
 
 	        if (controladorEntrada.consumirPulsacionM()) {
-	            game.gestorAudio.alternarSilencio();
+	            gestorAudio.alternarSilencio();
 	        }
 
 	        lote.setProjectionMatrix(camara.combined);
@@ -69,7 +73,7 @@ public class PantallaOpciones implements Screen{
 	        fuente.getData().setScale(1.2f);
 	        fuente.draw(lote, "VOLUMEN", 160, 115);
 
-	        int porcentaje = (int)(game.gestorAudio.obtenerVolumen() * 100);
+	        int porcentaje = (int)(gestorAudio.obtenerVolumen() * 100);
 
 	        int cantidadBloques = porcentaje / 10;
 
@@ -91,7 +95,7 @@ public class PantallaOpciones implements Screen{
 
 	        fuente.draw(lote, porcentaje + "%", 185, 70);
 
-	        if (game.gestorAudio.estaSilenciado()) {
+	        if (gestorAudio.estaSilenciado()) {
 	            fuente.draw(lote, "SILENCIADO", 165, 50);
 	        }
 

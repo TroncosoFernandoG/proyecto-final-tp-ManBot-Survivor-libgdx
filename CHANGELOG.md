@@ -1,4 +1,17 @@
+##[1.11.7] - 2026-10-15
+
+### Modificado
+
+* Desacoplamiento de PantallaMenu, PantallaOpciones y PantallaJuego de la clase principal ManBotSurvivor.
+* Incorporación de la interfaz NavegacionPantallas para centralizar las solicitudes de navegación entre pantallas.
+* Encapsulamiento de los recursos SpriteBatch y GestorAudio en ManBotSurvivor.
+* Actualización de los constructores de las pantallas para recibir explícitamente sus dependencias.
+* Centralización de la creación y el cambio de pantallas en ManBotSurvivor.
+* Conservación de las funcionalidades existentes de navegación, pausa y configuración de audio.
+
+
 ## [1.11.7] - 2026-10-12
+
 
 ### Modificado
 

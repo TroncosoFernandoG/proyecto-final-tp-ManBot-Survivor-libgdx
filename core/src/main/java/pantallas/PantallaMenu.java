@@ -6,19 +6,25 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.manbotsurvivor.game.NavegacionPantallas;
 import elementos.ControladorEntrada;
 
 import com.manbotsurvivor.game.ManBotSurvivor;
 
 public class PantallaMenu implements Screen {
 
-    private final ManBotSurvivor JUEGO;
+	private final SpriteBatch batch;
+    private final NavegacionPantallas navegacion;
 
     private final OrthographicCamera CAMARA;
     private final FitViewport VISTA;
     private final ControladorEntrada CONTROLADOR_ENTRADA;
     private final BitmapFont FUENTE;
+    
+    private final int anchoPantalla;
+    private final int altoPantalla;
 
     private Texture fondo;
 
@@ -30,9 +36,13 @@ public class PantallaMenu implements Screen {
         "SALIR"
     };
 
-    public PantallaMenu(ManBotSurvivor juego) {
+    public PantallaMenu(SpriteBatch batch, NavegacionPantallas navegacion, int anchoPantalla, int altoPantalla) {
 
-        this.JUEGO = juego;
+    	this.batch = batch;
+        this.navegacion = navegacion;
+        this.anchoPantalla = anchoPantalla;
+        this.altoPantalla = altoPantalla;
+        
         CONTROLADOR_ENTRADA = new ControladorEntrada();
 
         CAMARA = new OrthographicCamera();
@@ -59,11 +69,11 @@ public class PantallaMenu implements Screen {
 
         CAMARA.update();
 
-        JUEGO.batch.setProjectionMatrix(CAMARA.combined);
+        batch.setProjectionMatrix(CAMARA.combined);
 
-        JUEGO.batch.begin();
+        batch.begin();
 
-        JUEGO.batch.draw(fondo, 0, 0, ManBotSurvivor.V_WIDTH,ManBotSurvivor.V_HEIGHT);
+        batch.draw(fondo, 0, 0, ManBotSurvivor.V_WIDTH,ManBotSurvivor.V_HEIGHT);
 
         FUENTE.getData().setScale(1.2f);
 
@@ -77,10 +87,10 @@ public class PantallaMenu implements Screen {
                 texto = "> " + texto + " <";
             }
 
-            FUENTE.draw(JUEGO.batch, texto, 165, posicionY);
+            FUENTE.draw(batch, texto, 165, posicionY);
         }
 
-        JUEGO.batch.end();
+        batch.end();
 
         if (CONTROLADOR_ENTRADA.consumirPulsacionArriba()) {
 
@@ -112,15 +122,15 @@ public class PantallaMenu implements Screen {
         switch (opcionSeleccionada) {
 
         case 0:
-            JUEGO.comenzarPartida();
+        	navegacion.comenzarPartida();
             break;
 
         case 1:
-        	JUEGO.setScreen(new PantallaOpciones(JUEGO));
+        	navegacion.mostrarOpciones();
             break;
 
         case 2:
-            Gdx.app.exit();
+        	navegacion.salir();
             break;
         }
     }
