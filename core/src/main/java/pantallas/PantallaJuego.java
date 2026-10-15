@@ -18,6 +18,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import elementos.Mapa;
 import elementos.Enemigo;
+import elementos.SistemaCombate;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -26,6 +27,7 @@ public class PantallaJuego implements Screen {
 	private final NavegacionPantallas navegacion;
 	private final int anchoVista;
 	private final int altoVista;
+	private SistemaCombate sistemaCombate;
     private OrthographicCamera camaraJuego;
     private Viewport gamePort;
     private Hud hud;
@@ -35,19 +37,10 @@ public class PantallaJuego implements Screen {
     private float altoMapa;
     private ControladorEntrada controladorEntrada;
     private Jugador jugador;
+    private boolean juegoPausado;
     private ArrayList<Enemigo> enemigos;
     private ArrayList<ChipEnergia> chipsEnergia;
     private ShapeRenderer formaEnemigo;
-    private float tiempoAtaque;
-    private final float INTERVALO_ATAQUE = 1.5f;
-    private boolean hayDisparo;
-    private boolean juegoPausado;
-    private float posicionDisparoX;
-    private float posicionDisparoY;
-    private Enemigo enemigoObjetivoDisparo;
-    private float direccionDisparoX;
-    private float direccionDisparoY;
-    private float velocidadDisparo;
     private BitmapFont fuentePausa;
     
     public PantallaJuego(SpriteBatch batch, NavegacionPantallas navegacion, int anchoVista, int altoVista) {
@@ -75,17 +68,13 @@ public class PantallaJuego implements Screen {
         enemigos.add(new Enemigo(400, 300, 50, mapa));
         enemigos.add(new Enemigo(100, 300, 50, mapa));
         enemigos.add(new Enemigo(300, 200, 50, mapa));
+        
+        sistemaCombate = new SistemaCombate(jugador, enemigos);
+        
         formaEnemigo = new ShapeRenderer();
-        tiempoAtaque = 0;
-        hayDisparo = false;
-        juegoPausado = false;
+
         fuentePausa = new BitmapFont();
-        posicionDisparoX = 0;
-        posicionDisparoY = 0;
-        enemigoObjetivoDisparo = null;
-        direccionDisparoX = 0;
-        direccionDisparoY = 0;
-        velocidadDisparo = 200;
+
 
         camaraJuego = new OrthographicCamera();
 
@@ -105,79 +94,6 @@ public class PantallaJuego implements Screen {
     @Override
     public void show() {
     	Gdx.input.setInputProcessor(controladorEntrada);
-    }
-
-    private Enemigo obtenerEnemigoMasCercano() {
-        Enemigo enemigoMasCercano = null;
-        double distanciaMinima = Double.MAX_VALUE;
-
-        for (Enemigo enemigo : enemigos) {
-            double diferenciaX = enemigo.obtenerPosicionX() - jugador.obtenerPosicionX();
-            double diferenciaY = enemigo.obtenerPosicionY() - jugador.obtenerPosicionY();
-            double distancia = Math.sqrt(
-                diferenciaX * diferenciaX + diferenciaY * diferenciaY
-            );
-            if (enemigo.estaVivo() && distancia < distanciaMinima) {
-                distanciaMinima = distancia;
-                enemigoMasCercano = enemigo;
-            }
-        }
-        return enemigoMasCercano;
-    }
-    
-    private void atacar() {
-        Enemigo enemigoCercano = obtenerEnemigoMasCercano();
-        
-        if (enemigoCercano != null) {
-            hayDisparo = true;
-
-            posicionDisparoX = jugador.obtenerPosicionX() + jugador.obtenerAncho() / 2;
-            posicionDisparoY = jugador.obtenerPosicionY() + jugador.obtenerAlto() / 2;
-            
-            enemigoObjetivoDisparo = enemigoCercano;
-            float diferenciaX = enemigoObjetivoDisparo.obtenerPosicionX() - posicionDisparoX;
-            float diferenciaY = enemigoObjetivoDisparo.obtenerPosicionY() - posicionDisparoY;
-            float distancia = (float) Math.sqrt(diferenciaX * diferenciaX + diferenciaY * diferenciaY);
-            direccionDisparoX = diferenciaX / distancia;
-            direccionDisparoY = diferenciaY / distancia;
-        }
-    }
-    
-    private void actualizarDisparo(float delta) {
-        if (!hayDisparo) {
-            return;
-        }
-        posicionDisparoX += direccionDisparoX * velocidadDisparo * delta;
-        posicionDisparoY += direccionDisparoY * velocidadDisparo * delta;
-    }
-    
-    private void comprobarColisionDisparo() {
-
-        if (!hayDisparo || enemigoObjetivoDisparo == null) {
-            return;
-        }
-
-        Rectangle areaDisparo = new Rectangle( posicionDisparoX, posicionDisparoY, 6, 6);
-        Rectangle areaEnemigo = new Rectangle( enemigoObjetivoDisparo.obtenerPosicionX(), enemigoObjetivoDisparo.obtenerPosicionY(),
-            enemigoObjetivoDisparo.obtenerAncho(), enemigoObjetivoDisparo.obtenerAlto());
-
-        if (areaDisparo.overlaps(areaEnemigo)) {
-        	enemigoObjetivoDisparo.recibirDaño(1);
-            hayDisparo = false;
-            enemigoObjetivoDisparo = null;
-        }
-
-    }
-    
-    private void dibujarDisparo() {
-
-        if (hayDisparo) {
-
-            formaEnemigo.setColor(com.badlogic.gdx.graphics.Color.RED);
-            formaEnemigo.rect(posicionDisparoX, posicionDisparoY, 6, 6);
-
-        }
-
     }
     
     private void eliminarEnemigosMuertos() {
@@ -242,14 +158,8 @@ public class PantallaJuego implements Screen {
             enemigo.actualizar(delta, jugador, enemigos);
         	}
         
-        tiempoAtaque += delta;
-
-        if (tiempoAtaque >= INTERVALO_ATAQUE) {
-            atacar();
-            tiempoAtaque = 0;
-        }
-        actualizarDisparo(delta);
-        comprobarColisionDisparo();
+        sistemaCombate.actualizar(delta);
+        
         eliminarEnemigosMuertos();
         recogerChips();
         }
@@ -295,7 +205,7 @@ public class PantallaJuego implements Screen {
 
         formaEnemigo.begin(ShapeRenderer.ShapeType.Filled);
 
-        dibujarDisparo();
+        sistemaCombate.dibujarDisparo(formaEnemigo);
 
         for (ChipEnergia chip : chipsEnergia) {
             chip.dibujar(formaEnemigo);

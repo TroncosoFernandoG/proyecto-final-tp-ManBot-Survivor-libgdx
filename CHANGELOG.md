@@ -1,3 +1,18 @@
+## [1.11.8] - 2026-10-15
+
+### Agregado
+
+* Incorporación de la clase SistemaCombate para centralizar la lógica del combate automático.
+* Implementación de la actualización y el dibujo de los disparos desde el nuevo sistema de combate.
+
+### Modificado
+
+* Actualización de PantallaJuego para delegar en SistemaCombate la selección del enemigo más cercano, la generación de disparos, el movimiento de proyectiles y la comprobación de impactos.
+* Conservación del intervalo de ataque automático de 1,5 segundos y del daño de 1 punto por impacto.
+* Integración del sistema de combate con la lista de enemigos y el jugador existentes.
+* Conservación del funcionamiento de la pausa, la eliminación de enemigos muertos y la recolección de chips de energía.
+
+
 ##[1.11.7] - 2026-10-15
 
 ### Modificado
