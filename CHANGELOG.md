@@ -1,3 +1,16 @@
+## [1.11.9] - 2026-10-15
+
+### Agregado
+
+* Incorporación de la clase GestorEntidades para centralizar la gestión de enemigos eliminados y chips de energía.
+* Implementación de la generación de chips de energía al eliminar enemigos.
+
+### Modificado
+
+* Actualización de PantallaJuego para delegar en GestorEntidades la eliminación de enemigos muertos y la recolección de chips.
+* Centralización de la actualización de las listas de enemigos y chips.
+* Conservación del registro de enemigos eliminados y de la experiencia obtenida al recoger chips.
+
 ## [1.11.8] - 2026-10-15
 
 ### Agregado

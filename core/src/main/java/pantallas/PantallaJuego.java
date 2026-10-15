@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import elementos.Mapa;
 import elementos.Enemigo;
 import elementos.SistemaCombate;
+import elementos.GestorEntidades;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -28,6 +29,7 @@ public class PantallaJuego implements Screen {
 	private final int anchoVista;
 	private final int altoVista;
 	private SistemaCombate sistemaCombate;
+	private GestorEntidades gestorEntidades;
     private OrthographicCamera camaraJuego;
     private Viewport gamePort;
     private Hud hud;
@@ -75,7 +77,8 @@ public class PantallaJuego implements Screen {
 
         fuentePausa = new BitmapFont();
 
-
+        gestorEntidades = new GestorEntidades(jugador, enemigos, chipsEnergia);
+        
         camaraJuego = new OrthographicCamera();
 
         gamePort = new FitViewport(anchoVista, altoVista, camaraJuego);
@@ -96,40 +99,6 @@ public class PantallaJuego implements Screen {
     	Gdx.input.setInputProcessor(controladorEntrada);
     }
     
-    private void eliminarEnemigosMuertos() {
-
-        Iterator<Enemigo> iterador = enemigos.iterator();
-        while (iterador.hasNext()) {
-            Enemigo enemigo = iterador.next();
-
-            if (!enemigo.estaVivo()) {
-                ChipEnergia chip = new ChipEnergia(enemigo.obtenerPosicionX(), enemigo.obtenerPosicionY());
-
-                chipsEnergia.add(chip);
-
-                jugador.registrarEnemigoEliminado();
-
-                iterador.remove();
-            }
-        }
-    }
-    
-    private void recogerChips() {
-
-        Iterator<ChipEnergia> iterador = chipsEnergia.iterator();
-
-        while (iterador.hasNext()) {
-
-            ChipEnergia chip = iterador.next();
-
-            if (chip.hayColision(jugador.obtenerPosicionX(), jugador.obtenerPosicionY(), jugador.obtenerAncho(), jugador.obtenerAlto())) {
-
-                jugador.ganarExperiencia(chip.obtenerExperiencia());
-                
-                iterador.remove();
-            }
-        }
-    }
     
     @Override
     public void render(float delta) {
@@ -160,8 +129,8 @@ public class PantallaJuego implements Screen {
         
         sistemaCombate.actualizar(delta);
         
-        eliminarEnemigosMuertos();
-        recogerChips();
+        gestorEntidades.eliminarEnemigosMuertos();
+        gestorEntidades.recogerChips();
         }
         
         camaraJuego.position.set(jugador.obtenerPosicionX() + 16, jugador.obtenerPosicionY() + 16, 0);
