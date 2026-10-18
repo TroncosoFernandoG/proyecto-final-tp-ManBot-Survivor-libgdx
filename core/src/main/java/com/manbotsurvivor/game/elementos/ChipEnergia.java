@@ -1,4 +1,4 @@
-package elementos;
+package com.manbotsurvivor.game.elementos;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;

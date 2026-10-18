@@ -1,4 +1,4 @@
-package pantallas;
+package com.manbotsurvivor.game.pantallas;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -9,8 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.manbotsurvivor.game.NavegacionPantallas;
-import elementos.ControladorEntrada;
-
+import com.manbotsurvivor.game.elementos.ControladorEntrada;
 import com.manbotsurvivor.game.ManBotSurvivor;
 
 public class PantallaMenu implements Screen {

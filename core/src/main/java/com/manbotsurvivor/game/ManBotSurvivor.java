@@ -3,12 +3,10 @@ package com.manbotsurvivor.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-import pantallas.PantallaJuego;
-import pantallas.PantallaMenu;
-import pantallas.PantallaOpciones;
-import elementos.GestorAudio;
-
+import com.manbotsurvivor.game.elementos.GestorAudio;
+import com.manbotsurvivor.game.pantallas.PantallaJuego;
+import com.manbotsurvivor.game.pantallas.PantallaMenu;
+import com.manbotsurvivor.game.pantallas.PantallaOpciones;
 import com.badlogic.gdx.Screen;
 
 public class ManBotSurvivor extends Game implements NavegacionPantallas{

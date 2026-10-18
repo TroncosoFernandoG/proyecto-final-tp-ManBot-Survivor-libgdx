@@ -1,3 +1,12 @@
+## [1.11.10] - 2026-10-18
+
+### Modificado
+
+* Reorganización del paquete elementos bajo com.manbotsurvivor.game.elementos.
+* Reorganización del paquete pantallas bajo com.manbotsurvivor.game.pantallas.
+* Reorganización del paquete escenas bajo com.manbotsurvivor.game.escenas.
+* Actualización de las declaraciones de paquetes y los imports para reflejar la nueva estructura del proyecto.
+
 ## [1.11.9] - 2026-10-15
 
 ### Agregado

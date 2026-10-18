@@ -1,4 +1,4 @@
-package escenas;
+package com.manbotsurvivor.game.escenas;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,8 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.manbotsurvivor.game.ManBotSurvivor;
-
-import elementos.Jugador;
+import com.manbotsurvivor.game.elementos.Jugador;
 
 public class Hud {
 

@@ -1,5 +1,5 @@
 
-package elementos;
+package com.manbotsurvivor.game.elementos;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package pantallas;
+package com.manbotsurvivor.game.pantallas;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.manbotsurvivor.game.NavegacionPantallas;
-import elementos.ControladorEntrada;
-import elementos.GestorAudio;
+import com.manbotsurvivor.game.elementos.ControladorEntrada;
+import com.manbotsurvivor.game.elementos.GestorAudio;
 
 public class PantallaOpciones implements Screen{
 	

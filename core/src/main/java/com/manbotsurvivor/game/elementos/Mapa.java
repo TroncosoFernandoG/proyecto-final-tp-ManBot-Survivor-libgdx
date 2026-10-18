@@ -1,4 +1,4 @@
-package elementos;
+package com.manbotsurvivor.game.elementos;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;

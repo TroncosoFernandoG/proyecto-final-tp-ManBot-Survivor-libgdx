@@ -1,4 +1,4 @@
-package pantallas;
+package com.manbotsurvivor.game.pantallas;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -8,18 +8,19 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.manbotsurvivor.game.NavegacionPantallas;
+import com.manbotsurvivor.game.elementos.ChipEnergia;
+import com.manbotsurvivor.game.elementos.ControladorEntrada;
+import com.manbotsurvivor.game.elementos.Enemigo;
+import com.manbotsurvivor.game.elementos.GestorEntidades;
+import com.manbotsurvivor.game.elementos.Jugador;
+import com.manbotsurvivor.game.elementos.Mapa;
+import com.manbotsurvivor.game.elementos.SistemaCombate;
+import com.manbotsurvivor.game.escenas.Hud;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import elementos.ChipEnergia;
-import elementos.ControladorEntrada;
-import elementos.Jugador;
-import escenas.Hud;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import elementos.Mapa;
-import elementos.Enemigo;
-import elementos.SistemaCombate;
-import elementos.GestorEntidades;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
