@@ -1,6 +1,6 @@
 # ManBot Survivor 🤖🎮
 
-**ManBot Survivor** es un videojuego roguelite de supervivencia en 2D con vista cenital (top-down) desarrollado en Java 21 y LibGDX. El jugador controla un robot en una instalación industrial invadida por hordas mecánicas, donde debe sobrevivir recolectando chips de energía (XP), subiendo de nivel y seleccionando mejoras aleatorias. Cuenta además con un modo cooperativo multijugador en red local (LAN) sincronizado en tiempo real.
+**ManBot Survivor** es un videojuego roguelite de supervivencia en 2D con vista cenital (top-down) desarrollado en Java 21 y LibGDX. El jugador controla un robot en una instalación industrial invadida por hordas mecánicas, donde debe sobrevivir recolectando chips de energía (XP), subiendo de nivel y seleccionando mejoras aleatorias. Además, va a incluir un modo cooperativo multijugador en red local (LAN) sincronizado en tiempo real.
 
 Actualmente el proyecto cuenta con las principales mecánicas de un prototipo jugable, incluyendo movimiento del jugador, enemigos, combate automático, colisiones, sistema de vida, experiencia, HUD, mapa, cámara, pausa y sistema de audio.
 
@@ -88,7 +88,7 @@ gradlew.bat lwjgl3:run
 ./gradlew lwjgl3:run
 
 ### 📈 Estado Actual del Proyecto
-Fase: Segunda Pre-entrega completada (Version Beta jugable de Manbot Survivor).
+Fase: Desarrollando el producto final, juego completo "Manbot Survivor".
 
 Video demostrativo del juego: https://drive.google.com/file/d/1Sw6xuegg1Jv8D2z4C_fNviF33AA4sXh3/view?usp=sharing
 ---
