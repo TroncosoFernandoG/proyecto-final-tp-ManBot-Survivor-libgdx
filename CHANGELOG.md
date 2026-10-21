@@ -1,3 +1,16 @@
+## [1.11.13] - 2026 - 10 - 21
+
+### Agregado
+
+* Incorporación de la clase RobotTanque como nuevo tipo de enemigo.
+* Configuración de vida, velocidad y daño propios para el RobotTanque.
+* Incorporación de una animación y administración de recursos gráficos para el nuevo enemigo.
+
+### Modificado
+
+* Actualización de PantallaJuego para incorporar al RobotTanque junto con los DroneBasico existentes.
+* Integración del RobotTanque con el sistema de persecución, colisiones con el mapa, combate y liberación de recursos.
+
 ## [1.11.12] - 2026 - 10 - 21
 
 ### Agregado
