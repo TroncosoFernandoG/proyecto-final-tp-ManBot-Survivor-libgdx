@@ -1,3 +1,20 @@
+## [1.12.0] - 2026-10-21
+
+### Agregado
+
+- Implementación de un sistema de oleadas automáticas de enemigos.
+- Generación progresiva de enemigos según el número de oleada.
+- Incorporación de un tiempo de espera de 2 segundos entre oleadas.
+- Generación aleatoria de posiciones para los enemigos, comprobando colisiones con el mapa y distancia respecto al jugador.
+
+### Modificado
+
+- Se incorporó un sistema de escalado de dificultad que aumenta progresivamente la velocidad y la vida de los enemigos.
+- Se reemplazó la creación fija de enemigos por un sistema de generación dinámica.
+- Se mantuvo la integración con el sistema de combate y el gestor de entidades existente.
+- Se ocultó el número de oleada y el mensaje de transición para que el jugador no conozca la oleada actual.
+- Se mantuvo el funcionamiento de las oleadas en segundo plano, sin mostrar información adicional en pantalla.
+
 ## [1.11.14] - 2026 - 10 - 21
 
 ### Agregado

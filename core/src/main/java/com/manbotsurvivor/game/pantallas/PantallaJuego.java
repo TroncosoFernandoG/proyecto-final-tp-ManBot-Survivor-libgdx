@@ -48,6 +48,9 @@ public class PantallaJuego implements Screen {
     private ShapeRenderer formaEnemigo;
     private BitmapFont fuentePausa;
     private GestorPartida gestorPartida;
+    private int oleadaActual;
+    private float tiempoEntreOleadas;
+    private boolean esperandoSiguienteOleada;
     
     public PantallaJuego(SpriteBatch batch, NavegacionPantallas navegacion, int anchoVista, int altoVista) {
 
@@ -71,16 +74,6 @@ public class PantallaJuego implements Screen {
 
         jugador = new Jugador(200, 100, 100, controladorEntrada, limiteMapaAncho, limiteMapaAlto, mapa);
         
-        enemigos.add(new DroneBasico(400, 300, 50, mapa));
-        enemigos.add(new DroneBasico(100, 300, 50, mapa));
-        enemigos.add(new DroneBasico(300, 200, 50, mapa));
-        
-        enemigos.add(new NanoBot(650, 100, mapa));
-        enemigos.add(new NanoBot(700, 100, mapa));
-        enemigos.add(new NanoBot(750, 100, mapa));
-        
-        enemigos.add(new RobotTanque(500, 400, 20, mapa));
-        
         sistemaCombate = new SistemaCombate(jugador, enemigos);
         
         formaEnemigo = new ShapeRenderer();
@@ -97,19 +90,109 @@ public class PantallaJuego implements Screen {
 
         camaraJuego.update();
 
-        renderizadorMapa = new OrthogonalTiledMapRenderer(
-            mapa.obtenerMapa()
-        );
+        renderizadorMapa = new OrthogonalTiledMapRenderer(mapa.obtenerMapa());
         
         gestorPartida = new GestorPartida();
 
         hud = new Hud(batch, jugador, gestorPartida);
+        
+        iniciarOleada(1);
     }
 
     @Override
     public void show() {
     	Gdx.input.setInputProcessor(controladorEntrada);
     }
+    
+
+    private void iniciarOleada(int numeroOleada) {
+
+    oleadaActual = numeroOleada;
+    esperandoSiguienteOleada = false;
+    tiempoEntreOleadas = 0;
+
+    int cantidadEnemigos = 5 + oleadaActual * 2;
+
+    float factorDificultad = 1 + (oleadaActual - 1) * 0.1f;
+
+    for (int i = 0; i < cantidadEnemigos; i++) {
+
+        float[] posicion = buscarPosicionEnemigo();
+
+        Enemigo enemigo;
+
+        if (i % 7 == 6) {
+            enemigo = new RobotTanque(
+                posicion[0], posicion[1], 20, mapa
+            );
+        } else if (i % 2 == 0) {
+            enemigo = new NanoBot(
+                posicion[0], posicion[1], mapa
+            );
+        } else {
+            enemigo = new DroneBasico(
+                posicion[0], posicion[1], 50, mapa
+            );
+        }
+
+        enemigo.aumentarDificultad(factorDificultad);
+        enemigos.add(enemigo);
+    }
+}
+
+	private float[] buscarPosicionEnemigo() {
+
+    float x = 0;
+    float y = 0;
+
+    for (int intento = 0; intento < 100; intento++) {
+
+        x = com.badlogic.gdx.math.MathUtils.random(
+            0, anchoMapa - 32
+        );
+
+        y = com.badlogic.gdx.math.MathUtils.random(
+            0, altoMapa - 32
+        );
+
+        boolean colisionMapa = mapa.hayColision(x, y, 32, 32);
+
+        float diferenciaX = x - jugador.obtenerPosicionX();
+        float diferenciaY = y - jugador.obtenerPosicionY();
+
+        float distancia = (float) Math.sqrt(
+            diferenciaX * diferenciaX + diferenciaY * diferenciaY
+        );
+
+        if (!colisionMapa && distancia >= 150) {
+            return new float[] { x, y };
+        }
+    }
+
+    return new float[] { x, y };
+}
+
+	private void actualizarOleadas(float delta) {
+
+    if (!enemigos.isEmpty()) {
+        esperandoSiguienteOleada = false;
+        tiempoEntreOleadas = 0;
+        return;
+    }
+
+    if (!esperandoSiguienteOleada) {
+        esperandoSiguienteOleada = true;
+        tiempoEntreOleadas = 0;
+        return;
+    }
+
+    tiempoEntreOleadas += delta;
+
+    if (tiempoEntreOleadas >= 2f) {
+        iniciarOleada(oleadaActual + 1);
+    }
+}
+
     
     
     @Override
@@ -150,6 +233,8 @@ public class PantallaJuego implements Screen {
 
             gestorEntidades.eliminarEnemigosMuertos();
             gestorEntidades.recogerChips();
+            
+            actualizarOleadas(delta);
             
             gestorPartida.actualizar(0, jugador.obtenerVida());
         }

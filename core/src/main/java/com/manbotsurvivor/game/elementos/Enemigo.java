@@ -81,6 +81,11 @@ public abstract class Enemigo {
     public boolean estaVivo() {
         return vida > 0;
     }
+    
+    public void aumentarDificultad(float factor) {
+        velocidad *= factor;
+        vida = Math.max(1, Math.round(vida * factor));
+    }
 
     public void intentarHacerDaño(Jugador jugador, float delta) {
 
