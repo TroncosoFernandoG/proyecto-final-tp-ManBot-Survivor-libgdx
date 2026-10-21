@@ -1,3 +1,19 @@
+## [1.11.11] - 2026 - 10 - 21
+
+### Agregado
+
+* Incorporación de la enumeración EstadoPartida para representar los estados de partida en curso, pausada, derrota y victoria.
+* Incorporación de la clase GestorPartida para centralizar el estado de la partida y administrar sus contadores de tiempo.
+* Implementación de un contador de tiempo transcurrido y otro de tiempo efectivo de juego.
+* Incorporación de mensajes visuales para indicar la derrota y la victoria.
+
+### Modificado
+
+* Actualización de PantallaJuego para delegar en GestorPartida el control del estado y la detección de derrota.
+* Actualización del sistema de pausa para utilizar los estados centralizados de la partida.
+* Actualización de Hud para mostrar el tiempo efectivo de juego y el tiempo transcurrido.
+* Preparación del sistema para incorporar futuras condiciones de victoria y finalización de la partida.
+
 ## [1.11.10] - 2026-10-18
 
 ### Modificado

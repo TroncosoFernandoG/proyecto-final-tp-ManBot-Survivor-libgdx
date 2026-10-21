@@ -1,28 +1,28 @@
 package com.manbotsurvivor.game.pantallas;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.manbotsurvivor.game.NavegacionPantallas;
 import com.manbotsurvivor.game.elementos.ChipEnergia;
 import com.manbotsurvivor.game.elementos.ControladorEntrada;
 import com.manbotsurvivor.game.elementos.Enemigo;
+import com.manbotsurvivor.game.elementos.EstadoPartida;
 import com.manbotsurvivor.game.elementos.GestorEntidades;
+import com.manbotsurvivor.game.elementos.GestorPartida;
 import com.manbotsurvivor.game.elementos.Jugador;
 import com.manbotsurvivor.game.elementos.Mapa;
 import com.manbotsurvivor.game.elementos.SistemaCombate;
 import com.manbotsurvivor.game.escenas.Hud;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public class PantallaJuego implements Screen {
 	private final SpriteBatch batch;
@@ -40,11 +40,11 @@ public class PantallaJuego implements Screen {
     private float altoMapa;
     private ControladorEntrada controladorEntrada;
     private Jugador jugador;
-    private boolean juegoPausado;
     private ArrayList<Enemigo> enemigos;
     private ArrayList<ChipEnergia> chipsEnergia;
     private ShapeRenderer formaEnemigo;
     private BitmapFont fuentePausa;
+    private GestorPartida gestorPartida;
     
     public PantallaJuego(SpriteBatch batch, NavegacionPantallas navegacion, int anchoVista, int altoVista) {
 
@@ -91,8 +91,10 @@ public class PantallaJuego implements Screen {
         renderizadorMapa = new OrthogonalTiledMapRenderer(
             mapa.obtenerMapa()
         );
+        
+        gestorPartida = new GestorPartida();
 
-        hud = new Hud(batch, jugador);
+        hud = new Hud(batch, jugador, gestorPartida);
     }
 
     @Override
@@ -109,29 +111,38 @@ public class PantallaJuego implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
         if (controladorEntrada.consumirPulsacionEscape()) {
-            juegoPausado = !juegoPausado;
+            if (gestorPartida.estaEnCurso()) {
+                gestorPartida.pausar();
+            } else if (gestorPartida.estaPausada()) {
+                gestorPartida.reanudar();
+            }
         }
-       
-        if (juegoPausado && controladorEntrada.consumirPulsacionM()) {
-        	navegacion.mostrarMenu();
+
+        if (gestorPartida.estaPausada()
+                && controladorEntrada.consumirPulsacionM()) {
+            navegacion.mostrarMenu();
             return;
         }
-        
-        if (!juegoPausado) {
+
+        if (!gestorPartida.estaPausada()) {
             controladorEntrada.consumirPulsacionM();
         }
-        
-        if (!juegoPausado) {
-        	jugador.actualizar(delta);
-        
-        	for (Enemigo enemigo : enemigos) {
-            enemigo.actualizar(delta, jugador, enemigos);
-        	}
-        
-        sistemaCombate.actualizar(delta);
-        
-        gestorEntidades.eliminarEnemigosMuertos();
-        gestorEntidades.recogerChips();
+
+        gestorPartida.actualizar(delta, jugador.obtenerVida());
+
+        if (gestorPartida.estaEnCurso()) {
+            jugador.actualizar(delta);
+
+            for (Enemigo enemigo : enemigos) {
+                enemigo.actualizar(delta, jugador, enemigos);
+            }
+
+            sistemaCombate.actualizar(delta);
+
+            gestorEntidades.eliminarEnemigosMuertos();
+            gestorEntidades.recogerChips();
+            
+            gestorPartida.actualizar(0, jugador.obtenerVida());
         }
         
         camaraJuego.position.set(jugador.obtenerPosicionX() + 16, jugador.obtenerPosicionY() + 16, 0);
@@ -184,15 +195,13 @@ public class PantallaJuego implements Screen {
         formaEnemigo.end();
         
         
-        if (!juegoPausado) {
-        hud.actualizar(delta);
-        }
+        hud.actualizar();
 
         batch.setProjectionMatrix(hud.obtenerCamara().combined);
 
         hud.dibujar();
         
-        if (juegoPausado) {
+        if (gestorPartida.estaPausada()) {
             batch.begin();
             
             fuentePausa.getData().setScale(2);
@@ -203,6 +212,22 @@ public class PantallaJuego implements Screen {
             
             batch.end();
         }
+        
+		
+		if (gestorPartida.terminoLaPartida()) {
+		    batch.begin();
+		
+		    fuentePausa.getData().setScale(2);
+		
+		    if (gestorPartida.obtenerEstado() == EstadoPartida.DERROTA) {
+		        fuentePausa.draw(batch, "DERROTA", 145, 125);
+		    } else if (gestorPartida.obtenerEstado() == EstadoPartida.VICTORIA) {
+		        fuentePausa.draw(batch, "VICTORIA", 140, 125);
+		    }
+		
+		    fuentePausa.getData().setScale(1);
+		    batch.end();
+		}
     }
 
     @Override
