@@ -25,6 +25,7 @@ import com.manbotsurvivor.game.elementos.SistemaCombate;
 import com.manbotsurvivor.game.escenas.Hud;
 import com.manbotsurvivor.game.elementos.DroneBasico;
 import com.manbotsurvivor.game.elementos.RobotTanque;
+import com.manbotsurvivor.game.elementos.NanoBot;
 
 public class PantallaJuego implements Screen {
 	private final SpriteBatch batch;
@@ -73,6 +74,10 @@ public class PantallaJuego implements Screen {
         enemigos.add(new DroneBasico(400, 300, 50, mapa));
         enemigos.add(new DroneBasico(100, 300, 50, mapa));
         enemigos.add(new DroneBasico(300, 200, 50, mapa));
+        
+        enemigos.add(new NanoBot(650, 100, mapa));
+        enemigos.add(new NanoBot(700, 100, mapa));
+        enemigos.add(new NanoBot(750, 100, mapa));
         
         enemigos.add(new RobotTanque(500, 400, 20, mapa));
         
@@ -262,6 +267,7 @@ public class PantallaJuego implements Screen {
 
         DroneBasico.disponerTextura();
         RobotTanque.disponerTextura();
+        NanoBot.disponerTextura();
 
         hud.disponer();
         fuentePausa.dispose();

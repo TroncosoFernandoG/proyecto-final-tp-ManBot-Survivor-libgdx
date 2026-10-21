@@ -1,3 +1,18 @@
+## [1.11.14] - 2026 - 10 - 21
+
+### Agregado
+
+* Incorporación de la clase NanoBot como nuevo tipo de enemigo.
+* Configuración de baja vida, alta velocidad y daño propio para los Nano-bots.
+* Incorporación de un efecto visual de color cian para diferenciar a los Nano-bots.
+* Incorporación de un enjambre de seis Nano-bots en PantallaJuego.
+
+### Modificado
+
+* Actualización de PantallaJuego para incorporar el enjambre de Nano-bots.
+* Integración de los Nano-bots con el sistema de persecución, colisiones con el mapa, combate y generación de chips de energía.
+* Incorporación de la liberación de los recursos gráficos de NanoBot.
+
 ## [1.11.13] - 2026 - 10 - 21
 
 ### Agregado
