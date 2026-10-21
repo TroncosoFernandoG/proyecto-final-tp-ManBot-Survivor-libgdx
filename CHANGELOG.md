@@ -1,3 +1,16 @@
+## [1.11.12] - 2026 - 10 - 21
+
+### Agregado
+
+* Incorporación de la clase DroneBasico como implementación concreta del enemigo Drone básico.
+* Incorporación de la carga y administración de la textura y animación propias del Drone básico.
+
+### Modificado
+
+* Refactorización de Enemigo como clase abstracta para centralizar los atributos y comportamientos comunes de los enemigos.
+* Actualización de PantallaJuego para crear instancias de DroneBasico y liberar sus recursos gráficos.
+* Conservación del movimiento, la persecución, las colisiones y el daño mediante la clase padre Enemigo.
+
 ## [1.11.11] - 2026 - 10 - 21
 
 ### Agregado

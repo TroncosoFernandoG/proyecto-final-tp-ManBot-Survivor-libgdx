@@ -1,214 +1,206 @@
+
 package com.manbotsurvivor.game.elementos;
 
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
-public class Enemigo {
+public abstract class Enemigo {
 
-	    private float posicionX;
-	    private float posicionY;
+    protected float posicionX;
+    protected float posicionY;
+    protected float velocidad;
 
-	    private float velocidad;
+    protected float ancho;
+    protected float alto;
+    protected int vida;
 
-	    private float ancho;
-	    private float alto;
-	    private int vida;
-	    private Rectangle hitbox;
-	    private final int DAÑO;
-	    private float tiempoDesdeUltimoDaño;
-	    private final float TIEMPO_ENTRE_DAÑOS;
-	    
-	    private static Texture texturaEnemigo;
-	    private Animation<TextureRegion> animacionEnemigo;
-	    private float tiempoAnimacion;
-	    
-	    private Mapa mapa;
+    protected Rectangle hitbox;
+    protected final int DAÑO;
+    protected float tiempoDesdeUltimoDaño;
+    protected final float TIEMPO_ENTRE_DAÑOS;
 
-	    public Enemigo(float posicionX, float posicionY, float velocidad, Mapa mapa) {
+    protected Animation<TextureRegion> animacionEnemigo;
+    protected float tiempoAnimacion;
 
-	        this.posicionX = posicionX;
-	        this.posicionY = posicionY;
-	        this.velocidad = velocidad;
-	        this.ancho = 32;
-	        this.alto = 32;
-	        this.vida = 3;
-	        this.mapa = mapa;
-	        this.hitbox = new Rectangle(posicionX, posicionY, ancho, alto);
-	        this.DAÑO = 10;
-	        this.tiempoDesdeUltimoDaño = 1;
-	        this.TIEMPO_ENTRE_DAÑOS = 1;
-	        if (texturaEnemigo == null) {
-	        texturaEnemigo = new Texture("dronebasico.png");
-	        }
-	        TextureRegion[][] cuadros = TextureRegion.split(texturaEnemigo, 32, 32);
+    protected Mapa mapa;
 
-	        TextureRegion[] cuadrosAnimacion = new TextureRegion[4];
+    protected Enemigo(float posicionX, float posicionY, float velocidad, int vida, int daño, Mapa mapa, Animation<TextureRegion> animacionEnemigo) {
 
-	        for (int i = 0; i < cuadrosAnimacion.length; i++) {
-	            cuadrosAnimacion[i] = cuadros[0][i];
-	        }
+        this.posicionX = posicionX;
+        this.posicionY = posicionY;
+        this.velocidad = velocidad;
+        this.ancho = 32;
+        this.alto = 32;
+        this.vida = vida;
+        this.mapa = mapa;
+        this.hitbox = new Rectangle(posicionX, posicionY, ancho, alto);
+        this.DAÑO = daño;
+        this.TIEMPO_ENTRE_DAÑOS = 1;
+        this.tiempoDesdeUltimoDaño = 1;
+        this.animacionEnemigo = animacionEnemigo;
+        this.tiempoAnimacion = 0;
+    }
 
-	        animacionEnemigo = new Animation<TextureRegion>(0.15f, cuadrosAnimacion);
+    public float obtenerPosicionX() {
+        return posicionX;
+    }
 
-	        animacionEnemigo.setPlayMode(Animation.PlayMode.LOOP);
+    public float obtenerPosicionY() {
+        return posicionY;
+    }
 
-	        tiempoAnimacion = 0;
-	    }
-	    
-	    public float obtenerPosicionX() {
-	        return posicionX;
-	    }
+    public float obtenerAncho() {
+        return ancho;
+    }
 
-	    public float obtenerPosicionY() {
-	        return posicionY;
-	    }
-	    
-	    public float obtenerAncho() {
-		    return ancho;
-		}
+    public float obtenerAlto() {
+        return alto;
+    }
 
-		public float obtenerAlto() {
-		    return alto;
-		}
-		
-		public Rectangle obtenerHitbox() {
-		    return hitbox;
-		}
+    public Rectangle obtenerHitbox() {
+        return hitbox;
+    }
 
-		public int obtenerDaño() {
-		    return DAÑO;
-		}
+    public int obtenerDaño() {
+        return DAÑO;
+    }
 
-	    public void recibirDaño(int daño) {
-	    	vida-=daño;
-	    	
-	    	if(vida<0) {
-	    		vida=0;
-	    	}
-	    }
-	    
-	    public boolean estaVivo() {
-	    	return vida>0;
-	    }
-	    
-	    public void intentarHacerDaño(Jugador jugador, float delta) {
+    public void recibirDaño(int daño) {
+        vida -= daño;
 
-	        tiempoDesdeUltimoDaño += delta;
+        if (vida < 0) {
+            vida = 0;
+        }
+    }
 
-	        Rectangle hitboxJugador = new Rectangle(jugador.obtenerPosicionX(), jugador.obtenerPosicionY(), jugador.obtenerAncho(), jugador.obtenerAlto());
+    public boolean estaVivo() {
+        return vida > 0;
+    }
 
-	        if (hitbox.overlaps(hitboxJugador) && tiempoDesdeUltimoDaño >= TIEMPO_ENTRE_DAÑOS) {
+    public void intentarHacerDaño(Jugador jugador, float delta) {
 
-	            jugador.recibirDaño(DAÑO);
-	            tiempoDesdeUltimoDaño = 0;
-	        }
-	    }
-	    
-	    public void mover(float movimientoX, float movimientoY, Jugador jugador, ArrayList<Enemigo> enemigos) {
+        tiempoDesdeUltimoDaño += delta;
 
-	    	float nuevaPosicionX = posicionX + movimientoX;
-	    	float nuevaPosicionY = posicionY + movimientoY;
+        Rectangle hitboxJugador = new Rectangle(
+                jugador.obtenerPosicionX(),
+                jugador.obtenerPosicionY(),
+                jugador.obtenerAncho(),
+                jugador.obtenerAlto());
 
-	    	Rectangle futuraHitboxX = new Rectangle(nuevaPosicionX, posicionY, ancho, alto);
+        if (hitbox.overlaps(hitboxJugador)
+                && tiempoDesdeUltimoDaño >= TIEMPO_ENTRE_DAÑOS) {
 
-	    	if (!mapa.hayColision(nuevaPosicionX, posicionY, ancho, alto)
-	    	        && !hayColisionConOtroEnemigo(futuraHitboxX, enemigos)) {
+            jugador.recibirDaño(DAÑO);
+            tiempoDesdeUltimoDaño = 0;
+        }
+    }
 
-	    	    posicionX = nuevaPosicionX;
-	    	}
+    public void mover(
+            float movimientoX,
+            float movimientoY,
+            Jugador jugador,
+            ArrayList<Enemigo> enemigos) {
 
-	    	Rectangle futuraHitboxY = new Rectangle(posicionX,nuevaPosicionY,ancho,alto);
+        float nuevaPosicionX = posicionX + movimientoX;
+        float nuevaPosicionY = posicionY + movimientoY;
 
-	    	if (!mapa.hayColision(posicionX, nuevaPosicionY, ancho, alto)
-	    	        && !hayColisionConOtroEnemigo(futuraHitboxY, enemigos)) {
+        Rectangle futuraHitboxX = new Rectangle(
+                nuevaPosicionX, posicionY, ancho, alto);
 
-	    	    posicionY = nuevaPosicionY;
-	    	}
+        if (!mapa.hayColision(nuevaPosicionX, posicionY, ancho, alto)
+                && !hayColisionConOtroEnemigo(futuraHitboxX, enemigos)) {
 
-	    	hitbox.setPosition(posicionX, posicionY);
-	    }
-	    
-	    public void perseguir(Jugador jugador, float delta, ArrayList<Enemigo> enemigos) {
+            posicionX = nuevaPosicionX;
+        }
 
-	        float diferenciaX = jugador.obtenerPosicionX() - posicionX;
-	        float diferenciaY = jugador.obtenerPosicionY() - posicionY;
+        Rectangle futuraHitboxY = new Rectangle(
+                posicionX, nuevaPosicionY, ancho, alto);
 
-	        float movimientoX = 0;
-	        float movimientoY = 0;
+        if (!mapa.hayColision(posicionX, nuevaPosicionY, ancho, alto)
+                && !hayColisionConOtroEnemigo(futuraHitboxY, enemigos)) {
 
-	        if (diferenciaX > 0) {
-	            movimientoX = 1;
-	        }
+            posicionY = nuevaPosicionY;
+        }
 
-	        if (diferenciaX < 0) {
-	            movimientoX = -1;
-	        }
+        hitbox.setPosition(posicionX, posicionY);
+    }
 
-	        if (diferenciaY > 0) {
-	            movimientoY = 1;
-	        }
+    public void perseguir(
+            Jugador jugador,
+            float delta,
+            ArrayList<Enemigo> enemigos) {
 
-	        if (diferenciaY < 0) {
-	            movimientoY = -1;
-	        }
-	        
-	        float longitudMovimiento = (float) Math.sqrt(movimientoX * movimientoX + movimientoY * movimientoY);
-	        
-	        if (longitudMovimiento > 0) {
-	            movimientoX = movimientoX / longitudMovimiento * velocidad * delta;
-	            movimientoY = movimientoY / longitudMovimiento * velocidad * delta;
-	        }
+        float diferenciaX = jugador.obtenerPosicionX() - posicionX;
+        float diferenciaY = jugador.obtenerPosicionY() - posicionY;
 
-	        mover(movimientoX, movimientoY, jugador, enemigos);
-	    }
-	    
-	    private boolean hayColisionConJugador(float nuevaPosicionX, float nuevaPosicionY, Jugador jugador) {
-	        Rectangle areaEnemigo = new Rectangle( nuevaPosicionX, nuevaPosicionY, ancho, alto);
-	        Rectangle areaJugador = new Rectangle( jugador.obtenerPosicionX(), jugador.obtenerPosicionY(), jugador.obtenerAncho(), jugador.obtenerAlto());
-	        return areaEnemigo.overlaps(areaJugador);
-	    }
-	    
-	    private boolean hayColisionConOtroEnemigo(Rectangle futuraHitbox, ArrayList<Enemigo> enemigos) {
+        float movimientoX = 0;
+        float movimientoY = 0;
 
-	        for (Enemigo enemigo : enemigos) {
+        if (diferenciaX > 0) {
+            movimientoX = 1;
+        }
 
-	            if (enemigo == this) {
-	                continue;
-	            }
+        if (diferenciaX < 0) {
+            movimientoX = -1;
+        }
 
-	            if (futuraHitbox.overlaps(enemigo.obtenerHitbox())) {
-	                return true;
-	            }
-	        }
+        if (diferenciaY > 0) {
+            movimientoY = 1;
+        }
 
-	        return false;
-	    }
-	    
-	    public void dibujar(OrthographicCamera camaraJuego, SpriteBatch lote) {
+        if (diferenciaY < 0) {
+            movimientoY = -1;
+        }
 
-	        TextureRegion cuadroActual = animacionEnemigo.getKeyFrame(tiempoAnimacion);
+        float longitudMovimiento = (float) Math.sqrt(
+                movimientoX * movimientoX + movimientoY * movimientoY);
 
-	        lote.draw(cuadroActual, posicionX, posicionY, ancho, alto);
-	    }
-	    
-	    public void actualizar(float delta, Jugador jugador, ArrayList<Enemigo> enemigos) {
+        if (longitudMovimiento > 0) {
+            movimientoX = movimientoX / longitudMovimiento * velocidad * delta;
+            movimientoY = movimientoY / longitudMovimiento * velocidad * delta;
+        }
 
-	        perseguir(jugador, delta, enemigos);
-	        intentarHacerDaño(jugador, delta);
-	        tiempoAnimacion += delta;
-	    }
-	    
-	    public static void disponerTextura() {
-	        if (texturaEnemigo != null) {
-	            texturaEnemigo.dispose();
-	            texturaEnemigo = null;
-	        }
-	    }
+        mover(movimientoX, movimientoY, jugador, enemigos);
+    }
+
+    private boolean hayColisionConOtroEnemigo(
+            Rectangle futuraHitbox,
+            ArrayList<Enemigo> enemigos) {
+
+        for (Enemigo enemigo : enemigos) {
+
+            if (enemigo == this) {
+                continue;
+            }
+
+            if (futuraHitbox.overlaps(enemigo.obtenerHitbox())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void dibujar(OrthographicCamera camaraJuego, SpriteBatch lote) {
+
+        TextureRegion cuadroActual =
+                animacionEnemigo.getKeyFrame(tiempoAnimacion);
+
+        lote.draw(cuadroActual, posicionX, posicionY, ancho, alto);
+    }
+
+    public void actualizar(
+            float delta,
+            Jugador jugador,
+            ArrayList<Enemigo> enemigos) {
+
+        perseguir(jugador, delta, enemigos);
+        intentarHacerDaño(jugador, delta);
+        tiempoAnimacion += delta;
+    }
 }
-

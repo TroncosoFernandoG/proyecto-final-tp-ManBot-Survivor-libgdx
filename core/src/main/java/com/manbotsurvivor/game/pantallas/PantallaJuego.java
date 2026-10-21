@@ -23,6 +23,7 @@ import com.manbotsurvivor.game.elementos.Jugador;
 import com.manbotsurvivor.game.elementos.Mapa;
 import com.manbotsurvivor.game.elementos.SistemaCombate;
 import com.manbotsurvivor.game.escenas.Hud;
+import com.manbotsurvivor.game.elementos.DroneBasico;
 
 public class PantallaJuego implements Screen {
 	private final SpriteBatch batch;
@@ -68,9 +69,9 @@ public class PantallaJuego implements Screen {
 
         jugador = new Jugador(200, 100, 100, controladorEntrada, limiteMapaAncho, limiteMapaAlto, mapa);
         
-        enemigos.add(new Enemigo(400, 300, 50, mapa));
-        enemigos.add(new Enemigo(100, 300, 50, mapa));
-        enemigos.add(new Enemigo(300, 200, 50, mapa));
+        enemigos.add(new DroneBasico(400, 300, 50, mapa));
+        enemigos.add(new DroneBasico(100, 300, 50, mapa));
+        enemigos.add(new DroneBasico(300, 200, 50, mapa));
         
         sistemaCombate = new SistemaCombate(jugador, enemigos);
         
@@ -256,7 +257,7 @@ public class PantallaJuego implements Screen {
 
         jugador.disponer();
 
-        Enemigo.disponerTextura();
+        DroneBasico.disponerTextura();
 
         hud.disponer();
         fuentePausa.dispose();
