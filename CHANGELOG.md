@@ -1,3 +1,11 @@
+## [1.13.0] - 2026-10-30
+
+### Agregado
+
+* Incorporación de la clase abtracta arma.
+* Incorporación del Laser con tres niveles de mejora.
+* Implementación de mejoras de daño y frecuencia de ataque.
+
 ## [1.12.0] - 2026-10-21
 
 ### Agregado

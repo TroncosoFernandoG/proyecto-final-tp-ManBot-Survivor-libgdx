@@ -1,6 +1,7 @@
 
 package com.manbotsurvivor.game.elementos;
 
+
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
@@ -11,6 +12,7 @@ public class SistemaCombate {
 
     private final Jugador jugador;
     private final List<Enemigo> enemigos;
+    
 
     private float tiempoAtaque;
     private final float INTERVALO_ATAQUE = 1.5f;
