@@ -1,3 +1,18 @@
+## [1.14.0] - 2026-10-31
+
+### Agregado
+
+* Incorporación de Granada como arma automática de área.
+* Implementación del radio de explosión y el daño a múltiples enemigos.
+* Incorporación de un efecto visual temporal de explosión
+
+### Modificado
+
+* Integración de la granada en SistemaCombate.
+* Uso de los parámetros específicos de cada arma para calcular sus ataques.
+* Refactorización de SistemaCombate para administrar múltiples proyectiles.
+* Conservación de la detección de impactos y del objetivo más cercano.
+
 ## [1.13.0] - 2026-10-30
 
 ### Agregado

@@ -1,7 +1,7 @@
-
 package com.manbotsurvivor.game.elementos;
 
-
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
@@ -12,157 +12,237 @@ public class SistemaCombate {
 
     private final Jugador jugador;
     private final List<Enemigo> enemigos;
-    
 
-    private float tiempoAtaque;
-    private final float INTERVALO_ATAQUE = 1.5f;
+    private final Laser laser;
+    private final Granada granada;
 
-    private boolean hayDisparo;
-    private float posicionDisparoX;
-    private float posicionDisparoY;
+    private final List<Proyectil> proyectiles = new ArrayList<>();
 
-    private Enemigo enemigoObjetivoDisparo;
-
-    private float direccionDisparoX;
-    private float direccionDisparoY;
-    private float velocidadDisparo;
+    private float tiempoLaser;
+    private float tiempoGranada;
 
     public SistemaCombate(Jugador jugador, List<Enemigo> enemigos) {
         this.jugador = jugador;
         this.enemigos = enemigos;
 
-        tiempoAtaque = 0;
-        hayDisparo = false;
+        laser = new Laser();
+        granada = new Granada();
+    }
 
-        posicionDisparoX = 0;
-        posicionDisparoY = 0;
+    public Laser obtenerLaser() {
+        return laser;
+    }
 
-        enemigoObjetivoDisparo = null;
-
-        direccionDisparoX = 0;
-        direccionDisparoY = 0;
-
-        velocidadDisparo = 200;
+    public Granada obtenerGranada() {
+        return granada;
     }
 
     private Enemigo obtenerEnemigoMasCercano() {
-        Enemigo enemigoMasCercano = null;
-        double distanciaMinima = Double.MAX_VALUE;
+        Enemigo cercano = null;
+        float distanciaMinima = Float.MAX_VALUE;
 
         for (Enemigo enemigo : enemigos) {
-            double diferenciaX =
-                enemigo.obtenerPosicionX() - jugador.obtenerPosicionX();
+            if (!enemigo.estaVivo()) {
+                continue;
+            }
 
-            double diferenciaY =
-                enemigo.obtenerPosicionY() - jugador.obtenerPosicionY();
+            float dx = enemigo.obtenerPosicionX()
+                    - jugador.obtenerPosicionX();
 
-            double distancia = Math.sqrt(
-                diferenciaX * diferenciaX + diferenciaY * diferenciaY
-            );
+            float dy = enemigo.obtenerPosicionY()
+                    - jugador.obtenerPosicionY();
 
-            if (enemigo.estaVivo() && distancia < distanciaMinima) {
+            float distancia = (float) Math.sqrt(dx * dx + dy * dy);
+
+            if (distancia < distanciaMinima) {
                 distanciaMinima = distancia;
-                enemigoMasCercano = enemigo;
+                cercano = enemigo;
             }
         }
 
-        return enemigoMasCercano;
+        return cercano;
     }
 
-    private void atacar() {
-        Enemigo enemigoCercano = obtenerEnemigoMasCercano();
-
-        if (enemigoCercano == null) {
+    private void crearProyectil(Enemigo objetivo, boolean esGranada) {
+        if (objetivo == null) {
             return;
         }
 
-        hayDisparo = true;
+        float x = jugador.obtenerPosicionX()
+                + jugador.obtenerAncho() / 2f;
 
-        posicionDisparoX =
-            jugador.obtenerPosicionX() + jugador.obtenerAncho() / 2;
+        float y = jugador.obtenerPosicionY()
+                + jugador.obtenerAlto() / 2f;
 
-        posicionDisparoY =
-            jugador.obtenerPosicionY() + jugador.obtenerAlto() / 2;
+        float destinoX = objetivo.obtenerPosicionX()
+                + objetivo.obtenerAncho() / 2f;
 
-        enemigoObjetivoDisparo = enemigoCercano;
+        float destinoY = objetivo.obtenerPosicionY()
+                + objetivo.obtenerAlto() / 2f;
 
-        float diferenciaX =
-            enemigoObjetivoDisparo.obtenerPosicionX() - posicionDisparoX;
+        float dx = destinoX - x;
+        float dy = destinoY - y;
 
-        float diferenciaY =
-            enemigoObjetivoDisparo.obtenerPosicionY() - posicionDisparoY;
+        float distancia = (float) Math.sqrt(dx * dx + dy * dy);
 
-        float distancia = (float) Math.sqrt(
-            diferenciaX * diferenciaX + diferenciaY * diferenciaY
-        );
+        if (distancia <= 0) {
+            return;
+        }
 
-        if (distancia > 0) {
-            direccionDisparoX = diferenciaX / distancia;
-            direccionDisparoY = diferenciaY / distancia;
+        Proyectil proyectil = new Proyectil();
+
+        proyectil.x = x;
+        proyectil.y = y;
+        proyectil.dx = dx / distancia;
+        proyectil.dy = dy / distancia;
+        proyectil.objetivo = objetivo;
+        proyectil.granada = esGranada;
+
+        if (esGranada) {
+            proyectil.velocidad = 145f;
+            proyectil.daño = granada.obtenerDaño();
+            proyectil.radio = granada.obtenerRadioExplosion();
         } else {
-            direccionDisparoX = 0;
-            direccionDisparoY = 0;
-        }
-    }
-
-    private void actualizarDisparo(float delta) {
-        if (!hayDisparo) {
-            return;
+            proyectil.velocidad = 240f;
+            proyectil.daño = laser.obtenerDaño();
+            proyectil.radio = 0f;
         }
 
-        posicionDisparoX += direccionDisparoX * velocidadDisparo * delta;
-        posicionDisparoY += direccionDisparoY * velocidadDisparo * delta;
-    }
-
-    private void comprobarColisionDisparo() {
-        if (!hayDisparo || enemigoObjetivoDisparo == null) {
-            return;
-        }
-
-        Rectangle areaDisparo = new Rectangle(
-            posicionDisparoX,
-            posicionDisparoY,
-            6,
-            6
-        );
-
-        Rectangle areaEnemigo = new Rectangle(
-            enemigoObjetivoDisparo.obtenerPosicionX(),
-            enemigoObjetivoDisparo.obtenerPosicionY(),
-            enemigoObjetivoDisparo.obtenerAncho(),
-            enemigoObjetivoDisparo.obtenerAlto()
-        );
-
-        if (areaDisparo.overlaps(areaEnemigo)) {
-            enemigoObjetivoDisparo.recibirDaño(1);
-
-            hayDisparo = false;
-            enemigoObjetivoDisparo = null;
-        }
+        proyectiles.add(proyectil);
     }
 
     public void actualizar(float delta) {
-        tiempoAtaque += delta;
+        tiempoLaser += delta;
+        tiempoGranada += delta;
 
-        if (tiempoAtaque >= INTERVALO_ATAQUE) {
-            atacar();
-            tiempoAtaque = 0;
+        if (tiempoLaser >= laser.obtenerIntervaloAtaque()) {
+            crearProyectil(obtenerEnemigoMasCercano(), false);
+            tiempoLaser = 0f;
         }
 
-        actualizarDisparo(delta);
-        comprobarColisionDisparo();
+        if (tiempoGranada >= granada.obtenerIntervaloAtaque()) {
+            crearProyectil(obtenerEnemigoMasCercano(), true);
+            tiempoGranada = 0f;
+        }
+
+        actualizarProyectiles(delta);
     }
 
-    public void dibujarDisparo(ShapeRenderer formaEnemigo) {
-        if (hayDisparo) {
-            formaEnemigo.setColor(Color.RED);
-            formaEnemigo.rect(
-                posicionDisparoX,
-                posicionDisparoY,
-                6,
-                6
+    private void actualizarProyectiles(float delta) {
+        Iterator<Proyectil> iterador = proyectiles.iterator();
+
+        while (iterador.hasNext()) {
+            Proyectil proyectil = iterador.next();
+
+            if (proyectil.explotado) {
+                proyectil.tiempoExplosion += delta;
+
+                if (proyectil.tiempoExplosion >= 0.28f) {
+                    iterador.remove();
+                }
+
+                continue;
+            }
+
+            if (proyectil.objetivo == null
+                    || !proyectil.objetivo.estaVivo()) {
+                iterador.remove();
+                continue;
+            }
+
+            proyectil.x += proyectil.dx * proyectil.velocidad * delta;
+            proyectil.y += proyectil.dy * proyectil.velocidad * delta;
+
+            Rectangle areaProyectil = new Rectangle(
+                    proyectil.x - 3,
+                    proyectil.y - 3,
+                    6,
+                    6
             );
+
+            Rectangle areaObjetivo = new Rectangle(
+                    proyectil.objetivo.obtenerPosicionX(),
+                    proyectil.objetivo.obtenerPosicionY(),
+                    proyectil.objetivo.obtenerAncho(),
+                    proyectil.objetivo.obtenerAlto()
+            );
+
+            if (areaProyectil.overlaps(areaObjetivo)) {
+                if (!proyectil.granada) {
+                    proyectil.objetivo.recibirDaño(proyectil.daño);
+                    iterador.remove();
+                } else {
+                    explotar(proyectil);
+                }
+            }
         }
+    }
+
+    private void explotar(Proyectil proyectil) {
+        if (proyectil.explotado) {
+            return;
+        }
+
+        proyectil.explotado = true;
+        proyectil.tiempoExplosion = 0f;
+
+        for (Enemigo enemigo : enemigos) {
+            if (!enemigo.estaVivo()) {
+                continue;
+            }
+
+            float dx = enemigo.obtenerPosicionX()
+                    + enemigo.obtenerAncho() / 2f
+                    - proyectil.x;
+
+            float dy = enemigo.obtenerPosicionY()
+                    + enemigo.obtenerAlto() / 2f
+                    - proyectil.y;
+
+            if (dx * dx + dy * dy
+                    <= proyectil.radio * proyectil.radio) {
+                enemigo.recibirDaño(proyectil.daño);
+            }
+        }
+    }
+
+    public void dibujarDisparo(ShapeRenderer renderer) {
+        for (Proyectil proyectil : proyectiles) {
+            if (proyectil.explotado) {
+                renderer.setColor(Color.ORANGE);
+                renderer.circle(
+                        proyectil.x,
+                        proyectil.y,
+                        proyectil.radio
+                );
+            } else {
+                renderer.setColor(
+                        proyectil.granada ? Color.ORANGE : Color.RED
+                );
+
+                renderer.circle(
+                        proyectil.x,
+                        proyectil.y,
+                        proyectil.granada ? 5f : 3f
+                );
+            }
+        }
+    }
+
+    private static class Proyectil {
+        float x;
+        float y;
+        float dx;
+        float dy;
+        float velocidad;
+        float radio;
+        float tiempoExplosion;
+
+        int daño;
+
+        boolean granada;
+        boolean explotado;
+
+        Enemigo objetivo;
     }
 }
-
