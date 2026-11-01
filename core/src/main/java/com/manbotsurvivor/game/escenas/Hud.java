@@ -22,6 +22,7 @@ public class Hud {
 	private GestorPartida gestorPartida;
 	
 	Label vidaLabel;
+	Label nivelLabel;
 	Label experienciaLabel;
 	Label tiempoLabel;
 	Label tiempoTranscurridoLabel;
@@ -42,12 +43,15 @@ public class Hud {
 		table.setFillParent(true);
 		
 		vidaLabel = new Label("Vida: 100/100",  new Label.LabelStyle(fuente, Color.WHITE));
-		experienciaLabel = new Label("XP: 0/100", new Label.LabelStyle(fuente, Color.WHITE));
+		nivelLabel = new Label("Nivel: " + jugador.obtenerNivel(),  new Label.LabelStyle(fuente, Color.WHITE));
+		experienciaLabel = new Label("XP: "+ jugador.obtenerExperiencia() + "/" + jugador.obtenerExperienciaNecesaria(), new Label.LabelStyle(fuente, Color.WHITE));
 		tiempoLabel = new Label("Tiempo: 00:00", new Label.LabelStyle(fuente, Color.WHITE));
 		tiempoTranscurridoLabel = new Label("Tiempo transcurrido: 00:00", new Label.LabelStyle(fuente, Color.WHITE));
 		enemigosEliminadosLabel = new Label("Enemigos: 0", new Label.LabelStyle(fuente, Color.WHITE));
 		
 		table.add(vidaLabel).left().padTop(10).padLeft(10);
+		table.row();
+		table.add(nivelLabel).left().padLeft(10);
 		table.row();
 		table.add(experienciaLabel).left().padLeft(10);
 		table.row();
@@ -71,6 +75,8 @@ public class Hud {
 
 	    vidaLabel.setText("Vida: " + jugador.obtenerVida() + "/" + jugador.obtenerVidaMaxima());
 
+	    nivelLabel.setText("Nivel: " + jugador.obtenerNivel());
+	    
 	    experienciaLabel.setText("XP: " + jugador.obtenerExperiencia() + "/100");
 
 	    tiempoLabel.setText(String.format("Tiempo en juego: %02d:%02d", minutosJuego, segundosJuego));

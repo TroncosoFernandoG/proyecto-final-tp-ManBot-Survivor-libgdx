@@ -1,3 +1,16 @@
+## [1.14.1] - 2026-11-01
+
+### Agregado
+
+* Implementación del nivel del jugador y de los niveles pendientes.
+* Procesamiento de experiencia acumulada y conservación del excedente.
+* Incorporación del nivel actual y el umbral de experiencia al HUD.
+* Incorporación de mejoras de curación y velocidad.
+
+### Modificado
+
+* Actualización de Jugador para procesar una o varias subidas de nivel.
+
 ## [1.14.0] - 2026-10-31
 
 ### Agregado

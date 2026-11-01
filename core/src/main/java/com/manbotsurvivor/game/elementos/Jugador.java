@@ -16,6 +16,9 @@ public class Jugador {
 	private float ancho;
 	private float alto;
 	private int experiencia;
+	private int nivel = 1;
+	private int experienciaNecesaria = 100;
+	private int nivelesPendientes = 0;
 	private int enemigosEliminados;
 	private int vida;
 	private final int VIDA_MAXIMA;
@@ -81,12 +84,43 @@ public class Jugador {
 	    return alto;
 	}
 	
-	public void ganarExperiencia(int cantidad) {
+	public int ganarExperiencia(int cantidad) {
+		 if (cantidad <= 0) {
+		        return 0;
+		    }
 	    experiencia += cantidad;
+	    int nivelesGanados = 0;
+	    
+	    while (experiencia >= experienciaNecesaria) {
+	        experiencia -= experienciaNecesaria;
+	        nivel++;
+	        nivelesPendientes++;
+	        nivelesGanados++;
+	    }
+	    
+	    return nivelesGanados;
 	}
 	
 	public int obtenerExperiencia() {
 	    return experiencia;
+	}
+	
+	public int obtenerNivel() {
+	    return nivel;
+	}
+
+	public int obtenerExperienciaNecesaria() {
+	    return experienciaNecesaria;
+	}
+
+	public boolean hayNivelPendiente() {
+	    return nivelesPendientes > 0;
+	}
+
+	public void consumirNivelPendiente() {
+	    if (nivelesPendientes > 0) {
+	        nivelesPendientes--;
+	    }
 	}
 	
 	public void registrarEnemigoEliminado() {
@@ -113,8 +147,21 @@ public class Jugador {
 	public int obtenerVidaMaxima() {
 	    return VIDA_MAXIMA;
 	}
-
 	
+	public void curar(int cantidad) {
+	    if (cantidad <= 0) {
+	        return;
+	    }
+
+	    vida = Math.min(VIDA_MAXIMA, vida + cantidad);
+	}
+	
+	public void aumentarVelocidad(float cantidad) {
+	    if (cantidad > 0) {
+	        velocidad += cantidad;
+	    }
+	}
+
 	public void mover(float movimientoX, float movimientoY) {
 
 	    float nuevaPosicionX = posicionX + movimientoX;
