@@ -19,10 +19,12 @@ import com.manbotsurvivor.game.elementos.Enemigo;
 import com.manbotsurvivor.game.elementos.EstadoPartida;
 import com.manbotsurvivor.game.elementos.GestorEntidades;
 import com.manbotsurvivor.game.elementos.GestorPartida;
+import com.manbotsurvivor.game.elementos.GestorProgresion;
 import com.manbotsurvivor.game.elementos.Jugador;
 import com.manbotsurvivor.game.elementos.Mapa;
 import com.manbotsurvivor.game.elementos.SistemaCombate;
 import com.manbotsurvivor.game.escenas.Hud;
+import com.manbotsurvivor.game.escenas.SelectorMejoras;
 import com.manbotsurvivor.game.elementos.DroneBasico;
 import com.manbotsurvivor.game.elementos.RobotTanque;
 import com.manbotsurvivor.game.elementos.NanoBot;
@@ -51,6 +53,8 @@ public class PantallaJuego implements Screen {
     private int oleadaActual;
     private float tiempoEntreOleadas;
     private boolean esperandoSiguienteOleada;
+    private GestorProgresion gestorProgresion;
+    private SelectorMejoras selectorMejoras;
     
     public PantallaJuego(SpriteBatch batch, NavegacionPantallas navegacion, int anchoVista, int altoVista) {
 
@@ -95,6 +99,10 @@ public class PantallaJuego implements Screen {
         gestorPartida = new GestorPartida();
 
         hud = new Hud(batch, jugador, gestorPartida);
+        
+        gestorProgresion = new GestorProgresion(jugador, sistemaCombate, gestorPartida);
+
+        selectorMejoras = new SelectorMejoras();
         
         iniciarOleada(1);
     }
@@ -202,7 +210,7 @@ public class PantallaJuego implements Screen {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
-        if (controladorEntrada.consumirPulsacionEscape()) {
+        if (controladorEntrada.consumirPulsacionEscape() && !gestorProgresion.haySeleccionActiva()) {
             if (gestorPartida.estaEnCurso()) {
                 gestorPartida.pausar();
             } else if (gestorPartida.estaPausada()) {
@@ -210,8 +218,7 @@ public class PantallaJuego implements Screen {
             }
         }
 
-        if (gestorPartida.estaPausada()
-                && controladorEntrada.consumirPulsacionM()) {
+        if (gestorPartida.estaPausada() && controladorEntrada.consumirPulsacionM() && !gestorProgresion.haySeleccionActiva()) {
             navegacion.mostrarMenu();
             return;
         }
@@ -233,11 +240,15 @@ public class PantallaJuego implements Screen {
 
             gestorEntidades.eliminarEnemigosMuertos();
             gestorEntidades.recogerChips();
+            gestorProgresion.actualizar();
             
             actualizarOleadas(delta);
             
             gestorPartida.actualizar(0, jugador.obtenerVida());
+            
         }
+        
+        
         
         camaraJuego.position.set(jugador.obtenerPosicionX() + 16, jugador.obtenerPosicionY() + 16, 0);
         
@@ -267,6 +278,8 @@ public class PantallaJuego implements Screen {
 
         batch.setProjectionMatrix(camaraJuego.combined);
 
+        
+        
         batch.begin();
 
         jugador.dibujar(camaraJuego, batch);
@@ -289,13 +302,17 @@ public class PantallaJuego implements Screen {
         formaEnemigo.end();
         
         
-        hud.actualizar();
-
         batch.setProjectionMatrix(hud.obtenerCamara().combined);
+        
+        if (!gestorProgresion.haySeleccionActiva()) {
+        	
+        hud.actualizar();
 
         hud.dibujar();
         
-        if (gestorPartida.estaPausada()) {
+        }
+        
+        if (gestorPartida.estaPausada() && !gestorProgresion.haySeleccionActiva()) {
             batch.begin();
             
             fuentePausa.getData().setScale(2);
@@ -307,6 +324,17 @@ public class PantallaJuego implements Screen {
             batch.end();
         }
         
+        if (gestorProgresion.haySeleccionActiva()) {
+            int seleccion = controladorEntrada.consumirSeleccionMejora();
+            
+            if (seleccion != 0) {
+                gestorProgresion.elegir(seleccion);
+            }
+        }
+        
+        if (gestorProgresion.haySeleccionActiva()) {
+            selectorMejoras.dibujar(batch, fuentePausa, gestorProgresion, hud.obtenerCamara().viewportWidth,hud.obtenerCamara().viewportHeight);
+        }
 		
 		if (gestorPartida.terminoLaPartida()) {
 		    batch.begin();

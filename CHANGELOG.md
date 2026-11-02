@@ -1,3 +1,18 @@
+## [1.15.0] - 2026-11-01
+
+### Agregado
+
+* Incorporación de la enumeración Mejora.
+* Implementación de GestorProgresion para gestionar la selección de mejoras.
+* Incorporación de SelectorMejoras para mostrar las opciones disponibles.
+* Incorporación de la selección de mejoras mediante las teclas 1, 2 y 3.
+* Implementación de la pausa durante la selección de mejoras.
+
+### Modificado
+
+* Integración de la progresión con el sistema de pausa existente.
+* Validación de mejoras según el nivel actual de las armas.
+
 ## [1.14.1] - 2026-11-01
 
 ### Agregado

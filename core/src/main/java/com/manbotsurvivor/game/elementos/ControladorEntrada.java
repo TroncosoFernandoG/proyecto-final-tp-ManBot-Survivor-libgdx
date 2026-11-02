@@ -171,7 +171,26 @@ public class ControladorEntrada extends InputAdapter {
             pulsacionEnter = false;
             return true;
         }
-
+        
         return false;
+    }
+    
+    public int consumirSeleccionMejora() {
+        if (com.badlogic.gdx.Gdx.input.isKeyJustPressed(
+                com.badlogic.gdx.Input.Keys.NUM_1)) {
+            return 1;
+        }
+
+        if (com.badlogic.gdx.Gdx.input.isKeyJustPressed(
+                com.badlogic.gdx.Input.Keys.NUM_2)) {
+            return 2;
+        }
+
+        if (com.badlogic.gdx.Gdx.input.isKeyJustPressed(
+                com.badlogic.gdx.Input.Keys.NUM_3)) {
+            return 3;
+        }
+
+        return 0;
     }
 }
