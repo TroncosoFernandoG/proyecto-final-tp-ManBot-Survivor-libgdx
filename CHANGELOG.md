@@ -1,3 +1,14 @@
+## [1.16.0] - 2026-11-03
+
+### Agregado
+* Incorporación de PanelResultado para mostrar las estadísticas finales.
+* Visualización del tiempo de supervivencia, bajas y nivel alcanzado.
+* Incorporación de la opción de volver al menú principal.
+
+### Modificado
+* Integración del panel de resultados con los estados de partida existentes.
+* Bloqueo de la actualización del juego después de la derrota o victoria.
+
 ## [1.15.0] - 2026-11-01
 
 ### Agregado

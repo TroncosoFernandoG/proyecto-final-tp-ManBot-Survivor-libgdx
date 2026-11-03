@@ -24,6 +24,7 @@ import com.manbotsurvivor.game.elementos.Jugador;
 import com.manbotsurvivor.game.elementos.Mapa;
 import com.manbotsurvivor.game.elementos.SistemaCombate;
 import com.manbotsurvivor.game.escenas.Hud;
+import com.manbotsurvivor.game.escenas.PanelResultado;
 import com.manbotsurvivor.game.escenas.SelectorMejoras;
 import com.manbotsurvivor.game.elementos.DroneBasico;
 import com.manbotsurvivor.game.elementos.RobotTanque;
@@ -55,6 +56,7 @@ public class PantallaJuego implements Screen {
     private boolean esperandoSiguienteOleada;
     private GestorProgresion gestorProgresion;
     private SelectorMejoras selectorMejoras;
+    private PanelResultado panelResultado;
     
     public PantallaJuego(SpriteBatch batch, NavegacionPantallas navegacion, int anchoVista, int altoVista) {
 
@@ -103,6 +105,8 @@ public class PantallaJuego implements Screen {
         gestorProgresion = new GestorProgresion(jugador, sistemaCombate, gestorPartida);
 
         selectorMejoras = new SelectorMejoras();
+        
+        panelResultado = new PanelResultado();
         
         iniciarOleada(1);
     }
@@ -304,7 +308,7 @@ public class PantallaJuego implements Screen {
         
         batch.setProjectionMatrix(hud.obtenerCamara().combined);
         
-        if (!gestorProgresion.haySeleccionActiva()) {
+        if (!gestorProgresion.haySeleccionActiva() && !gestorPartida.terminoLaPartida()) {
         	
         hud.actualizar();
 
@@ -336,20 +340,14 @@ public class PantallaJuego implements Screen {
             selectorMejoras.dibujar(batch, fuentePausa, gestorProgresion, hud.obtenerCamara().viewportWidth,hud.obtenerCamara().viewportHeight);
         }
 		
-		if (gestorPartida.terminoLaPartida()) {
-		    batch.begin();
-		
-		    fuentePausa.getData().setScale(2);
-		
-		    if (gestorPartida.obtenerEstado() == EstadoPartida.DERROTA) {
-		        fuentePausa.draw(batch, "DERROTA", 145, 125);
-		    } else if (gestorPartida.obtenerEstado() == EstadoPartida.VICTORIA) {
-		        fuentePausa.draw(batch, "VICTORIA", 140, 125);
-		    }
-		
-		    fuentePausa.getData().setScale(1);
-		    batch.end();
-		}
+        if (gestorPartida.terminoLaPartida()) {
+            panelResultado.dibujar(batch, fuentePausa, gestorPartida, jugador, hud.obtenerCamara().viewportWidth, hud.obtenerCamara().viewportHeight);
+
+            if (controladorEntrada.consumirPulsacionEnter()) {
+                navegacion.mostrarMenu();
+                return;
+            }
+        }
     }
 
     @Override
