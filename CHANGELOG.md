@@ -1,3 +1,16 @@
+## [1.17.0] - 2026-11-03
+
+### Agregado
+* Incorporación de JefeMecanico como enemigo final.
+* Aparición del jefe a los 15 minutos de juego efectivo.
+* Implementación de la condición de victoria al derrotar al jefe.
+* Incorporación de GestorOleadas para centralizar la generación de enemigos.
+
+### Modificado
+* Refactorización de PantallaJuego para delegar la lógica de oleadas.
+* Integración del jefe con el sistema de combate y la gestión de entidades.
+* Detención de las oleadas normales cuando aparece el jefe.
+
 ## [1.16.0] - 2026-11-03
 
 ### Agregado

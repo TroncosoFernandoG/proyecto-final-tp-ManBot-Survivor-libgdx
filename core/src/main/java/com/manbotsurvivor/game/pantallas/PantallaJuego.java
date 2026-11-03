@@ -18,6 +18,7 @@ import com.manbotsurvivor.game.elementos.ControladorEntrada;
 import com.manbotsurvivor.game.elementos.Enemigo;
 import com.manbotsurvivor.game.elementos.EstadoPartida;
 import com.manbotsurvivor.game.elementos.GestorEntidades;
+import com.manbotsurvivor.game.elementos.GestorOleadas;
 import com.manbotsurvivor.game.elementos.GestorPartida;
 import com.manbotsurvivor.game.elementos.GestorProgresion;
 import com.manbotsurvivor.game.elementos.Jugador;
@@ -51,9 +52,7 @@ public class PantallaJuego implements Screen {
     private ShapeRenderer formaEnemigo;
     private BitmapFont fuentePausa;
     private GestorPartida gestorPartida;
-    private int oleadaActual;
-    private float tiempoEntreOleadas;
-    private boolean esperandoSiguienteOleada;
+    private GestorOleadas gestorOleadas;
     private GestorProgresion gestorProgresion;
     private SelectorMejoras selectorMejoras;
     private PanelResultado panelResultado;
@@ -99,6 +98,8 @@ public class PantallaJuego implements Screen {
         renderizadorMapa = new OrthogonalTiledMapRenderer(mapa.obtenerMapa());
         
         gestorPartida = new GestorPartida();
+        
+        gestorOleadas = new GestorOleadas(enemigos, jugador, mapa, gestorPartida, anchoMapa, altoMapa);
 
         hud = new Hud(batch, jugador, gestorPartida);
         
@@ -108,102 +109,12 @@ public class PantallaJuego implements Screen {
         
         panelResultado = new PanelResultado();
         
-        iniciarOleada(1);
     }
 
     @Override
     public void show() {
     	Gdx.input.setInputProcessor(controladorEntrada);
     }
-    
-
-    private void iniciarOleada(int numeroOleada) {
-
-    oleadaActual = numeroOleada;
-    esperandoSiguienteOleada = false;
-    tiempoEntreOleadas = 0;
-
-    int cantidadEnemigos = 5 + oleadaActual * 2;
-
-    float factorDificultad = 1 + (oleadaActual - 1) * 0.1f;
-
-    for (int i = 0; i < cantidadEnemigos; i++) {
-
-        float[] posicion = buscarPosicionEnemigo();
-
-        Enemigo enemigo;
-
-        if (i % 7 == 6) {
-            enemigo = new RobotTanque(
-                posicion[0], posicion[1], 20, mapa
-            );
-        } else if (i % 2 == 0) {
-            enemigo = new NanoBot(
-                posicion[0], posicion[1], mapa
-            );
-        } else {
-            enemigo = new DroneBasico(
-                posicion[0], posicion[1], 50, mapa
-            );
-        }
-
-        enemigo.aumentarDificultad(factorDificultad);
-        enemigos.add(enemigo);
-    }
-}
-
-	private float[] buscarPosicionEnemigo() {
-
-    float x = 0;
-    float y = 0;
-
-    for (int intento = 0; intento < 100; intento++) {
-
-        x = com.badlogic.gdx.math.MathUtils.random(
-            0, anchoMapa - 32
-        );
-
-        y = com.badlogic.gdx.math.MathUtils.random(
-            0, altoMapa - 32
-        );
-
-        boolean colisionMapa = mapa.hayColision(x, y, 32, 32);
-
-        float diferenciaX = x - jugador.obtenerPosicionX();
-        float diferenciaY = y - jugador.obtenerPosicionY();
-
-        float distancia = (float) Math.sqrt(
-            diferenciaX * diferenciaX + diferenciaY * diferenciaY
-        );
-
-        if (!colisionMapa && distancia >= 150) {
-            return new float[] { x, y };
-        }
-    }
-
-    return new float[] { x, y };
-}
-
-	private void actualizarOleadas(float delta) {
-
-    if (!enemigos.isEmpty()) {
-        esperandoSiguienteOleada = false;
-        tiempoEntreOleadas = 0;
-        return;
-    }
-
-    if (!esperandoSiguienteOleada) {
-        esperandoSiguienteOleada = true;
-        tiempoEntreOleadas = 0;
-        return;
-    }
-
-    tiempoEntreOleadas += delta;
-
-    if (tiempoEntreOleadas >= 2f) {
-        iniciarOleada(oleadaActual + 1);
-    }
-}
 
     
     
@@ -246,7 +157,7 @@ public class PantallaJuego implements Screen {
             gestorEntidades.recogerChips();
             gestorProgresion.actualizar();
             
-            actualizarOleadas(delta);
+            gestorOleadas.actualizar(delta);
             
             gestorPartida.actualizar(0, jugador.obtenerVida());
             
