@@ -1,8 +1,9 @@
-package com.manbotsurvivor.game.elementos;
+package com.manbotsurvivor.game.enemigos;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.manbotsurvivor.game.elementos.Mapa;
 
 
 public class RobotTanque extends Enemigo {
@@ -13,13 +14,16 @@ public class RobotTanque extends Enemigo {
     public RobotTanque(float posicionX, float posicionY, float velocidad, Mapa mapa) {
 
         super(posicionX, posicionY, velocidad, 10, 25, mapa, obtenerAnimacionTanque());
+        ancho=64;
+        alto=64;
+        hitbox.setSize(ancho, alto);
     }
 
     private static Animation<TextureRegion> obtenerAnimacionTanque() {
 
         if (animacionTanque == null) {
 
-            texturaTanque = new Texture("dronebasico.png");
+            texturaTanque = new Texture("Tanque.png");
 
             TextureRegion[][] cuadros =
                 TextureRegion.split(texturaTanque, 32, 32);

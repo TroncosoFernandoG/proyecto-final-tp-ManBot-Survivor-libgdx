@@ -3,7 +3,7 @@ package com.manbotsurvivor.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.manbotsurvivor.game.elementos.GestorAudio;
+import com.manbotsurvivor.game.gestores.GestorAudio;
 import com.manbotsurvivor.game.pantallas.PantallaJuego;
 import com.manbotsurvivor.game.pantallas.PantallaMenu;
 import com.manbotsurvivor.game.pantallas.PantallaOpciones;

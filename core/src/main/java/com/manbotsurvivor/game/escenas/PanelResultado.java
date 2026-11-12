@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.manbotsurvivor.game.elementos.EstadoPartida;
-import com.manbotsurvivor.game.elementos.GestorPartida;
-import com.manbotsurvivor.game.elementos.Jugador;
+import com.manbotsurvivor.game.gestores.GestorPartida;
+import com.manbotsurvivor.game.jugador.Jugador;
 
 public class PanelResultado {
 

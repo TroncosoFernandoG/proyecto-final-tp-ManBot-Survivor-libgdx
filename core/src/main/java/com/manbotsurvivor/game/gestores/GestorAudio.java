@@ -1,4 +1,4 @@
-package com.manbotsurvivor.game.elementos;
+package com.manbotsurvivor.game.gestores;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;

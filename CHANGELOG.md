@@ -1,3 +1,16 @@
+## [1.17.1] - 2026-11-12
+
+### Agregado
+* Incorporación de sprite de granada y su explosion.
+* Incorporación de sprite de NanoBot.
+* Incorporación de sprite de RobotTanque.
+* Incorporación de sprite de Jefe Mecanico.
+
+### Modificado
+* Cambio en el tamaño de RobotTanque y Jefe Mecanico.
+* Actualizacion del sprite del Drone.
+* Reorganizacion de paquetes.
+
 ## [1.17.0] - 2026-11-03
 
 ### Agregado

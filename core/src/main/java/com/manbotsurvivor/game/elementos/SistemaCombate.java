@@ -7,6 +7,14 @@ import java.util.List;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.manbotsurvivor.game.enemigos.Enemigo;
+import com.manbotsurvivor.game.jugador.Granada;
+import com.manbotsurvivor.game.jugador.Jugador;
+import com.manbotsurvivor.game.jugador.Laser;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class SistemaCombate {
 
@@ -20,6 +28,11 @@ public class SistemaCombate {
 
     private float tiempoLaser;
     private float tiempoGranada;
+    private Texture texturaBomba;
+    private Texture texturaExplosion;
+
+    private Animation<TextureRegion> animacionBomba;
+    private Animation<TextureRegion> animacionExplosion;
 
     public SistemaCombate(Jugador jugador, List<Enemigo> enemigos) {
         this.jugador = jugador;
@@ -27,6 +40,32 @@ public class SistemaCombate {
 
         laser = new Laser();
         granada = new Granada();
+        texturaBomba = new Texture("bomba_explota.png");
+        texturaExplosion = new Texture("explosion.png");
+        
+        TextureRegion[][] cuadrosBomba = TextureRegion.split(texturaBomba, 16, 16);
+
+        TextureRegion[] framesBomba = new TextureRegion[2];
+
+        for (int i = 0; i < framesBomba.length; i++) {
+            framesBomba[i] = cuadrosBomba[0][i];
+        }
+
+        animacionBomba = new Animation<TextureRegion>(0.15f, framesBomba);
+
+        animacionBomba.setPlayMode(Animation.PlayMode.LOOP);
+
+        TextureRegion[][] cuadrosExplosion = TextureRegion.split(texturaExplosion, 32, 32);
+
+        TextureRegion[] framesExplosion = new TextureRegion[6];
+
+        for (int i = 0; i < framesExplosion.length; i++) {
+            framesExplosion[i] = cuadrosExplosion[0][i];
+        }
+
+        animacionExplosion = new Animation<TextureRegion>(0.047f, framesExplosion);
+
+        animacionExplosion.setPlayMode(Animation.PlayMode.NORMAL);
     }
 
     public Laser obtenerLaser() {
@@ -152,6 +191,10 @@ public class SistemaCombate {
 
             proyectil.x += proyectil.dx * proyectil.velocidad * delta;
             proyectil.y += proyectil.dy * proyectil.velocidad * delta;
+            
+            if (proyectil.granada) {
+                proyectil.tiempoAnimacionBomba += delta;
+            }
 
             Rectangle areaProyectil = new Rectangle(
                     proyectil.x - 3,
@@ -208,23 +251,38 @@ public class SistemaCombate {
 
     public void dibujarDisparo(ShapeRenderer renderer) {
         for (Proyectil proyectil : proyectiles) {
-            if (proyectil.explotado) {
-                renderer.setColor(Color.ORANGE);
-                renderer.circle(
-                        proyectil.x,
-                        proyectil.y,
-                        proyectil.radio
-                );
-            } else {
-                renderer.setColor(
-                        proyectil.granada ? Color.ORANGE : Color.RED
-                );
+        	if (proyectil.granada) {
+                continue;
+            }
 
-                renderer.circle(
-                        proyectil.x,
-                        proyectil.y,
-                        proyectil.granada ? 5f : 3f
-                );
+            renderer.setColor(Color.RED);
+
+            renderer.circle(proyectil.x, proyectil.y, 3f);
+            
+        }
+    }
+    
+    public void dibujarGranadas(SpriteBatch batch) {
+
+        for (Proyectil proyectil : proyectiles) {
+
+            if (!proyectil.granada) {
+                continue;
+            }
+
+            if (proyectil.explotado) {
+
+                TextureRegion cuadroActual =  animacionExplosion.getKeyFrame(proyectil.tiempoExplosion, false);
+
+                float tamaño = proyectil.radio * 2;
+
+                batch.draw(cuadroActual, proyectil.x - tamaño / 2, proyectil.y - tamaño / 2, tamaño, tamaño);
+
+            } else {
+
+                TextureRegion cuadroActual = animacionBomba.getKeyFrame(proyectil.tiempoAnimacionBomba);
+
+                batch.draw(cuadroActual, proyectil.x - 8, proyectil.y - 8, 16, 16);
             }
         }
     }
@@ -237,6 +295,7 @@ public class SistemaCombate {
         float velocidad;
         float radio;
         float tiempoExplosion;
+        float tiempoAnimacionBomba;
 
         int daño;
 
@@ -245,4 +304,11 @@ public class SistemaCombate {
 
         Enemigo objetivo;
     }
+    
+    public void disponer() {
+
+        texturaBomba.dispose();
+        texturaExplosion.dispose();
+    }
 }
+

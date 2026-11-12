@@ -1,9 +1,10 @@
 
-package com.manbotsurvivor.game.elementos;
+package com.manbotsurvivor.game.enemigos;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.manbotsurvivor.game.elementos.Mapa;
 
 public class DroneBasico extends Enemigo {
 
@@ -19,7 +20,7 @@ public class DroneBasico extends Enemigo {
 
         if (animacionDrone == null) {
 
-            texturaDrone = new Texture("dronebasico.png");
+            texturaDrone = new Texture("drone.png");
 
             TextureRegion[][] cuadros =
                     TextureRegion.split(texturaDrone, 32, 32);

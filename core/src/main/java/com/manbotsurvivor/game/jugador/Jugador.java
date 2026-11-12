@@ -1,6 +1,8 @@
-package com.manbotsurvivor.game.elementos;
+package com.manbotsurvivor.game.jugador;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.manbotsurvivor.game.elementos.ControladorEntrada;
+import com.manbotsurvivor.game.elementos.Mapa;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;

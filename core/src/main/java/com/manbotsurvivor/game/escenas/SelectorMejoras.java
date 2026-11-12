@@ -3,8 +3,8 @@ package com.manbotsurvivor.game.escenas;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.manbotsurvivor.game.elementos.GestorProgresion;
-import com.manbotsurvivor.game.elementos.Mejora;
+import com.manbotsurvivor.game.gestores.GestorProgresion;
+import com.manbotsurvivor.game.jugador.Mejora;
 
 public class SelectorMejoras {
 	

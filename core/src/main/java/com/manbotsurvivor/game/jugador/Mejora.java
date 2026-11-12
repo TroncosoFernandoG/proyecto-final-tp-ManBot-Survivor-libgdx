@@ -1,4 +1,4 @@
-package com.manbotsurvivor.game.elementos;
+package com.manbotsurvivor.game.jugador;
 
 public enum Mejora {
 	MEJORAR_LASER("Mejorar láser"),

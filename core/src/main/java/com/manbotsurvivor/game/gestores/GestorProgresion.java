@@ -1,8 +1,12 @@
-package com.manbotsurvivor.game.elementos;
+package com.manbotsurvivor.game.gestores;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.manbotsurvivor.game.elementos.SistemaCombate;
+import com.manbotsurvivor.game.jugador.Jugador;
+import com.manbotsurvivor.game.jugador.Mejora;
 
 public class GestorProgresion {
 

@@ -1,4 +1,4 @@
-package com.manbotsurvivor.game.elementos;
+package com.manbotsurvivor.game.jugador;
 
 public abstract class Arma {
 

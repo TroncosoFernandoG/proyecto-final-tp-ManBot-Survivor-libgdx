@@ -10,8 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.manbotsurvivor.game.ManBotSurvivor;
-import com.manbotsurvivor.game.elementos.Jugador;
-import com.manbotsurvivor.game.elementos.GestorPartida;
+import com.manbotsurvivor.game.gestores.GestorPartida;
+import com.manbotsurvivor.game.jugador.Jugador;
 
 public class Hud {
 

@@ -1,8 +1,15 @@
-package com.manbotsurvivor.game.elementos;
+package com.manbotsurvivor.game.gestores;
 
 import java.util.List;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.manbotsurvivor.game.elementos.Mapa;
+import com.manbotsurvivor.game.enemigos.DroneBasico;
+import com.manbotsurvivor.game.enemigos.Enemigo;
+import com.manbotsurvivor.game.enemigos.JefeMecanico;
+import com.manbotsurvivor.game.enemigos.NanoBot;
+import com.manbotsurvivor.game.enemigos.RobotTanque;
+import com.manbotsurvivor.game.jugador.Jugador;
 
 public class GestorOleadas {
 

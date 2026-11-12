@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.manbotsurvivor.game.NavegacionPantallas;
 import com.manbotsurvivor.game.elementos.ControladorEntrada;
-import com.manbotsurvivor.game.elementos.GestorAudio;
+import com.manbotsurvivor.game.gestores.GestorAudio;
 
 public class PantallaOpciones implements Screen{
 	

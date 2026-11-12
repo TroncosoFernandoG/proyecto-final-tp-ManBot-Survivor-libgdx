@@ -1,5 +1,5 @@
 
-package com.manbotsurvivor.game.elementos;
+package com.manbotsurvivor.game.enemigos;
 
 import java.util.ArrayList;
 
@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.manbotsurvivor.game.elementos.Mapa;
+import com.manbotsurvivor.game.jugador.Jugador;
 
 public abstract class Enemigo {
 
@@ -173,7 +175,7 @@ public abstract class Enemigo {
         mover(movimientoX, movimientoY, jugador, enemigos);
     }
 
-    private boolean hayColisionConOtroEnemigo(
+    protected boolean hayColisionConOtroEnemigo(
             Rectangle futuraHitbox,
             ArrayList<Enemigo> enemigos) {
 

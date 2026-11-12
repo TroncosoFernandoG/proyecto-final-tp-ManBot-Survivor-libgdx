@@ -1,9 +1,13 @@
 
-package com.manbotsurvivor.game.elementos;
+package com.manbotsurvivor.game.gestores;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import com.manbotsurvivor.game.enemigos.ChipEnergia;
+import com.manbotsurvivor.game.enemigos.Enemigo;
+import com.manbotsurvivor.game.jugador.Jugador;
 
 public class GestorEntidades {
 

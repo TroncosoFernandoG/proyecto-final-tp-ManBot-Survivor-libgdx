@@ -1,5 +1,7 @@
 
-package com.manbotsurvivor.game.elementos;
+package com.manbotsurvivor.game.gestores;
+
+import com.manbotsurvivor.game.elementos.EstadoPartida;
 
 public class GestorPartida {
 

@@ -13,23 +13,23 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.manbotsurvivor.game.NavegacionPantallas;
-import com.manbotsurvivor.game.elementos.ChipEnergia;
 import com.manbotsurvivor.game.elementos.ControladorEntrada;
-import com.manbotsurvivor.game.elementos.Enemigo;
 import com.manbotsurvivor.game.elementos.EstadoPartida;
-import com.manbotsurvivor.game.elementos.GestorEntidades;
-import com.manbotsurvivor.game.elementos.GestorOleadas;
-import com.manbotsurvivor.game.elementos.GestorPartida;
-import com.manbotsurvivor.game.elementos.GestorProgresion;
-import com.manbotsurvivor.game.elementos.Jugador;
 import com.manbotsurvivor.game.elementos.Mapa;
 import com.manbotsurvivor.game.elementos.SistemaCombate;
+import com.manbotsurvivor.game.enemigos.ChipEnergia;
+import com.manbotsurvivor.game.enemigos.DroneBasico;
+import com.manbotsurvivor.game.enemigos.Enemigo;
+import com.manbotsurvivor.game.enemigos.NanoBot;
+import com.manbotsurvivor.game.enemigos.RobotTanque;
 import com.manbotsurvivor.game.escenas.Hud;
 import com.manbotsurvivor.game.escenas.PanelResultado;
 import com.manbotsurvivor.game.escenas.SelectorMejoras;
-import com.manbotsurvivor.game.elementos.DroneBasico;
-import com.manbotsurvivor.game.elementos.RobotTanque;
-import com.manbotsurvivor.game.elementos.NanoBot;
+import com.manbotsurvivor.game.gestores.GestorEntidades;
+import com.manbotsurvivor.game.gestores.GestorOleadas;
+import com.manbotsurvivor.game.gestores.GestorPartida;
+import com.manbotsurvivor.game.gestores.GestorProgresion;
+import com.manbotsurvivor.game.jugador.Jugador;
 
 public class PantallaJuego implements Screen {
 	private final SpriteBatch batch;
@@ -202,6 +202,8 @@ public class PantallaJuego implements Screen {
         for (Enemigo enemigo : enemigos) {
             enemigo.dibujar(camaraJuego, batch);
         }
+        sistemaCombate.dibujarGranadas(batch);
+        
         batch.end();
         
         formaEnemigo.setProjectionMatrix(camaraJuego.combined);
@@ -286,6 +288,7 @@ public class PantallaJuego implements Screen {
     public void dispose() {
 
         jugador.disponer();
+        sistemaCombate.disponer();
 
         DroneBasico.disponerTextura();
         RobotTanque.disponerTextura();
