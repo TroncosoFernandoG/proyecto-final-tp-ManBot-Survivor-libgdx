@@ -10,97 +10,103 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.manbotsurvivor.game.ManBotSurvivor;
-import com.manbotsurvivor.game.gestores.GestorPartida;
 import com.manbotsurvivor.game.jugador.Jugador;
+import com.manbotsurvivor.game.gestores.GestorPartida;
 
 public class Hud {
 
-	private Stage stage;
-	private Viewport viewport;
-	private BitmapFont fuente;
-	private Jugador jugador;
-	private GestorPartida gestorPartida;
-	
-	Label vidaLabel;
-	Label nivelLabel;
-	Label experienciaLabel;
-	Label tiempoLabel;
-	Label tiempoTranscurridoLabel;
-	Label enemigosEliminadosLabel;
-	
-	public Hud(SpriteBatch sb, Jugador jugador, GestorPartida gestorPartida) {
-		
-		this.jugador = jugador;
-		this.gestorPartida = gestorPartida;
-		
-		viewport = new FitViewport(ManBotSurvivor.V_WIDTH, ManBotSurvivor.V_HEIGHT, new OrthographicCamera());
-		stage = new Stage(viewport, sb);
-		
-		fuente = new BitmapFont();	
-		
-		Table table = new Table(); 
-		table.top().left();
-		table.setFillParent(true);
-		
-		vidaLabel = new Label("Vida: 100/100",  new Label.LabelStyle(fuente, Color.WHITE));
-		nivelLabel = new Label("Nivel: " + jugador.obtenerNivel(),  new Label.LabelStyle(fuente, Color.WHITE));
-		experienciaLabel = new Label("XP: "+ jugador.obtenerExperiencia() + "/" + jugador.obtenerExperienciaNecesaria(), new Label.LabelStyle(fuente, Color.WHITE));
-		tiempoLabel = new Label("Tiempo: 00:00", new Label.LabelStyle(fuente, Color.WHITE));
-		tiempoTranscurridoLabel = new Label("Tiempo transcurrido: 00:00", new Label.LabelStyle(fuente, Color.WHITE));
-		enemigosEliminadosLabel = new Label("Enemigos: 0", new Label.LabelStyle(fuente, Color.WHITE));
-		
-		table.add(vidaLabel).left().padTop(10).padLeft(10);
-		table.row();
-		table.add(nivelLabel).left().padLeft(10);
-		table.row();
-		table.add(experienciaLabel).left().padLeft(10);
-		table.row();
-		table.add(tiempoLabel).left().padLeft(10);
-		table.row();
-		table.add(tiempoTranscurridoLabel).left().padLeft(10);
-		table.row();
-		table.add(enemigosEliminadosLabel).left().padLeft(10);
-		
-		stage.addActor(table);
-		
-	}
-	
-	public void actualizar() {
+    private Stage stage;
+    private Viewport viewport;
+    private BitmapFont fuente;
+    private BitmapFont fuenteGrande;
+    private Jugador jugador;
+    private GestorPartida gestorPartida;
 
-	    int minutosJuego = (int) (gestorPartida.obtenerTiempoEnJuego() / 60);
-	    int segundosJuego = (int) (gestorPartida.obtenerTiempoEnJuego() % 60);
+    private Label vidaLabel;
+    private Label nivelLabel;
+    private Label experienciaLabel;
+    private Label tiempoLabel;
+    private Label enemigosEliminadosLabel;
 
-	    int minutosTranscurridos = (int) (gestorPartida.obtenerTiempoTranscurrido() / 60);
-	    int segundosTranscurridos = (int) (gestorPartida.obtenerTiempoTranscurrido() % 60);
+    public Hud(SpriteBatch sb, Jugador jugador, GestorPartida gestorPartida) {
+        this.jugador = jugador;
+        this.gestorPartida = gestorPartida;
 
-	    vidaLabel.setText("Vida: " + jugador.obtenerVida() + "/" + jugador.obtenerVidaMaxima());
+        viewport = new FitViewport(ManBotSurvivor.V_WIDTH, ManBotSurvivor.V_HEIGHT, new OrthographicCamera());
 
-	    nivelLabel.setText("Nivel: " + jugador.obtenerNivel());
-	    
-	    experienciaLabel.setText("XP: " + jugador.obtenerExperiencia() + "/100");
+        stage = new Stage(viewport, sb);
 
-	    tiempoLabel.setText(String.format("Tiempo en juego: %02d:%02d", minutosJuego, segundosJuego));
+        fuente = new BitmapFont();
+        fuente.getData().setScale(0.3f);
 
-	    tiempoTranscurridoLabel.setText(String.format("Tiempo transcurrido: %02d:%02d", minutosTranscurridos, segundosTranscurridos));
+        fuenteGrande = new BitmapFont();
+        fuenteGrande.getData().setScale(0.45f);
 
-	    enemigosEliminadosLabel.setText("Enemigos: " + jugador.obtenerEnemigosEliminados());
-	}
-	
-	public void dibujar() {
-	    stage.draw();
-	}
-	
-	public void resize(int ancho, int alto) {
-	    viewport.update(ancho, alto, true);
-	}
-	
-	public OrthographicCamera obtenerCamara() {
-	    return (OrthographicCamera) stage.getCamera();
-	}
-	
-	public void disponer() {
-	    stage.dispose();
-	    fuente.dispose();
-	}
-	
+        Label.LabelStyle estiloNormal = new Label.LabelStyle(fuente, Color.WHITE);
+        Label.LabelStyle estiloResaltado = new Label.LabelStyle(fuenteGrande, Color.YELLOW);
+        Label.LabelStyle estiloVida = new Label.LabelStyle(fuente, Color.GREEN);
+
+        Table tablaPrincipal = new Table();
+        tablaPrincipal.setFillParent(true);
+        tablaPrincipal.top().pad(10);
+
+        Table tablaSuperior = new Table();
+
+        Table tablaIzquierda = new Table();
+        nivelLabel = new Label("NIVEL 1", estiloResaltado);
+        vidaLabel = new Label("Vida: 100/100", estiloVida);
+        experienciaLabel = new Label("XP: 0 / 100", estiloNormal);
+
+        tablaIzquierda.add(nivelLabel).left().padBottom(2);
+        tablaIzquierda.row();
+        tablaIzquierda.add(vidaLabel).left().padBottom(2);
+        tablaIzquierda.row();
+        tablaIzquierda.add(experienciaLabel).left();
+
+        Table tablaCentro = new Table();
+        tiempoLabel = new Label("00:00", estiloResaltado);
+        tablaCentro.add(tiempoLabel).center();
+
+        Table tablaDerecha = new Table();
+        enemigosEliminadosLabel = new Label("Kills: 0", estiloResaltado);
+        tablaDerecha.add(enemigosEliminadosLabel).right();
+
+        tablaSuperior.add(tablaIzquierda).expandX().left();
+        tablaSuperior.add(tablaCentro).expandX().center();
+        tablaSuperior.add(tablaDerecha).expandX().right();
+
+        tablaPrincipal.add(tablaSuperior).expandX().fillX();
+
+        stage.addActor(tablaPrincipal);
+    }
+
+    public void actualizar() {
+        int minutosJuego = (int) (gestorPartida.obtenerTiempoEnJuego() / 60);
+        int segundosJuego = (int) (gestorPartida.obtenerTiempoEnJuego() % 60);
+
+        vidaLabel.setText("Vida: " + jugador.obtenerVida() + "/" + jugador.obtenerVidaMaxima());
+        nivelLabel.setText("NIVEL " + jugador.obtenerNivel());
+        experienciaLabel.setText("XP: " + jugador.obtenerExperiencia() + " / " + jugador.obtenerExperienciaNecesaria());
+        tiempoLabel.setText(String.format("%02d:%02d", minutosJuego, segundosJuego));
+        
+        enemigosEliminadosLabel.setText("Kills: " + jugador.obtenerEnemigosEliminados());
+    }
+
+    public void dibujar() {
+        stage.draw();
+    }
+
+    public void resize(int ancho, int alto) {
+        viewport.update(ancho, alto, true);
+    }
+
+    public OrthographicCamera obtenerCamara() {
+        return (OrthographicCamera) stage.getCamera();
+    }
+
+    public void disponer() {
+        stage.dispose();
+        fuente.dispose();
+        fuenteGrande.dispose();
+    }
 }

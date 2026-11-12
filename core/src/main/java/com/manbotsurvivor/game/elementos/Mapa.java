@@ -15,7 +15,7 @@ public class Mapa {
 
         Rectangle jugador = new Rectangle(posicionX, posicionY, ancho, alto);
 
-        MapLayer capaObstaculos = mapa.getLayers().get("Obtaculos");
+        MapLayer capaObstaculos = mapa.getLayers().get("Pared");
 
         if (capaObstaculos == null) {
             return false;
@@ -40,7 +40,7 @@ public class Mapa {
 
         TmxMapLoader cargadorMapa = new TmxMapLoader();
 
-        mapa = cargadorMapa.load("mapa.tmx");
+        mapa = cargadorMapa.load("mapa 2.0.tmx");
     }
 
     public TiledMap obtenerMapa() {

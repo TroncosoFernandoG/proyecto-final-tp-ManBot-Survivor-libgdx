@@ -1,3 +1,10 @@
+## [1.17.2] - 2026-11-12
+
+### Modificado
+* Se Modifico el Mapa.
+* Se actualizo el Hub.
+* Se modifico el zoom de la Camara.
+
 ## [1.17.1] - 2026-11-12
 
 ### Agregado

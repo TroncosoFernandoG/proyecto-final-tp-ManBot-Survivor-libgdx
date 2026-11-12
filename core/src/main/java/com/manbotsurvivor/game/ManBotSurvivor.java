@@ -20,6 +20,8 @@ public class ManBotSurvivor extends Game implements NavegacionPantallas{
     public void create() {
         batch = new SpriteBatch();
         gestorAudio = new GestorAudio();
+        
+     //   Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 
         mostrarMenu();
     }

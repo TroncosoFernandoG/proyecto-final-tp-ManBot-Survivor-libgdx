@@ -71,11 +71,11 @@ public class PantallaJuego implements Screen {
 
         mapa = new Mapa();
 
-        float limiteMapaAncho = 30 * 32;
-        float limiteMapaAlto = 20 * 32;
+        float limiteMapaAncho = 100 * 32;
+        float limiteMapaAlto = 100 * 32;
         
-        anchoMapa = 30 * 32;
-        altoMapa = 20 * 32;
+        anchoMapa = 100 * 32;
+        altoMapa = 100 * 32;
 
         jugador = new Jugador(200, 100, 100, controladorEntrada, limiteMapaAncho, limiteMapaAlto, mapa);
         
@@ -90,6 +90,8 @@ public class PantallaJuego implements Screen {
         camaraJuego = new OrthographicCamera();
 
         gamePort = new FitViewport(anchoVista, altoVista, camaraJuego);
+        
+        camaraJuego.zoom = 2.0f;
 
         camaraJuego.position.set(anchoVista / 2, altoVista / 2, 0);
 
