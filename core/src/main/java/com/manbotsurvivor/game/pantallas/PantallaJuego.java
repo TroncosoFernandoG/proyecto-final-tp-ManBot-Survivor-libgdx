@@ -234,11 +234,11 @@ public class PantallaJuego implements Screen {
         if (gestorPartida.estaPausada() && !gestorProgresion.haySeleccionActiva()) {
             batch.begin();
             
-            fuentePausa.getData().setScale(2);
-            fuentePausa.draw(batch, "PAUSA", 150, 155);
-            fuentePausa.getData().setScale(0.9f);
-            fuentePausa.draw(batch, "ESC - Continuar", 150, 105);
-            fuentePausa.draw(batch, "M - Volver al menu", 150, 85);
+            fuentePausa.getData().setScale(1.2f);
+            fuentePausa.draw(batch, "PAUSA", 176, 155);
+            fuentePausa.getData().setScale(0.7f);
+            fuentePausa.draw(batch, "ESC - Continuar", 170, 105);
+            fuentePausa.draw(batch, "M - Volver al menu", 170, 85);
             
             batch.end();
         }

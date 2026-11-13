@@ -1,3 +1,9 @@
+## [1.17.3] - 2026-11-13
+
+### Modificado
+* Se Modifico el escalado de dificultad por oleadas a dos minutos.
+* Se achico las letras del menu de pausa.
+
 ## [1.17.2] - 2026-11-12
 
 ### Modificado

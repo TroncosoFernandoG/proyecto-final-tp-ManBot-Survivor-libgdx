@@ -87,9 +87,11 @@ public class GestorOleadas {
         esperandoSiguienteOleada = false;
         tiempoEntreOleadas = 0f;
 
-        int cantidad = 5 + oleadaActual * 2;
+        int nivelDificultad = (int) (partida.obtenerTiempoEnJuego() / 120f) + 1;
+        
+        int cantidad = 5 + nivelDificultad * 2;
 
-        float dificultad = 1f + (oleadaActual - 1) * 0.1f;
+        float dificultad = 1f + (nivelDificultad - 1) * 0.1f;
 
         for (int i = 0; i < cantidad; i++) {
             float[] posicion = buscarPosicionEnemigo();
