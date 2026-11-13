@@ -1,7 +1,7 @@
 package com.manbotsurvivor.game.pantallas;
 
 import java.util.ArrayList;
-
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -47,6 +47,8 @@ public class PantallaJuego implements Screen {
     private float altoMapa;
     private ControladorEntrada controladorEntrada;
     private Jugador jugador;
+    private Jugador segundoJugador;
+    private ControladorEntrada controladorSegundoJugador;
     private ArrayList<Enemigo> enemigos;
     private ArrayList<ChipEnergia> chipsEnergia;
     private ShapeRenderer formaEnemigo;
@@ -78,6 +80,18 @@ public class PantallaJuego implements Screen {
         altoMapa = 100 * 32;
 
         jugador = new Jugador(200, 100, 100, controladorEntrada, limiteMapaAncho, limiteMapaAlto, mapa);
+        
+        controladorSegundoJugador = new ControladorEntrada(true);
+
+        segundoJugador = new Jugador(
+            260,
+            100,
+            100,
+            controladorSegundoJugador,
+            limiteMapaAncho,
+            limiteMapaAlto,
+            mapa
+        );
         
         sistemaCombate = new SistemaCombate(jugador, enemigos);
         
@@ -115,7 +129,9 @@ public class PantallaJuego implements Screen {
 
     @Override
     public void show() {
-    	Gdx.input.setInputProcessor(controladorEntrada);
+        Gdx.input.setInputProcessor(
+            new InputMultiplexer(controladorSegundoJugador, controladorEntrada)
+        );
     }
 
     
@@ -148,6 +164,7 @@ public class PantallaJuego implements Screen {
 
         if (gestorPartida.estaEnCurso()) {
             jugador.actualizar(delta);
+            segundoJugador.actualizar(delta);
 
             for (Enemigo enemigo : enemigos) {
                 enemigo.actualizar(delta, jugador, enemigos);
@@ -167,7 +184,13 @@ public class PantallaJuego implements Screen {
         
         
         
-        camaraJuego.position.set(jugador.obtenerPosicionX() + 16, jugador.obtenerPosicionY() + 16, 0);
+        float centroX = (jugador.obtenerPosicionX()
+                + segundoJugador.obtenerPosicionX()) / 2f + 16f;
+
+        float centroY = (jugador.obtenerPosicionY()
+                + segundoJugador.obtenerPosicionY()) / 2f + 16f;
+
+        camaraJuego.position.set(centroX, centroY, 0);
         
         float mitadAnchoCamara = camaraJuego.viewportWidth / 2;
         float mitadAltoCamara = camaraJuego.viewportHeight / 2;
@@ -200,6 +223,7 @@ public class PantallaJuego implements Screen {
         batch.begin();
 
         jugador.dibujar(camaraJuego, batch);
+        segundoJugador.dibujar(camaraJuego, batch);
         
         for (Enemigo enemigo : enemigos) {
             enemigo.dibujar(camaraJuego, batch);
@@ -290,6 +314,7 @@ public class PantallaJuego implements Screen {
     public void dispose() {
 
         jugador.disponer();
+        segundoJugador.disponer();
         sistemaCombate.disponer();
 
         DroneBasico.disponerTextura();

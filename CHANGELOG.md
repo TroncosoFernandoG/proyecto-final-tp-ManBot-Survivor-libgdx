@@ -1,3 +1,10 @@
+## [1.18.0] - 2026-13-12
+
+### Agregado
+* Se incorporo otro jugador.
+* Se incorporo las teclas del otro jugador.
+
+
 ## [1.17.3] - 2026-11-13
 
 ### Modificado

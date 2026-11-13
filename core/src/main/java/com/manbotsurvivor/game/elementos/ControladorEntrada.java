@@ -1,8 +1,12 @@
 package com.manbotsurvivor.game.elementos;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.Gdx;
 
 public class ControladorEntrada extends InputAdapter {
+
+    private final boolean segundoJugador;
 
     private boolean arriba;
     private boolean abajo;
@@ -17,50 +21,70 @@ public class ControladorEntrada extends InputAdapter {
     private boolean pulsacionM;
     private boolean pulsacionEnter;
 
+    public ControladorEntrada() {
+        this(false);
+    }
+
+    public ControladorEntrada(boolean segundoJugador) {
+        this.segundoJugador = segundoJugador;
+    }
+
     @Override
     public boolean keyDown(int tecla) {
 
+        if (segundoJugador) {
+            switch (tecla) {
+                case Input.Keys.I:
+                    arriba = true;
+                    return true;
+                case Input.Keys.K:
+                    abajo = true;
+                    return true;
+                case Input.Keys.J:
+                    izquierda = true;
+                    return true;
+                case Input.Keys.L:
+                    derecha = true;
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         switch (tecla) {
-
-        case com.badlogic.gdx.Input.Keys.W:
-            arriba = true;
-            pulsacionArriba = true;
-            break;
-            
-        case com.badlogic.gdx.Input.Keys.UP:
-            pulsacionArriba = true;
-            break;
-
-        case com.badlogic.gdx.Input.Keys.S:
-            abajo = true;
-            pulsacionAbajo = true;
-            break;
-            
-        case com.badlogic.gdx.Input.Keys.DOWN:
-            pulsacionAbajo = true;
-            break;
-
-        case com.badlogic.gdx.Input.Keys.A:
-            izquierda = true;
-            pulsacionIzquierda = true;
-            break;
-
-        case com.badlogic.gdx.Input.Keys.D:
-            derecha = true;
-            pulsacionDerecha = true;
-            break;
-            
-        case com.badlogic.gdx.Input.Keys.ESCAPE:
-            pulsacionEscape = true;
-            break;
-            
-        case com.badlogic.gdx.Input.Keys.M:
-            pulsacionM = true;
-            break;
-            
-        case com.badlogic.gdx.Input.Keys.ENTER:
-            pulsacionEnter = true;
-            break;
+            case Input.Keys.W:
+                arriba = true;
+                pulsacionArriba = true;
+                break;
+            case Input.Keys.UP:
+                pulsacionArriba = true;
+                break;
+            case Input.Keys.S:
+                abajo = true;
+                pulsacionAbajo = true;
+                break;
+            case Input.Keys.DOWN:
+                pulsacionAbajo = true;
+                break;
+            case Input.Keys.A:
+                izquierda = true;
+                pulsacionIzquierda = true;
+                break;
+            case Input.Keys.D:
+                derecha = true;
+                pulsacionDerecha = true;
+                break;
+            case Input.Keys.ESCAPE:
+                pulsacionEscape = true;
+                break;
+            case Input.Keys.M:
+                pulsacionM = true;
+                break;
+            case Input.Keys.ENTER:
+                pulsacionEnter = true;
+                break;
+            default:
+                return false;
         }
 
         return true;
@@ -69,23 +93,40 @@ public class ControladorEntrada extends InputAdapter {
     @Override
     public boolean keyUp(int tecla) {
 
+        if (segundoJugador) {
+            switch (tecla) {
+                case Input.Keys.I:
+                    arriba = false;
+                    return true;
+                case Input.Keys.K:
+                    abajo = false;
+                    return true;
+                case Input.Keys.J:
+                    izquierda = false;
+                    return true;
+                case Input.Keys.L:
+                    derecha = false;
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         switch (tecla) {
-
-        case com.badlogic.gdx.Input.Keys.W:
-            arriba = false;
-            break;
-
-        case com.badlogic.gdx.Input.Keys.S:
-            abajo = false;
-            break;
-
-        case com.badlogic.gdx.Input.Keys.A:
-            izquierda = false;
-            break;
-
-        case com.badlogic.gdx.Input.Keys.D:
-            derecha = false;
-            break;
+            case Input.Keys.W:
+                arriba = false;
+                break;
+            case Input.Keys.S:
+                abajo = false;
+                break;
+            case Input.Keys.A:
+                izquierda = false;
+                break;
+            case Input.Keys.D:
+                derecha = false;
+                break;
+            default:
+                return false;
         }
 
         return true;
@@ -108,45 +149,37 @@ public class ControladorEntrada extends InputAdapter {
     }
 
     public boolean consumirPulsacionArriba() {
-
         if (pulsacionArriba) {
             pulsacionArriba = false;
             return true;
         }
-
         return false;
     }
 
     public boolean consumirPulsacionAbajo() {
-
         if (pulsacionAbajo) {
             pulsacionAbajo = false;
             return true;
         }
-
         return false;
     }
 
     public boolean consumirPulsacionIzquierda() {
-
         if (pulsacionIzquierda) {
             pulsacionIzquierda = false;
             return true;
         }
-
         return false;
     }
 
     public boolean consumirPulsacionDerecha() {
-
         if (pulsacionDerecha) {
             pulsacionDerecha = false;
             return true;
         }
-
         return false;
     }
-    
+
     public boolean consumirPulsacionEscape() {
         if (pulsacionEscape) {
             pulsacionEscape = false;
@@ -154,40 +187,33 @@ public class ControladorEntrada extends InputAdapter {
         }
         return false;
     }
-    
-    public boolean consumirPulsacionM() {
 
+    public boolean consumirPulsacionM() {
         if (pulsacionM) {
             pulsacionM = false;
             return true;
         }
-
         return false;
     }
-    
-    public boolean consumirPulsacionEnter() {
 
+    public boolean consumirPulsacionEnter() {
         if (pulsacionEnter) {
             pulsacionEnter = false;
             return true;
         }
-        
         return false;
     }
-    
+
     public int consumirSeleccionMejora() {
-        if (com.badlogic.gdx.Gdx.input.isKeyJustPressed(
-                com.badlogic.gdx.Input.Keys.NUM_1)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             return 1;
         }
 
-        if (com.badlogic.gdx.Gdx.input.isKeyJustPressed(
-                com.badlogic.gdx.Input.Keys.NUM_2)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
             return 2;
         }
 
-        if (com.badlogic.gdx.Gdx.input.isKeyJustPressed(
-                com.badlogic.gdx.Input.Keys.NUM_3)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
             return 3;
         }
 
