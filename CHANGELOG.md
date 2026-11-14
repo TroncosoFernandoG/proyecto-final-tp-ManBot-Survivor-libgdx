@@ -1,4 +1,10 @@
-## [1.18.0] - 2026-13-12
+## [1.18.1] - 2026-11-13
+
+### Modificado
+* Se modifico el jugador 2.
+* Se modifico el rango de disparo
+
+## [1.18.0] - 2026-11-13
 
 ### Agregado
 * Se incorporo otro jugador.

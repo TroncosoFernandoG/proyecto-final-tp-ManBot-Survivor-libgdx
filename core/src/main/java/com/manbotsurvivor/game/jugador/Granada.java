@@ -5,7 +5,7 @@ public class Granada extends Arma {
     private float radioExplosion;
 
     public Granada() {
-        super(2, 4.0f);
+        super(2, 4.0f, 180f);
         radioExplosion = 60f;
     }
 
@@ -30,10 +30,12 @@ public class Granada extends Arma {
             daño = 3;
             radioExplosion = 75f;
             intervaloAtaque = 3.5f;
+            rangoAtaque = 200f;
         } else if (nivel == 3) {
             daño = 5;
             radioExplosion = 90f;
             intervaloAtaque = 3.0f;
+            rangoAtaque = 220f;
         }
     }
 }

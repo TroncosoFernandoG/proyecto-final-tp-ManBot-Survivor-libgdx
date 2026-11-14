@@ -20,6 +20,7 @@ public class SistemaCombate {
 
     private final Jugador jugador;
     private final List<Enemigo> enemigos;
+    private final Color colorProyectil;
 
     private final Laser laser;
     private final Granada granada;
@@ -35,8 +36,13 @@ public class SistemaCombate {
     private Animation<TextureRegion> animacionExplosion;
 
     public SistemaCombate(Jugador jugador, List<Enemigo> enemigos) {
+        this(jugador, enemigos, Color.RED);
+    }
+
+    public SistemaCombate(Jugador jugador, List<Enemigo> enemigos, Color colorProyectil) {
         this.jugador = jugador;
         this.enemigos = enemigos;
+        this.colorProyectil = colorProyectil;
 
         laser = new Laser();
         granada = new Granada();
@@ -76,24 +82,27 @@ public class SistemaCombate {
         return granada;
     }
 
-    private Enemigo obtenerEnemigoMasCercano() {
+    private Enemigo obtenerEnemigoMasCercano(float rango) {
         Enemigo cercano = null;
-        float distanciaMinima = Float.MAX_VALUE;
+        float distanciaMinima = rango * rango;
+
+        float centroJugadorX = jugador.obtenerPosicionX() + jugador.obtenerAncho() / 2f;
+        float centroJugadorY = jugador.obtenerPosicionY() + jugador.obtenerAlto() / 2f;
 
         for (Enemigo enemigo : enemigos) {
             if (!enemigo.estaVivo()) {
                 continue;
             }
 
-            float dx = enemigo.obtenerPosicionX()
-                    - jugador.obtenerPosicionX();
+            float dx = enemigo.obtenerPosicionX() + enemigo.obtenerAncho() / 2f
+                    - centroJugadorX;
 
-            float dy = enemigo.obtenerPosicionY()
-                    - jugador.obtenerPosicionY();
+            float dy = enemigo.obtenerPosicionY() + enemigo.obtenerAlto() / 2f
+                    - centroJugadorY;
 
-            float distancia = (float) Math.sqrt(dx * dx + dy * dy);
+            float distancia = dx * dx + dy * dy;
 
-            if (distancia < distanciaMinima) {
+            if (distancia <= distanciaMinima) {
                 distanciaMinima = distancia;
                 cercano = enemigo;
             }
@@ -102,9 +111,9 @@ public class SistemaCombate {
         return cercano;
     }
 
-    private void crearProyectil(Enemigo objetivo, boolean esGranada) {
+    private boolean crearProyectil(Enemigo objetivo, boolean esGranada) {
         if (objetivo == null) {
-            return;
+            return false;
         }
 
         float x = jugador.obtenerPosicionX()
@@ -125,7 +134,7 @@ public class SistemaCombate {
         float distancia = (float) Math.sqrt(dx * dx + dy * dy);
 
         if (distancia <= 0) {
-            return;
+            return false;
         }
 
         Proyectil proyectil = new Proyectil();
@@ -141,27 +150,38 @@ public class SistemaCombate {
             proyectil.velocidad = 145f;
             proyectil.daño = granada.obtenerDaño();
             proyectil.radio = granada.obtenerRadioExplosion();
+            proyectil.distanciaMaxima = granada.obtenerRangoAtaque() * 1.5f;
         } else {
             proyectil.velocidad = 240f;
             proyectil.daño = laser.obtenerDaño();
             proyectil.radio = 0f;
+            proyectil.distanciaMaxima = laser.obtenerRangoAtaque() * 1.5f;
         }
 
         proyectiles.add(proyectil);
+        return true;
     }
 
     public void actualizar(float delta) {
-        tiempoLaser += delta;
-        tiempoGranada += delta;
 
-        if (tiempoLaser >= laser.obtenerIntervaloAtaque()) {
-            crearProyectil(obtenerEnemigoMasCercano(), false);
-            tiempoLaser = 0f;
-        }
+        if (jugador.estaVivo()) {
 
-        if (tiempoGranada >= granada.obtenerIntervaloAtaque()) {
-            crearProyectil(obtenerEnemigoMasCercano(), true);
-            tiempoGranada = 0f;
+            tiempoLaser += delta;
+            tiempoGranada += delta;
+
+            // Solo se reinicia el temporizador si realmente se disparó:
+            // así el arma dispara apenas un enemigo entra en rango.
+            if (tiempoLaser >= laser.obtenerIntervaloAtaque()) {
+                if (crearProyectil(obtenerEnemigoMasCercano(laser.obtenerRangoAtaque()), false)) {
+                    tiempoLaser = 0f;
+                }
+            }
+
+            if (tiempoGranada >= granada.obtenerIntervaloAtaque()) {
+                if (crearProyectil(obtenerEnemigoMasCercano(granada.obtenerRangoAtaque()), true)) {
+                    tiempoGranada = 0f;
+                }
+            }
         }
 
         actualizarProyectiles(delta);
@@ -189,11 +209,25 @@ public class SistemaCombate {
                 continue;
             }
 
-            proyectil.x += proyectil.dx * proyectil.velocidad * delta;
-            proyectil.y += proyectil.dy * proyectil.velocidad * delta;
+            float pasoX = proyectil.dx * proyectil.velocidad * delta;
+            float pasoY = proyectil.dy * proyectil.velocidad * delta;
+
+            proyectil.x += pasoX;
+            proyectil.y += pasoY;
+            proyectil.distanciaRecorrida += (float) Math.sqrt(pasoX * pasoX + pasoY * pasoY);
             
             if (proyectil.granada) {
                 proyectil.tiempoAnimacionBomba += delta;
+            }
+
+            // Si el proyectil se pasó de largo (el enemigo se movió), desaparece
+            if (proyectil.distanciaRecorrida > proyectil.distanciaMaxima) {
+                if (proyectil.granada) {
+                    explotar(proyectil);
+                } else {
+                    iterador.remove();
+                }
+                continue;
             }
 
             Rectangle areaProyectil = new Rectangle(
@@ -212,7 +246,7 @@ public class SistemaCombate {
 
             if (areaProyectil.overlaps(areaObjetivo)) {
                 if (!proyectil.granada) {
-                    proyectil.objetivo.recibirDaño(proyectil.daño);
+                    proyectil.objetivo.recibirDaño(proyectil.daño, jugador);
                     iterador.remove();
                 } else {
                     explotar(proyectil);
@@ -244,7 +278,7 @@ public class SistemaCombate {
 
             if (dx * dx + dy * dy
                     <= proyectil.radio * proyectil.radio) {
-                enemigo.recibirDaño(proyectil.daño);
+                enemigo.recibirDaño(proyectil.daño, jugador);
             }
         }
     }
@@ -255,11 +289,28 @@ public class SistemaCombate {
                 continue;
             }
 
-            renderer.setColor(Color.RED);
+            renderer.setColor(colorProyectil);
 
             renderer.circle(proyectil.x, proyectil.y, 3f);
             
         }
+    }
+
+    // Dibuja el círculo del rango de ataque (usar con ShapeType.Line)
+    public void dibujarRango(ShapeRenderer renderer) {
+
+        if (!jugador.estaVivo()) {
+            return;
+        }
+
+        float centroX = jugador.obtenerPosicionX() + jugador.obtenerAncho() / 2f;
+        float centroY = jugador.obtenerPosicionY() + jugador.obtenerAlto() / 2f;
+
+        renderer.setColor(colorProyectil.r, colorProyectil.g, colorProyectil.b, 0.35f);
+        renderer.circle(centroX, centroY, laser.obtenerRangoAtaque(), 48);
+
+        renderer.setColor(1f, 0.6f, 0f, 0.25f);
+        renderer.circle(centroX, centroY, granada.obtenerRangoAtaque(), 48);
     }
     
     public void dibujarGranadas(SpriteBatch batch) {
@@ -296,6 +347,8 @@ public class SistemaCombate {
         float radio;
         float tiempoExplosion;
         float tiempoAnimacionBomba;
+        float distanciaRecorrida;
+        float distanciaMaxima;
 
         int daño;
 
@@ -311,4 +364,3 @@ public class SistemaCombate {
         texturaExplosion.dispose();
     }
 }
-

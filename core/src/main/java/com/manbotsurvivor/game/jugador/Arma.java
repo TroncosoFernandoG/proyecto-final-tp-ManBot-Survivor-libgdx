@@ -5,11 +5,13 @@ public abstract class Arma {
     protected int nivel;
     protected int daño;
     protected float intervaloAtaque;
+    protected float rangoAtaque;
 
-    public Arma(int dañoInicial, float intervaloInicial) {
+    public Arma(int dañoInicial, float intervaloInicial, float rangoInicial) {
         nivel = 1;
         daño = dañoInicial;
         intervaloAtaque = intervaloInicial;
+        rangoAtaque = rangoInicial;
     }
 
     public int obtenerNivel() {
@@ -22,6 +24,10 @@ public abstract class Arma {
 
     public float obtenerIntervaloAtaque() {
         return intervaloAtaque;
+    }
+
+    public float obtenerRangoAtaque() {
+        return rangoAtaque;
     }
 
     public boolean estaAlMaximo() {

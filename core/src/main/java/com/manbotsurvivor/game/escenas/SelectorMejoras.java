@@ -7,26 +7,29 @@ import com.manbotsurvivor.game.gestores.GestorProgresion;
 import com.manbotsurvivor.game.jugador.Mejora;
 
 public class SelectorMejoras {
-	
-	 public void dibujar(SpriteBatch batch, BitmapFont fuente, GestorProgresion progresion, float ancho, float alto) {
 
-	        batch.begin();
+    public void dibujar(SpriteBatch batch, BitmapFont fuente, GestorProgresion progresion, int numeroJugador, float ancho, float alto) {
 
-	        fuente.setColor(Color.YELLOW);
-	        fuente.draw( batch, "SUBISTE DE NIVEL", ancho * 0.35f, alto * 0.68f);
+        String[] teclas = numeroJugador == 1
+                ? new String[] { "1", "2", "3" }
+                : new String[] { "7", "8", "9" };
 
-	        fuente.setColor(Color.WHITE);
-	        fuente.draw( batch, "Elegí una mejora:", ancho * 0.35f, alto * 0.61f);
+        batch.begin();
 
-	        for (int i = 0; i < progresion.obtenerOpciones().size();i++) {
+        fuente.setColor(Color.YELLOW);
+        fuente.draw(batch, "JUGADOR " + numeroJugador + " - SUBISTE DE NIVEL", ancho * 0.30f, alto * 0.68f);
 
-	            Mejora mejora = progresion.obtenerOpciones().get(i);
+        fuente.setColor(Color.WHITE);
+        fuente.draw(batch, "Elegí una mejora:", ancho * 0.35f, alto * 0.61f);
 
-	            fuente.draw(batch, (i + 1) + " - " + mejora.obtenerDescripcion(), ancho * 0.25f, alto * (0.53f - i * 0.07f));
-	        }
+        for (int i = 0; i < progresion.obtenerOpciones().size(); i++) {
 
-	        fuente.setColor(Color.WHITE);
-	        batch.end();
-	    }
-	 
+            Mejora mejora = progresion.obtenerOpciones().get(i);
+
+            fuente.draw(batch, teclas[i] + " - " + mejora.obtenerDescripcion(), ancho * 0.25f, alto * (0.53f - i * 0.07f));
+        }
+
+        fuente.setColor(Color.WHITE);
+        batch.end();
+    }
 }

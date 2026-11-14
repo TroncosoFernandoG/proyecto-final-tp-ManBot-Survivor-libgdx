@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -56,6 +57,10 @@ public class PantallaJuego implements Screen {
     private GestorPartida gestorPartida;
     private GestorOleadas gestorOleadas;
     private GestorProgresion gestorProgresion;
+    private GestorProgresion gestorProgresion2;
+    private SistemaCombate sistemaCombate2;
+    private ArrayList<Jugador> jugadores;
+    private static final boolean MOSTRAR_RANGO_ATAQUE = false;
     private SelectorMejoras selectorMejoras;
     private PanelResultado panelResultado;
     
@@ -93,13 +98,18 @@ public class PantallaJuego implements Screen {
             mapa
         );
         
-        sistemaCombate = new SistemaCombate(jugador, enemigos);
+        jugadores = new ArrayList<>();
+        jugadores.add(jugador);
+        jugadores.add(segundoJugador);
+
+        sistemaCombate = new SistemaCombate(jugador, enemigos, Color.RED);
+        sistemaCombate2 = new SistemaCombate(segundoJugador, enemigos, Color.CYAN);
         
         formaEnemigo = new ShapeRenderer();
 
         fuentePausa = new BitmapFont();
 
-        gestorEntidades = new GestorEntidades(jugador, enemigos, chipsEnergia);
+        gestorEntidades = new GestorEntidades(jugadores, enemigos, chipsEnergia);
         
         camaraJuego = new OrthographicCamera();
 
@@ -115,16 +125,21 @@ public class PantallaJuego implements Screen {
         
         gestorPartida = new GestorPartida();
         
-        gestorOleadas = new GestorOleadas(enemigos, jugador, mapa, gestorPartida, anchoMapa, altoMapa);
+        gestorOleadas = new GestorOleadas(enemigos, jugadores, mapa, gestorPartida, anchoMapa, altoMapa);
 
-        hud = new Hud(batch, jugador, gestorPartida);
+        hud = new Hud(batch, jugador, segundoJugador, gestorPartida);
         
         gestorProgresion = new GestorProgresion(jugador, sistemaCombate, gestorPartida);
+        gestorProgresion2 = new GestorProgresion(segundoJugador, sistemaCombate2, gestorPartida);
 
         selectorMejoras = new SelectorMejoras();
         
         panelResultado = new PanelResultado();
         
+    }
+
+    private boolean haySeleccionActiva() {
+        return gestorProgresion.haySeleccionActiva() || gestorProgresion2.haySeleccionActiva();
     }
 
     @Override
@@ -143,7 +158,7 @@ public class PantallaJuego implements Screen {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
-        if (controladorEntrada.consumirPulsacionEscape() && !gestorProgresion.haySeleccionActiva()) {
+        if (controladorEntrada.consumirPulsacionEscape() && !haySeleccionActiva()) {
             if (gestorPartida.estaEnCurso()) {
                 gestorPartida.pausar();
             } else if (gestorPartida.estaPausada()) {
@@ -151,7 +166,7 @@ public class PantallaJuego implements Screen {
             }
         }
 
-        if (gestorPartida.estaPausada() && controladorEntrada.consumirPulsacionM() && !gestorProgresion.haySeleccionActiva()) {
+        if (gestorPartida.estaPausada() && controladorEntrada.consumirPulsacionM() && !haySeleccionActiva()) {
             navegacion.mostrarMenu();
             return;
         }
@@ -160,35 +175,47 @@ public class PantallaJuego implements Screen {
             controladorEntrada.consumirPulsacionM();
         }
 
-        gestorPartida.actualizar(delta, jugador.obtenerVida());
+        gestorPartida.actualizar(delta, Math.max(jugador.obtenerVida(), segundoJugador.obtenerVida()));
 
         if (gestorPartida.estaEnCurso()) {
             jugador.actualizar(delta);
             segundoJugador.actualizar(delta);
 
             for (Enemigo enemigo : enemigos) {
-                enemigo.actualizar(delta, jugador, enemigos);
+                enemigo.actualizar(delta, jugadores, enemigos);
             }
 
             sistemaCombate.actualizar(delta);
+            sistemaCombate2.actualizar(delta);
 
             gestorEntidades.eliminarEnemigosMuertos();
             gestorEntidades.recogerChips();
             gestorProgresion.actualizar();
+
+            // Un jugador elige a la vez: el 2 espera a que el 1 termine
+            if (!gestorProgresion.haySeleccionActiva()) {
+                gestorProgresion2.actualizar();
+            }
             
             gestorOleadas.actualizar(delta);
             
-            gestorPartida.actualizar(0, jugador.obtenerVida());
+            gestorPartida.actualizar(0, Math.max(jugador.obtenerVida(), segundoJugador.obtenerVida()));
             
         }
         
-        
-        
-        float centroX = (jugador.obtenerPosicionX()
-                + segundoJugador.obtenerPosicionX()) / 2f + 16f;
+        float centroX;
+        float centroY;
 
-        float centroY = (jugador.obtenerPosicionY()
-                + segundoJugador.obtenerPosicionY()) / 2f + 16f;
+        if (jugador.estaVivo() && segundoJugador.estaVivo()) {
+            centroX = (jugador.obtenerPosicionX() + segundoJugador.obtenerPosicionX()) / 2f + 16f;
+            centroY = (jugador.obtenerPosicionY() + segundoJugador.obtenerPosicionY()) / 2f + 16f;
+        } else if (jugador.estaVivo()) {
+            centroX = jugador.obtenerPosicionX() + 16f;
+            centroY = jugador.obtenerPosicionY() + 16f;
+        } else {
+            centroX = segundoJugador.obtenerPosicionX() + 16f;
+            centroY = segundoJugador.obtenerPosicionY() + 16f;
+        }
 
         camaraJuego.position.set(centroX, centroY, 0);
         
@@ -223,12 +250,16 @@ public class PantallaJuego implements Screen {
         batch.begin();
 
         jugador.dibujar(camaraJuego, batch);
+
+        batch.setColor(0.5f, 0.8f, 1f, 1f);
         segundoJugador.dibujar(camaraJuego, batch);
+        batch.setColor(Color.WHITE);
         
         for (Enemigo enemigo : enemigos) {
             enemigo.dibujar(camaraJuego, batch);
         }
         sistemaCombate.dibujarGranadas(batch);
+        sistemaCombate2.dibujarGranadas(batch);
         
         batch.end();
         
@@ -237,17 +268,32 @@ public class PantallaJuego implements Screen {
         formaEnemigo.begin(ShapeRenderer.ShapeType.Filled);
 
         sistemaCombate.dibujarDisparo(formaEnemigo);
+        sistemaCombate2.dibujarDisparo(formaEnemigo);
 
         for (ChipEnergia chip : chipsEnergia) {
             chip.dibujar(formaEnemigo);
         }
 
         formaEnemigo.end();
+
+        if (MOSTRAR_RANGO_ATAQUE) {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+            formaEnemigo.setProjectionMatrix(camaraJuego.combined);
+            formaEnemigo.begin(ShapeRenderer.ShapeType.Line);
+
+            sistemaCombate.dibujarRango(formaEnemigo);
+            sistemaCombate2.dibujarRango(formaEnemigo);
+
+            formaEnemigo.end();
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+        }
         
         
         batch.setProjectionMatrix(hud.obtenerCamara().combined);
         
-        if (!gestorProgresion.haySeleccionActiva() && !gestorPartida.terminoLaPartida()) {
+        if (!haySeleccionActiva() && !gestorPartida.terminoLaPartida()) {
         	
         hud.actualizar();
 
@@ -255,7 +301,7 @@ public class PantallaJuego implements Screen {
         
         }
         
-        if (gestorPartida.estaPausada() && !gestorProgresion.haySeleccionActiva()) {
+        if (gestorPartida.estaPausada() && !haySeleccionActiva()) {
             batch.begin();
             
             fuentePausa.getData().setScale(1.2f);
@@ -269,18 +315,26 @@ public class PantallaJuego implements Screen {
         
         if (gestorProgresion.haySeleccionActiva()) {
             int seleccion = controladorEntrada.consumirSeleccionMejora();
-            
+
             if (seleccion != 0) {
                 gestorProgresion.elegir(seleccion);
             }
+        } else if (gestorProgresion2.haySeleccionActiva()) {
+            int seleccion = controladorSegundoJugador.consumirSeleccionMejora();
+
+            if (seleccion != 0) {
+                gestorProgresion2.elegir(seleccion);
+            }
         }
-        
+
         if (gestorProgresion.haySeleccionActiva()) {
-            selectorMejoras.dibujar(batch, fuentePausa, gestorProgresion, hud.obtenerCamara().viewportWidth,hud.obtenerCamara().viewportHeight);
+            selectorMejoras.dibujar(batch, fuentePausa, gestorProgresion, 1, hud.obtenerCamara().viewportWidth, hud.obtenerCamara().viewportHeight);
+        } else if (gestorProgresion2.haySeleccionActiva()) {
+            selectorMejoras.dibujar(batch, fuentePausa, gestorProgresion2, 2, hud.obtenerCamara().viewportWidth, hud.obtenerCamara().viewportHeight);
         }
-		
+
         if (gestorPartida.terminoLaPartida()) {
-            panelResultado.dibujar(batch, fuentePausa, gestorPartida, jugador, hud.obtenerCamara().viewportWidth, hud.obtenerCamara().viewportHeight);
+            panelResultado.dibujar(batch, fuentePausa, gestorPartida, jugador, segundoJugador, hud.obtenerCamara().viewportWidth, hud.obtenerCamara().viewportHeight);
 
             if (controladorEntrada.consumirPulsacionEnter()) {
                 navegacion.mostrarMenu();
@@ -316,6 +370,7 @@ public class PantallaJuego implements Screen {
         jugador.disponer();
         segundoJugador.disponer();
         sistemaCombate.disponer();
+        sistemaCombate2.disponer();
 
         DroneBasico.disponerTextura();
         RobotTanque.disponerTextura();

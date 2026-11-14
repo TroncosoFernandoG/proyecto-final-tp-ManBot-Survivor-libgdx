@@ -146,6 +146,10 @@ public class Jugador {
 	    return vida;
 	}
 	
+	public boolean estaVivo() {
+	    return vida > 0;
+	}
+	
 	public int obtenerVidaMaxima() {
 	    return VIDA_MAXIMA;
 	}
@@ -196,6 +200,10 @@ public class Jugador {
 	}
 	
 	public void actualizar(float delta) {
+		
+		if (!estaVivo()) {
+	        return;
+	    }
 
 	    float movimientoX = 0;
 	    float movimientoY = 0;
@@ -245,6 +253,10 @@ public class Jugador {
 	}
 	
 	public void dibujar(OrthographicCamera camaraJuego, SpriteBatch lote) {
+		
+		 if (!estaVivo()) {
+		        return;
+		    }
 
 	    TextureRegion cuadroActual = new TextureRegion(animacionJugador.getKeyFrame(tiempoAnimacion));
 

@@ -14,7 +14,7 @@ import com.manbotsurvivor.game.jugador.Jugador;
 public class GestorOleadas {
 
     private final List<Enemigo> enemigos;
-    private final Jugador jugador;
+    private final List<Jugador> jugadores;
     private final Mapa mapa;
     private final GestorPartida partida;
 
@@ -30,14 +30,14 @@ public class GestorOleadas {
 
     public GestorOleadas(
             List<Enemigo> enemigos,
-            Jugador jugador,
+            List<Jugador> jugadores,
             Mapa mapa,
             GestorPartida partida,
             float anchoMapa,
             float altoMapa) {
 
         this.enemigos = enemigos;
-        this.jugador = jugador;
+        this.jugadores = jugadores;
         this.mapa = mapa;
         this.partida = partida;
         this.anchoMapa = anchoMapa;
@@ -136,10 +136,19 @@ public class GestorOleadas {
                 continue;
             }
 
-            float dx = x - jugador.obtenerPosicionX();
-            float dy = y - jugador.obtenerPosicionY();
+            boolean lejosDeTodos = true;
 
-            if (dx * dx + dy * dy >= 150f * 150f) {
+            for (Jugador jugador : jugadores) {
+                float dx = x - jugador.obtenerPosicionX();
+                float dy = y - jugador.obtenerPosicionY();
+
+                if (dx * dx + dy * dy < 150f * 150f) {
+                    lejosDeTodos = false;
+                    break;
+                }
+            }
+
+            if (lejosDeTodos) {
                 return new float[] { x, y };
             }
         }

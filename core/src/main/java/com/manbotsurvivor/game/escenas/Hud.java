@@ -20,6 +20,7 @@ public class Hud {
     private BitmapFont fuente;
     private BitmapFont fuenteGrande;
     private Jugador jugador;
+    private Jugador segundoJugador;
     private GestorPartida gestorPartida;
 
     private Label vidaLabel;
@@ -28,8 +29,14 @@ public class Hud {
     private Label tiempoLabel;
     private Label enemigosEliminadosLabel;
 
-    public Hud(SpriteBatch sb, Jugador jugador, GestorPartida gestorPartida) {
+    private Label nivelLabel2;
+    private Label vidaLabel2;
+    private Label experienciaLabel2;
+    private Label enemigosEliminadosLabel2;
+
+    public Hud(SpriteBatch sb, Jugador jugador, Jugador segundoJugador, GestorPartida gestorPartida) {
         this.jugador = jugador;
+        this.segundoJugador = segundoJugador;
         this.gestorPartida = gestorPartida;
 
         viewport = new FitViewport(ManBotSurvivor.V_WIDTH, ManBotSurvivor.V_HEIGHT, new OrthographicCamera());
@@ -53,7 +60,7 @@ public class Hud {
         Table tablaSuperior = new Table();
 
         Table tablaIzquierda = new Table();
-        nivelLabel = new Label("NIVEL 1", estiloResaltado);
+        nivelLabel = new Label("J1 - NIVEL 1", estiloResaltado);
         vidaLabel = new Label("Vida: 100/100", estiloVida);
         experienciaLabel = new Label("XP: 0 / 100", estiloNormal);
 
@@ -67,9 +74,23 @@ public class Hud {
         tiempoLabel = new Label("00:00", estiloResaltado);
         tablaCentro.add(tiempoLabel).center();
 
+        enemigosEliminadosLabel = new Label("Kills: 0", estiloNormal);
+        tablaIzquierda.row();
+        tablaIzquierda.add(enemigosEliminadosLabel).left();
+
         Table tablaDerecha = new Table();
-        enemigosEliminadosLabel = new Label("Kills: 0", estiloResaltado);
-        tablaDerecha.add(enemigosEliminadosLabel).right();
+        nivelLabel2 = new Label("J2 - NIVEL 1", estiloResaltado);
+        vidaLabel2 = new Label("Vida: 100/100", estiloVida);
+        experienciaLabel2 = new Label("XP: 0 / 100", estiloNormal);
+        enemigosEliminadosLabel2 = new Label("Kills: 0", estiloNormal);
+
+        tablaDerecha.add(nivelLabel2).right().padBottom(2);
+        tablaDerecha.row();
+        tablaDerecha.add(vidaLabel2).right().padBottom(2);
+        tablaDerecha.row();
+        tablaDerecha.add(experienciaLabel2).right();
+        tablaDerecha.row();
+        tablaDerecha.add(enemigosEliminadosLabel2).right();
 
         tablaSuperior.add(tablaIzquierda).expandX().left();
         tablaSuperior.add(tablaCentro).expandX().center();
@@ -85,11 +106,16 @@ public class Hud {
         int segundosJuego = (int) (gestorPartida.obtenerTiempoEnJuego() % 60);
 
         vidaLabel.setText("Vida: " + jugador.obtenerVida() + "/" + jugador.obtenerVidaMaxima());
-        nivelLabel.setText("NIVEL " + jugador.obtenerNivel());
+        nivelLabel.setText("J1 - NIVEL " + jugador.obtenerNivel());
         experienciaLabel.setText("XP: " + jugador.obtenerExperiencia() + " / " + jugador.obtenerExperienciaNecesaria());
         tiempoLabel.setText(String.format("%02d:%02d", minutosJuego, segundosJuego));
         
         enemigosEliminadosLabel.setText("Kills: " + jugador.obtenerEnemigosEliminados());
+
+        vidaLabel2.setText("Vida: " + segundoJugador.obtenerVida() + "/" + segundoJugador.obtenerVidaMaxima());
+        nivelLabel2.setText("J2 - NIVEL " + segundoJugador.obtenerNivel());
+        experienciaLabel2.setText("XP: " + segundoJugador.obtenerExperiencia() + " / " + segundoJugador.obtenerExperienciaNecesaria());
+        enemigosEliminadosLabel2.setText("Kills: " + segundoJugador.obtenerEnemigosEliminados());
     }
 
     public void dibujar() {

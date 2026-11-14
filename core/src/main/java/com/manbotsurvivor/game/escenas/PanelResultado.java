@@ -9,7 +9,7 @@ import com.manbotsurvivor.game.jugador.Jugador;
 
 public class PanelResultado {
 
-    public void dibujar(SpriteBatch batch, BitmapFont fuente, GestorPartida partida, Jugador jugador, float ancho, float alto) {
+    public void dibujar(SpriteBatch batch, BitmapFont fuente, GestorPartida partida, Jugador jugador, Jugador segundoJugador, float ancho, float alto) {
 
         String titulo = partida.obtenerEstado() == EstadoPartida.VICTORIA ? "VICTORIA" : "DERROTA";
 
@@ -24,13 +24,18 @@ public class PanelResultado {
 
         fuente.setColor(Color.WHITE);
 
-        fuente.draw(batch, String.format("Tiempo: %02d:%02d", minutos, segundos), ancho * 0.34f, alto * 0.70f);
+        fuente.draw(batch, String.format("Tiempo: %02d:%02d", minutos, segundos), ancho * 0.34f, alto * 0.75f);
 
-        fuente.draw(batch, "Enemigos eliminados: " + jugador.obtenerEnemigosEliminados(), ancho * 0.34f, alto * 0.60f);
+        fuente.draw(batch, "Jugador 1 - Enemigos: " + jugador.obtenerEnemigosEliminados()
+                + " | Nivel: " + jugador.obtenerNivel(), ancho * 0.25f, alto * 0.62f);
 
-        fuente.draw(batch, "Nivel alcanzado: " + jugador.obtenerNivel(), ancho * 0.34f, alto * 0.50f);
+        fuente.draw(batch, "Jugador 2 - Enemigos: " + segundoJugador.obtenerEnemigosEliminados()
+                + " | Nivel: " + segundoJugador.obtenerNivel(), ancho * 0.25f, alto * 0.52f);
 
-        fuente.draw(batch, "ENTER - Volver al menú", ancho * 0.34f, alto * 0.40f);
+        fuente.draw(batch, "Total eliminados: "
+                + (jugador.obtenerEnemigosEliminados() + segundoJugador.obtenerEnemigosEliminados()), ancho * 0.34f, alto * 0.42f);
+
+        fuente.draw(batch, "ENTER - Volver al menú", ancho * 0.34f, alto * 0.30f);
 
         batch.end();
     }

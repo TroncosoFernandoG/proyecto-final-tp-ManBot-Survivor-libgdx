@@ -205,17 +205,14 @@ public class ControladorEntrada extends InputAdapter {
     }
 
     public int consumirSeleccionMejora() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-            return 1;
-        }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-            return 2;
-        }
+        int tecla1 = segundoJugador ? Input.Keys.NUM_7 : Input.Keys.NUM_1;
+        int tecla2 = segundoJugador ? Input.Keys.NUM_8 : Input.Keys.NUM_2;
+        int tecla3 = segundoJugador ? Input.Keys.NUM_9 : Input.Keys.NUM_3;
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
-            return 3;
-        }
+        if (Gdx.input.isKeyJustPressed(tecla1)) return 1;
+        if (Gdx.input.isKeyJustPressed(tecla2)) return 2;
+        if (Gdx.input.isKeyJustPressed(tecla3)) return 3;
 
         return 0;
     }
