@@ -1,3 +1,13 @@
+## [1.20.1] - 2026-11-15
+
+### Agregado
+* Incorporacion de los datos de enemigos recibidos desde el servidor.
+* Sincronizacion de identificadores, tipos, posiciones y vida de enemigos.
+* Recepcion del estado de oleadas y aparicion del jefe.
+* Incorporacion de estructuras de datos para enemigos, proyectiles y chips.
+* Procesamiento de mensajes UDP parametrizados mediante split.
+* Actualizacion de los datos recibidos mediante Gdx.app.postRunnable.
+
 ## [1.20.0] - 2026-11-16
 
 ### Agregado
