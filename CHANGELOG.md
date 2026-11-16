@@ -1,3 +1,13 @@
+## [1.21.2] - 2026-11-16
+
+### Agregado
+* Incorporacion del mensaje reiniciar para comenzar otra partida.
+* Registro de solicitudes de reinicio de los jugadores conectados.
+* Restablecimiento de vida, experiencia, nivel y estadisticas.
+* Eliminacion de enemigos, proyectiles y chips de la partida anterior.
+* Reinicio del tiempo y de las oleadas.
+* Posibilidad de comenzar otra partida sin cerrar el cliente ni el servidor.
+
 ## [1.21.1] - 2026-11-16
 
 ### Agregado

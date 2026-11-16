@@ -77,6 +77,8 @@ public class PantallaJuego implements Screen {
     private HashMap<Integer, Enemigo> enemigosRed = new HashMap<>();
     private long ultimoEnvioMejora;
     private int mejoraSeleccionada;
+    private long ultimoEnvioReinicio;
+    private boolean reinicioSolicitado;
     
     public PantallaJuego(SpriteBatch batch, NavegacionPantallas navegacion, int anchoVista, int altoVista) {
 
@@ -333,6 +335,23 @@ public class PantallaJuego implements Screen {
         if (gestorPartida.terminoLaPartida()) {
 
             panelResultado.dibujar(batch, fuentePausa, gestorPartida, jugador, segundoJugador, hud.obtenerCamara().viewportWidth, hud.obtenerCamara().viewportHeight);
+
+            if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ENTER)) {
+
+                reinicioSolicitado = true;
+            }
+
+            if (reinicioSolicitado && hiloCliente != null && System.currentTimeMillis() - ultimoEnvioReinicio >= 1000) {
+
+                hiloCliente.enviarMensaje("reiniciar");
+
+                ultimoEnvioReinicio = System.currentTimeMillis();
+            }
+
+        } else {
+
+            reinicioSolicitado = false;
+            ultimoEnvioReinicio = 0;
         }
     }
 
