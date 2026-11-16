@@ -1,4 +1,15 @@
-## [1.20.3] - 2026-11-15
+## [1.21.0] - 2026-11-16
+
+### Agregado
+* Sincronizacion de vida compartida desde el servidor.
+* Sincronizacion del tiempo de supervivencia.
+* Sincronizacion del estado de la partida.
+* Visualizacion de victoria y derrota segun el resultado recibido.
+* Actualizacion del HUD utilizando los datos del servidor.
+* Representacion visual de jugadores, enemigos, proyectiles y chips recibidos.
+* Desactivacion de la simulacion local de enemigos, oleadas y combate.
+
+## [1.20.3] - 2026-11-16
 
 ### Agregado
 * Incorporacion de experiencia compartida administrada por el servidor.
@@ -8,7 +19,7 @@
 * Aplicacion de mejoras de armas, vida y velocidad desde el servidor.
 * Pausa y reanudacion de la partida durante la seleccion de mejoras.
 
-## [1.20.2] - 2026-11-15
+## [1.20.2] - 2026-11-16
 
 ### Agregado
 * Sincronizacion de posiciones y vida de enemigos desde el servidor.
@@ -17,7 +28,7 @@
 * Actualizacion visual de enemigos sin ejecutar su inteligencia artificial local.
 * Incorporacion de actualizacion de animaciones para entidades recibidas.
 
-## [1.20.1] - 2026-11-15
+## [1.20.1] - 2026-11-16
 
 ### Agregado
 * Incorporacion de los datos de enemigos recibidos desde el servidor.

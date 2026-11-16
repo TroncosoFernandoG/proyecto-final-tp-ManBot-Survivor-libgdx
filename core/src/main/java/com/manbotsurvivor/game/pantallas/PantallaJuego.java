@@ -34,6 +34,11 @@ import com.manbotsurvivor.game.jugador.Jugador;
 import java.net.SocketException;
 import com.manbotsurvivor.game.red.EstadoRed;
 import com.manbotsurvivor.game.red.HiloCliente;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import com.manbotsurvivor.game.enemigos.JefeMecanico;
 
 public class PantallaJuego implements Screen {
 	private final SpriteBatch batch;
@@ -69,6 +74,9 @@ public class PantallaJuego implements Screen {
     private HiloCliente hiloCliente;
     private boolean posicionesInicialesAplicadas;
     private long ultimoEnvioMovimiento;
+    private HashMap<Integer, Enemigo> enemigosRed = new HashMap<>();
+    private long ultimoEnvioMejora;
+    private int mejoraSeleccionada;
     
     public PantallaJuego(SpriteBatch batch, NavegacionPantallas navegacion, int anchoVista, int altoVista) {
 
@@ -123,8 +131,6 @@ public class PantallaJuego implements Screen {
         
         gestorPartida = new GestorPartida();
         
-        gestorOleadas = new GestorOleadas(enemigos, jugadores, mapa, gestorPartida, anchoMapa, altoMapa);
-
         hud = new Hud(batch, jugador, segundoJugador, gestorPartida);
         
         gestorProgresion = new GestorProgresion(jugador, sistemaCombate, gestorPartida);
@@ -146,9 +152,7 @@ public class PantallaJuego implements Screen {
 
         } catch (SocketException e) {
 
-            System.out.println(
-                    "No se pudo iniciar la comunicacion UDP del cliente."
-            );
+            System.out.println("No se pudo iniciar la comunicacion UDP del cliente." );
         }
     }
 
@@ -158,21 +162,17 @@ public class PantallaJuego implements Screen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(
-            new InputMultiplexer(controladorSegundoJugador, controladorEntrada)
-        );
+        Gdx.input.setInputProcessor(new InputMultiplexer(controladorSegundoJugador, controladorEntrada));
     }
 
-    
     
     @Override
     public void render(float delta) {
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
-
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        
-        if (!EstadoRed.empieza || !EstadoRed.estadoInicialRecibido) {
+
+        if (!EstadoRed.conectado || !EstadoRed.empieza || !EstadoRed.estadoInicialRecibido) {
 
             batch.setProjectionMatrix(camaraJuego.combined);
 
@@ -182,11 +182,11 @@ public class PantallaJuego implements Screen {
 
             if (EstadoRed.servidorLleno) {
 
-                fuentePausa.draw(batch, "El servidor ya tiene dos jugadores.", 20 , altoVista - 20);
+                fuentePausa.draw(batch, "El servidor ya tiene dos jugadores.", 20, altoVista - 20);
 
-            } else if (EstadoRed.empieza) {
+            } else if (EstadoRed.perdioConexion) {
 
-                fuentePausa.draw(batch,"Sincronizando partida...", 20, altoVista - 20);
+                fuentePausa.draw(batch, "Se perdio la conexion. Buscando servidor...", 20, altoVista - 20);
 
             } else if (EstadoRed.conectado) {
 
@@ -202,76 +202,39 @@ public class PantallaJuego implements Screen {
             return;
         }
 
-        if (!posicionesInicialesAplicadas) {
-
-            jugador.establecerPosicion( EstadoRed.posicionX1, EstadoRed.posicionY1);
-            segundoJugador.establecerPosicion(EstadoRed.posicionX2, EstadoRed.posicionY2);
-
-            posicionesInicialesAplicadas = true;
-        }
-        
         enviarMovimientoServidor();
-        
-        if (controladorEntrada.consumirPulsacionEscape() && !haySeleccionActiva()) {
-            if (gestorPartida.estaEnCurso()) {
-                gestorPartida.pausar();
-            } else if (gestorPartida.estaPausada()) {
-                gestorPartida.reanudar();
-            }
+
+        actualizarDesdeServidor();
+
+        jugador.actualizarAnimacionRed(delta);
+        segundoJugador.actualizarAnimacionRed(delta);
+
+        for (Enemigo enemigo : enemigos) {
+            enemigo.actualizarAnimacionRed(delta);
         }
 
-        if (gestorPartida.estaPausada() && controladorEntrada.consumirPulsacionM() && !haySeleccionActiva()) {
-            navegacion.mostrarMenu();
-            return;
-        }
-
-        if (!gestorPartida.estaPausada()) {
-            controladorEntrada.consumirPulsacionM();
-        }
-
-        gestorPartida.actualizar(delta, Math.max(jugador.obtenerVida(), segundoJugador.obtenerVida()));
-
-        if (gestorPartida.estaEnCurso()) {
-            jugador.actualizar(delta);
-            segundoJugador.actualizar(delta);
-
-            for (Enemigo enemigo : enemigos) {
-                enemigo.actualizar(delta, jugadores, enemigos);
-            }
-
-            sistemaCombate.actualizar(delta);
-            sistemaCombate2.actualizar(delta);
-
-            gestorEntidades.eliminarEnemigosMuertos();
-            gestorEntidades.recogerChips();
-            gestorProgresion.actualizar();
-
-            if (!gestorProgresion.haySeleccionActiva()) {
-                gestorProgresion2.actualizar();
-            }
-            
-            gestorOleadas.actualizar(delta);
-            
-            gestorPartida.actualizar(0, Math.max(jugador.obtenerVida(), segundoJugador.obtenerVida()));
-            
-        }
-        
         float centroX;
         float centroY;
 
-        if (jugador.estaVivo() && segundoJugador.estaVivo()) {
+        if (EstadoRed.conectadoJugador1 && EstadoRed.conectadoJugador2) {
+
             centroX = (jugador.obtenerPosicionX() + segundoJugador.obtenerPosicionX()) / 2f + 16f;
+
             centroY = (jugador.obtenerPosicionY() + segundoJugador.obtenerPosicionY()) / 2f + 16f;
-        } else if (jugador.estaVivo()) {
+
+        } else if (EstadoRed.conectadoJugador1) {
+
             centroX = jugador.obtenerPosicionX() + 16f;
             centroY = jugador.obtenerPosicionY() + 16f;
+
         } else {
+
             centroX = segundoJugador.obtenerPosicionX() + 16f;
             centroY = segundoJugador.obtenerPosicionY() + 16f;
         }
 
         camaraJuego.position.set(centroX, centroY, 0);
-        
+
         float mitadAnchoCamara = camaraJuego.viewportWidth / 2;
         float mitadAltoCamara = camaraJuego.viewportHeight / 2;
 
@@ -298,107 +261,84 @@ public class PantallaJuego implements Screen {
 
         batch.setProjectionMatrix(camaraJuego.combined);
 
-        
-        
         batch.begin();
 
-        jugador.dibujar(camaraJuego, batch);
+        if (EstadoRed.conectadoJugador1) {
+            jugador.dibujar(camaraJuego, batch);
+        }
 
-        batch.setColor(0.5f, 0.8f, 1f, 1f);
-        segundoJugador.dibujar(camaraJuego, batch);
-        batch.setColor(Color.WHITE);
-        
+        if (EstadoRed.conectadoJugador2) {
+
+            batch.setColor(0.5f, 0.8f, 1f, 1f);
+
+            segundoJugador.dibujar(camaraJuego, batch);
+
+            batch.setColor(Color.WHITE);
+        }
+
         for (Enemigo enemigo : enemigos) {
             enemigo.dibujar(camaraJuego, batch);
         }
-        sistemaCombate.dibujarGranadas(batch);
-        sistemaCombate2.dibujarGranadas(batch);
-        
+
         batch.end();
-        
+
         formaEnemigo.setProjectionMatrix(camaraJuego.combined);
 
         formaEnemigo.begin(ShapeRenderer.ShapeType.Filled);
-
-        sistemaCombate.dibujarDisparo(formaEnemigo);
-        sistemaCombate2.dibujarDisparo(formaEnemigo);
 
         for (ChipEnergia chip : chipsEnergia) {
             chip.dibujar(formaEnemigo);
         }
 
+        for (EstadoRed.ProyectilRed proyectil : EstadoRed.proyectiles) {
+
+            if (proyectil.tipo.equals("granada")) {
+
+                formaEnemigo.setColor(Color.ORANGE);
+
+                if (proyectil.explotado) {
+
+                    formaEnemigo.circle(proyectil.x, proyectil.y, proyectil.radio);
+
+                } else {
+
+                    formaEnemigo.circle(proyectil.x, proyectil.y, 6);
+                }
+
+            } else {
+
+                formaEnemigo.setColor(Color.CYAN);
+
+                formaEnemigo.circle(proyectil.x, proyectil.y, 3);
+            }
+        }
+
         formaEnemigo.end();
 
-        if (MOSTRAR_RANGO_ATAQUE) {
-            Gdx.gl.glEnable(GL20.GL_BLEND);
-            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-            formaEnemigo.setProjectionMatrix(camaraJuego.combined);
-            formaEnemigo.begin(ShapeRenderer.ShapeType.Line);
-
-            sistemaCombate.dibujarRango(formaEnemigo);
-            sistemaCombate2.dibujarRango(formaEnemigo);
-
-            formaEnemigo.end();
-            Gdx.gl.glDisable(GL20.GL_BLEND);
-        }
-        
-        
         batch.setProjectionMatrix(hud.obtenerCamara().combined);
-        
-        if (!haySeleccionActiva() && !gestorPartida.terminoLaPartida()) {
-        	
+
         hud.actualizar();
-
         hud.dibujar();
-        
-        }
-        
-        if (gestorPartida.estaPausada() && !haySeleccionActiva()) {
-            batch.begin();
-            
-            fuentePausa.getData().setScale(1.2f);
-            fuentePausa.draw(batch, "PAUSA", 176, 155);
-            fuentePausa.getData().setScale(0.7f);
-            fuentePausa.draw(batch, "ESC - Continuar", 170, 105);
-            fuentePausa.draw(batch, "M - Volver al menu", 170, 85);
-            
-            batch.end();
-        }
-        
-        if (gestorProgresion.haySeleccionActiva()) {
-            int seleccion = controladorEntrada.consumirSeleccionMejora();
 
-            if (seleccion != 0) {
-                gestorProgresion.elegir(seleccion);
-            }
-        } else if (gestorProgresion2.haySeleccionActiva()) {
-            int seleccion = controladorSegundoJugador.consumirSeleccionMejora();
+        if (EstadoRed.esperandoMejora) {
 
-            if (seleccion != 0) {
-                gestorProgresion2.elegir(seleccion);
-            }
-        }
+            mostrarMejorasRed();
 
-        if (gestorProgresion.haySeleccionActiva()) {
-            selectorMejoras.dibujar(batch, fuentePausa, gestorProgresion, 1, hud.obtenerCamara().viewportWidth, hud.obtenerCamara().viewportHeight);
-        } else if (gestorProgresion2.haySeleccionActiva()) {
-            selectorMejoras.dibujar(batch, fuentePausa, gestorProgresion2, 2, hud.obtenerCamara().viewportWidth, hud.obtenerCamara().viewportHeight);
+        } else {
+
+            mejoraSeleccionada = 0;
+            ultimoEnvioMejora = 0;
         }
 
         if (gestorPartida.terminoLaPartida()) {
-            panelResultado.dibujar(batch, fuentePausa, gestorPartida, jugador, segundoJugador, hud.obtenerCamara().viewportWidth, hud.obtenerCamara().viewportHeight);
 
-            if (controladorEntrada.consumirPulsacionEnter()) {
-                navegacion.mostrarMenu();
-                return;
-            }
+            panelResultado.dibujar(batch, fuentePausa, gestorPartida, jugador, segundoJugador, hud.obtenerCamara().viewportWidth, hud.obtenerCamara().viewportHeight);
         }
     }
 
     private void enviarMovimientoServidor() {
-		
-    	if (hiloCliente == null || !EstadoRed.conectado) {
+
+        if (hiloCliente == null || !EstadoRed.conectado) {
             return;
         }
 
@@ -429,11 +369,145 @@ public class PantallaJuego implements Screen {
             direccionY++;
         }
 
-        hiloCliente.enviarMensaje(
-                "mover-" + (direccionX + 1) + "-" + (direccionY + 1)
-        );
-		
-	}
+        hiloCliente.enviarMensaje("mover-" + (direccionX + 1) + "-" + (direccionY + 1));
+    }
+    
+    private void actualizarDesdeServidor() {
+
+        jugador.establecerEstadoRed(EstadoRed.posicionX1, EstadoRed.posicionY1, EstadoRed.vida, EstadoRed.experiencia, EstadoRed.nivel, EstadoRed.experienciaNecesaria, EstadoRed.enemigosEliminados1);
+
+        segundoJugador.establecerEstadoRed(EstadoRed.posicionX2, EstadoRed.posicionY2, EstadoRed.vida, EstadoRed.experiencia, EstadoRed.nivel, EstadoRed.experienciaNecesaria, EstadoRed.enemigosEliminados2);
+
+        gestorPartida.actualizarDesdeRed(EstadoRed.tiempoEnJuego, EstadoRed.estadoPartida);
+
+        Set<Integer> identificadores = new HashSet<>();
+
+        ArrayList<Enemigo> listaEnemigos = new ArrayList<>();
+
+        for (EstadoRed.EnemigoRed dato : EstadoRed.enemigos) {
+
+            identificadores.add(dato.id);
+
+            Enemigo enemigo = enemigosRed.get(dato.id);
+
+            if (enemigo == null) {
+
+                if (dato.tipo.equals("drone")) {
+
+                    enemigo = new DroneBasico(dato.x, dato.y, 50, mapa);
+
+                } else if (dato.tipo.equals("nano")) {
+
+                    enemigo = new NanoBot(dato.x, dato.y, mapa);
+
+                } else if (dato.tipo.equals("tanque")) {
+
+                    enemigo = new RobotTanque(dato.x, dato.y, 20, mapa);
+
+                } else if (dato.tipo.equals("jefe")) {
+
+                    enemigo = new JefeMecanico(dato.x, dato.y, mapa);
+                }
+
+                if (enemigo != null) {
+                    enemigosRed.put(dato.id, enemigo);
+                }
+            }
+
+            if (enemigo != null) {
+
+                enemigo.establecerEstadoRed(dato.x, dato.y, dato.vida);
+
+                listaEnemigos.add(enemigo);
+            }
+        }
+
+        Iterator<Integer> iterador = enemigosRed.keySet().iterator();
+
+        while (iterador.hasNext()) {
+
+            if (!identificadores.contains(iterador.next())) {
+                iterador.remove();
+            }
+        }
+
+        enemigos.clear();
+        enemigos.addAll(listaEnemigos);
+
+        chipsEnergia.clear();
+
+        for (EstadoRed.ChipRed chip : EstadoRed.chips) {
+
+            chipsEnergia.add(new ChipEnergia(chip.x, chip.y));
+        }
+    }
+    
+    private void mostrarMejorasRed() {
+
+        batch.setProjectionMatrix(hud.obtenerCamara().combined);
+
+        batch.begin();
+
+        fuentePausa.getData().setScale(0.8f);
+        fuentePausa.setColor(Color.YELLOW);
+
+        fuentePausa.draw( batch,"ELEGÍ UNA MEJORA", 120, 150);
+
+        fuentePausa.setColor(Color.WHITE);
+        fuentePausa.getData().setScale(0.6f);
+
+        for (int i = 0; i < 3; i++) {
+
+            String descripcion = EstadoRed.opcionesMejora[i];
+
+            if (descripcion.equals("LASER")) {
+                descripcion = "Mejorar Laser";
+            }
+
+            if (descripcion.equals("GRANADA")) {
+                descripcion = "Mejorar Granada";
+            }
+
+            if (descripcion.equals("VIDA")) {
+                descripcion = "Recuperar 30 puntos de vida";
+            }
+
+            if (descripcion.equals("VELOCIDAD")) {
+                descripcion = "Aumentar velocidad";
+            }
+
+            fuentePausa.draw(batch, (i + 1) + " - " + descripcion, 95, 115 - i * 25);
+        }
+
+        if (mejoraSeleccionada > 0) {
+
+            fuentePausa.draw(batch, "Esperando confirmacion del servidor...", 75, 25);
+        }
+
+        batch.end();
+
+        if (mejoraSeleccionada == 0) {
+
+            if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.NUM_1)) {
+                mejoraSeleccionada = 1;
+            }
+
+            if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.NUM_2)) {
+                mejoraSeleccionada = 2;
+            }
+
+            if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.NUM_3)) {
+                mejoraSeleccionada = 3;
+            }
+        }
+
+        if (mejoraSeleccionada > 0 && hiloCliente != null && System.currentTimeMillis() - ultimoEnvioMejora >= 1000) {
+
+            hiloCliente.enviarMensaje("mejora-" + mejoraSeleccionada);
+
+            ultimoEnvioMejora = System.currentTimeMillis();
+        }
+    }
 
 	@Override
     public void resize(int width, int height) {
