@@ -32,29 +32,6 @@ public class GestorPartida {
             }
         }
     }
-    
-    public void actualizarDesdeRed(float tiempo, String estadoRed) {
-
-        tiempoEnJuego = tiempo;
-        tiempoTranscurrido = tiempo;
-
-        if (estadoRed.equals("curso")) {
-
-            estado = EstadoPartida.EN_CURSO;
-
-        } else if (estadoRed.equals("pausa")) {
-
-            estado = EstadoPartida.PAUSADA;
-
-        } else if (estadoRed.equals("victoria")) {
-
-            estado = EstadoPartida.VICTORIA;
-
-        } else if (estadoRed.equals("derrota")) {
-
-            estado = EstadoPartida.DERROTA;
-        }
-    }
 
     public void pausar() {
         if (estado == EstadoPartida.EN_CURSO) {

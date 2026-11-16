@@ -99,20 +99,6 @@ public abstract class Enemigo {
         return vida > 0;
     }
     
-    public void establecerEstadoRed( float posicionX, float posicionY,int vida) {
-
-        this.posicionX = posicionX;
-        this.posicionY = posicionY;
-        this.vida = vida;
-
-        hitbox.setPosition(posicionX, posicionY);
-    }
-
-    public void actualizarAnimacionRed(float delta) {
-
-        tiempoAnimacion += delta;
-    }
-    
     public void aumentarDificultad(float factor) {
         velocidad *= factor;
         vida = Math.max(1, Math.round(vida * factor));
