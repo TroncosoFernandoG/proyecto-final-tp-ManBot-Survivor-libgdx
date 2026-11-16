@@ -88,15 +88,7 @@ public class PantallaJuego implements Screen {
         
         controladorSegundoJugador = new ControladorEntrada(true);
 
-        segundoJugador = new Jugador(
-            260,
-            100,
-            100,
-            controladorSegundoJugador,
-            limiteMapaAncho,
-            limiteMapaAlto,
-            mapa
-        );
+        segundoJugador = new Jugador(260, 100, 100, controladorSegundoJugador,limiteMapaAncho,limiteMapaAlto,mapa);
         
         jugadores = new ArrayList<>();
         jugadores.add(jugador);

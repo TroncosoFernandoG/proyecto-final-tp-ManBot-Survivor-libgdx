@@ -1,3 +1,11 @@
+## [1.18.2] - 2026-11-16
+
+### Modificado
+* Se modifico settings.gradle para añadir un nuevo modulo, "servidor".
+
+### Agregado
+* Se agrego una nueva carpeta en el proyecto, que se va a encargar de toda la parte de red.
+
 ## [1.18.1] - 2026-11-13
 
 ### Modificado
