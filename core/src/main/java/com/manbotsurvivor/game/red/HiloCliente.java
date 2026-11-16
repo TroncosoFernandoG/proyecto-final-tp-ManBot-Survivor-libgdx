@@ -7,156 +7,240 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
-public class HiloCliente extends Thread{
+import com.badlogic.gdx.Gdx;
 
-	 private DatagramSocket socket;
-	    private InetAddress ipServidor;
-	    private int puertoServidor;
+public class HiloCliente extends Thread {
 
-	    private boolean clienteActivo;
-	    private boolean servidorEncontrado;
-	    private String ultimoMensaje;
+    private DatagramSocket socket;
 
-	    public HiloCliente() throws SocketException {
+    private InetAddress ipServidor;
 
-	        socket = new DatagramSocket();
+    private int puertoServidor;
 
-	        socket.setBroadcast(true);
-	        socket.setSoTimeout(1000);
+    private boolean clienteActivo;
+    private boolean partidaIniciada;
+    private boolean servidorLleno;
 
-	        puertoServidor = 50000;
+    private boolean recibioEstadoInicial;
+    private boolean recibioInicio;
 
-	        clienteActivo = true;
-	        servidorEncontrado = false;
+    public HiloCliente() throws SocketException {
 
-	        ultimoMensaje = "";
-	    }
+        socket = new DatagramSocket();
 
-	    @Override
-	    public void run() {
+        socket.setBroadcast(true);
+        socket.setSoTimeout(1000);
 
-	        long ultimoEnvio = 0;
+        puertoServidor = 50000;
 
-	        while (clienteActivo) {
+        clienteActivo = true;
+        partidaIniciada = false;
+        servidorLleno = false;
 
-	            if (!servidorEncontrado && System.currentTimeMillis() - ultimoEnvio >= 2000) {
+        recibioEstadoInicial = false;
+        recibioInicio = false;
+    }
 
-	                enviarConexion();
+    @Override
+    public void run() {
 
-	                ultimoEnvio = System.currentTimeMillis();
-	            }
+        long ultimoEnvio = 0;
 
-	            try {
+        while (clienteActivo) {
 
-	                byte[] datos = new byte[1024];
+            if (!partidaIniciada
+                    && !servidorLleno
+                    && System.currentTimeMillis() - ultimoEnvio >= 2000) {
 
-	                DatagramPacket paquete = new DatagramPacket(datos, datos.length);
+                enviarConexion();
 
-	                socket.receive(paquete);
+                ultimoEnvio = System.currentTimeMillis();
+            }
 
-	                String mensaje = new String(paquete.getData()).trim();
+            try {
 
-	                if (mensaje.startsWith("ok")) {
+                byte[] datos = new byte[1024];
 
-	                    ipServidor = paquete.getAddress();
-	                    servidorEncontrado = true;
-	                }
+                DatagramPacket paquete = new DatagramPacket(
+                        datos,
+                        datos.length
+                );
 
-	                ultimoMensaje = mensaje;
+                socket.receive(paquete);
 
-	                System.out.println("Mensaje del servidor: " + mensaje);
+                String mensaje = new String(
+                        paquete.getData()
+                ).trim();
 
-	            } catch (SocketTimeoutException e) {
+                procesarMensaje(mensaje, paquete);
 
-	               
+            } catch (SocketTimeoutException e) {
 
-	            } catch (SocketException e) {
+                // Se vuelve a intentar buscar el servidor.
 
-	                if (clienteActivo) {
-	                    System.out.println("Se cerro el socket del cliente.");
-	                }
+            } catch (SocketException e) {
 
-	                clienteActivo = false;
+                if (clienteActivo) {
+                    System.out.println("Se cerro el socket del cliente.");
+                }
 
-	            } catch (IOException e) {
+                clienteActivo = false;
 
-	                System.out.println("Error al recibir datos.");
-	            }
-	        }
-	    }
+            } catch (IOException e) {
 
-	    private void enviarConexion() {
+                System.out.println(
+                        "Error al recibir datos del servidor."
+                );
+            }
+        }
+    }
 
-	        try {
+    private void enviarConexion() {
 
-	            InetAddress direccionBroadcast =
-	                    InetAddress.getByName("255.255.255.255");
+        try {
 
-	            byte[] datos = "conexion".getBytes();
+            InetAddress direccionBroadcast =
+                    InetAddress.getByName("255.255.255.255");
 
-	            DatagramPacket paquete = new DatagramPacket(
-	                    datos,
-	                    datos.length,
-	                    direccionBroadcast,
-	                    puertoServidor
-	            );
+            byte[] datos = "conexion".getBytes();
 
-	            socket.send(paquete);
+            DatagramPacket paquete = new DatagramPacket(
+                    datos,
+                    datos.length,
+                    direccionBroadcast,
+                    puertoServidor
+            );
 
-	        } catch (IOException e) {
+            socket.send(paquete);
 
-	            System.out.println("Error al buscar el servidor.");
-	        }
-	    }
+        } catch (IOException e) {
 
-	    public void enviarMensaje(String mensaje) {
+            System.out.println(
+                    "Error al buscar el servidor."
+            );
+        }
+    }
 
-	        if (!servidorEncontrado|| socket == null || socket.isClosed()) {
-	            return;
-	        }
+    private void procesarMensaje(
+            String mensaje,
+            DatagramPacket paquete
+    ) {
 
-	        try {
+        String[] partes = mensaje.split("-");
 
-	            byte[] datos = mensaje.getBytes();
+        if (partes[0].equals("ok") && partes.length == 2) {
 
-	            DatagramPacket paquete = new DatagramPacket(
-	                    datos,
-	                    datos.length,
-	                    ipServidor,
-	                    puertoServidor
-	            );
+            ipServidor = paquete.getAddress();
 
-	            socket.send(paquete);
+            int jugadorAsignado = Integer.parseInt(partes[1]);
 
-	        } catch (IOException e) {
+            Gdx.app.postRunnable(new Runnable() {
 
-	            System.out.println("Error al enviar mensaje al servidor.");
-	        }
-	    }
+                @Override
+                public void run() {
 
-	    public String obtenerUltimoMensaje() {
+                    EstadoRed.conectado = true;
 
-	        String mensaje = ultimoMensaje;
+                    EstadoRed.numeroJugador = jugadorAsignado;
+                }
+            });
 
-	        ultimoMensaje = "";
+        } else if (partes[0].equals("estado") && partes.length == 5) {
 
-	        return mensaje;
-	    }
+            float x1 = Float.parseFloat(partes[1]);
+            float y1 = Float.parseFloat(partes[2]);
 
-	    public boolean estaConectado() {
-	        return servidorEncontrado;
-	    }
+            float x2 = Float.parseFloat(partes[3]);
+            float y2 = Float.parseFloat(partes[4]);
 
-	    public void cerrar() {
+            recibioEstadoInicial = true;
 
-	        if (servidorEncontrado) {
-	            enviarMensaje("desconexion");
-	        }
+            Gdx.app.postRunnable(new Runnable() {
 
-	        clienteActivo = false;
+                @Override
+                public void run() {
 
-	        if (socket != null && !socket.isClosed()) {
-	            socket.close();
-	        }
-	    }
+                    EstadoRed.posicionX1 = x1;
+                    EstadoRed.posicionY1 = y1;
+
+                    EstadoRed.posicionX2 = x2;
+                    EstadoRed.posicionY2 = y2;
+
+                    EstadoRed.estadoInicialRecibido = true;
+                }
+            });
+
+        } else if (mensaje.equals("empieza")) {
+
+            recibioInicio = true;
+
+            Gdx.app.postRunnable(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    EstadoRed.empieza = true;
+                }
+            });
+
+        } else if (mensaje.equals("lleno")) {
+
+            servidorLleno = true;
+
+            Gdx.app.postRunnable(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    EstadoRed.servidorLleno = true;
+                }
+            });
+        }
+
+        if (recibioEstadoInicial && recibioInicio) {
+            partidaIniciada = true;
+        }
+    }
+
+    public void enviarMensaje(String mensaje) {
+
+        if (!EstadoRed.conectado
+                || ipServidor == null
+                || socket.isClosed()) {
+            return;
+        }
+
+        try {
+
+            byte[] datos = mensaje.getBytes();
+
+            DatagramPacket paquete = new DatagramPacket(
+                    datos,
+                    datos.length,
+                    ipServidor,
+                    puertoServidor
+            );
+
+            socket.send(paquete);
+
+        } catch (IOException e) {
+
+            System.out.println(
+                    "Error al enviar el mensaje al servidor."
+            );
+        }
+    }
+
+    public void cerrar() {
+
+        if (EstadoRed.conectado) {
+            enviarMensaje("desconexion");
+        }
+
+        clienteActivo = false;
+
+        if (socket != null && !socket.isClosed()) {
+            socket.close();
+        }
+    }
 }

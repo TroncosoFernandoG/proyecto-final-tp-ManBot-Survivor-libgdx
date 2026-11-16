@@ -78,6 +78,11 @@ public class Jugador {
 	    return posicionY;
 	}
 	
+	public void establecerPosicion(float posicionX, float posicionY) {
+	    this.posicionX = posicionX;
+	    this.posicionY = posicionY;
+	}
+	
 	public float obtenerAncho() {
 	    return ancho;
 	}

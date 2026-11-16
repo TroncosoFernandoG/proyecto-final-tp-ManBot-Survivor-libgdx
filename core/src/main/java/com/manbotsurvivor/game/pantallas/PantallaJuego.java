@@ -31,6 +31,9 @@ import com.manbotsurvivor.game.gestores.GestorOleadas;
 import com.manbotsurvivor.game.gestores.GestorPartida;
 import com.manbotsurvivor.game.gestores.GestorProgresion;
 import com.manbotsurvivor.game.jugador.Jugador;
+import java.net.SocketException;
+import com.manbotsurvivor.game.red.EstadoRed;
+import com.manbotsurvivor.game.red.HiloCliente;
 
 public class PantallaJuego implements Screen {
 	private final SpriteBatch batch;
@@ -63,6 +66,8 @@ public class PantallaJuego implements Screen {
     private static final boolean MOSTRAR_RANGO_ATAQUE = false;
     private SelectorMejoras selectorMejoras;
     private PanelResultado panelResultado;
+    private HiloCliente hiloCliente;
+    private boolean posicionesInicialesAplicadas;
     
     public PantallaJuego(SpriteBatch batch, NavegacionPantallas navegacion, int anchoVista, int altoVista) {
 
@@ -128,6 +133,22 @@ public class PantallaJuego implements Screen {
         
         panelResultado = new PanelResultado();
         
+        EstadoRed.reiniciar();
+
+        posicionesInicialesAplicadas = false;
+
+        try {
+
+            hiloCliente = new HiloCliente();
+
+            hiloCliente.start();
+
+        } catch (SocketException e) {
+
+            System.out.println(
+                    "No se pudo iniciar la comunicacion UDP del cliente."
+            );
+        }
     }
 
     private boolean haySeleccionActiva() {
@@ -149,6 +170,44 @@ public class PantallaJuego implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        
+        if (!EstadoRed.empieza || !EstadoRed.estadoInicialRecibido) {
+
+            batch.setProjectionMatrix(camaraJuego.combined);
+
+            batch.begin();
+
+            fuentePausa.getData().setScale(0.7f);
+
+            if (EstadoRed.servidorLleno) {
+
+                fuentePausa.draw(batch, "El servidor ya tiene dos jugadores.", 20 , altoVista - 20);
+
+            } else if (EstadoRed.empieza) {
+
+                fuentePausa.draw(batch,"Sincronizando partida...", 20, altoVista - 20);
+
+            } else if (EstadoRed.conectado) {
+
+                fuentePausa.draw(batch, "Esperando al otro jugador...", 20, altoVista - 20);
+
+            } else {
+
+                fuentePausa.draw(batch, "Buscando servidor...", 20, altoVista - 20);
+            }
+
+            batch.end();
+
+            return;
+        }
+
+        if (!posicionesInicialesAplicadas) {
+
+            jugador.establecerPosicion( EstadoRed.posicionX1, EstadoRed.posicionY1);
+            segundoJugador.establecerPosicion(EstadoRed.posicionX2, EstadoRed.posicionY2);
+
+            posicionesInicialesAplicadas = true;
+        }
         
         if (controladorEntrada.consumirPulsacionEscape() && !haySeleccionActiva()) {
             if (gestorPartida.estaEnCurso()) {
@@ -359,6 +418,12 @@ public class PantallaJuego implements Screen {
     @Override
     public void dispose() {
 
+    	if (hiloCliente != null) {
+    	    hiloCliente.cerrar();
+    	}
+
+    	EstadoRed.reiniciar();
+    	
         jugador.disponer();
         segundoJugador.disponer();
         sistemaCombate.disponer();

@@ -1,3 +1,15 @@
+## [1.19.0] - 2026-11-16
+
+### Agregado
+* Incorporacion de EstadoRed para almacenar los datos compartidos de conexion.
+* Recepcion del numero de jugador asignado por el servidor.
+* Recepcion de las posiciones iniciales de ambos jugadores.
+* Sincronizacion del inicio de la partida.
+* Incorporacion de la pantalla de espera multijugador.
+* Integracion de HiloCliente con PantallaJuego.
+* Incorporacion de actualizacion de posiciones mediante datos del servidor.
+* Incorporacion de Gdx.app.postRunnable para actualizar datos utilizados por LibGDX.
+
 ## [1.18.6] - 2026-11-16
 
 ### Agregado

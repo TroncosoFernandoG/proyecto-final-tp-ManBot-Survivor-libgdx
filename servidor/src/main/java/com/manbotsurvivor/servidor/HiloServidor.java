@@ -110,6 +110,13 @@ public class HiloServidor extends Thread{
                 );
 
                 if (cantidadClientes == 2) {
+
+                    enviarMensaje(
+                            "estado-200-100-260-100",
+                            cliente.ip,
+                            cliente.puerto
+                    );
+
                     enviarMensaje(
                             "empieza",
                             cliente.ip,
@@ -141,13 +148,17 @@ public class HiloServidor extends Thread{
 
             if (cantidadClientes == 2) {
 
+                enviarATodos("estado-200-100-260-100");
+
                 enviarATodos("empieza");
 
                 System.out.println(
                         "Los dos jugadores estan conectados."
                 );
 
-                System.out.println("La partida puede comenzar.");
+                System.out.println(
+                        "La partida puede comenzar."
+                );
             }
 
         } else {
@@ -182,11 +193,7 @@ public class HiloServidor extends Thread{
         }
     }
 
-    public void enviarMensaje(
-            String mensaje,
-            java.net.InetAddress ip,
-            int puerto
-    ) {
+    public void enviarMensaje(String mensaje, java.net.InetAddress ip, int puerto) {
 
         if (socket == null || socket.isClosed()) {
             return;
