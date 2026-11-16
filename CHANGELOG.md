@@ -1,3 +1,12 @@
+## [1.20.2] - 2026-11-15
+
+### Agregado
+* Sincronizacion de posiciones y vida de enemigos desde el servidor.
+* Recepcion de proyectiles laser y granadas mediante UDP.
+* Sincronizacion de posiciones y estado de explosion de las granadas.
+* Actualizacion visual de enemigos sin ejecutar su inteligencia artificial local.
+* Incorporacion de actualizacion de animaciones para entidades recibidas.
+
 ## [1.20.1] - 2026-11-15
 
 ### Agregado
