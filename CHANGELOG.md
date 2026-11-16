@@ -1,3 +1,12 @@
+## [1.18.4] - 2026-11-16
+
+### Agregado
+* Implementacion de HiloCliente mediante Thread.
+* Creacion de DatagramSocket con puerto asignado automaticamente.
+* Envio de solicitudes de conexion al servidor.
+* Recepcion de mensajes UDP mediante DatagramPacket.
+* Incorporacion del cierre del socket del cliente.
+
 ## [1.18.3] - 2026-11-16
 
 ### Agregado
