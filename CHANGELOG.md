@@ -1,3 +1,13 @@
+## [1.18.6] - 2026-11-16
+
+### Agregado
+* Incorporacion del registro de dos clientes en el servidor.
+* Identificacion de jugadores mediante IP y puerto.
+* Asignacion de roles mediante los mensajes ok-1 y ok-2.
+* Inicio de la partida cuando se conectan ambos jugadores.
+* Incorporacion del envio de mensajes a todos los clientes.
+* Rechazo de conexiones cuando el servidor esta completo.
+
 ## [1.18.5] - 2026-11-16
 
 ### Modificado
