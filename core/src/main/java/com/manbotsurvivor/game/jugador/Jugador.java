@@ -83,6 +83,29 @@ public class Jugador {
 	    this.posicionY = posicionY;
 	}
 	
+	public void establecerEstadoRed(float posicionX, float posicionY, int vida, int experiencia, int nivel, int experienciaNecesaria, int enemigosEliminados) {
+
+	    this.posicionX = posicionX;
+	    this.posicionY = posicionY;
+
+	    this.vida = Math.max(0, Math.min(VIDA_MAXIMA, vida));
+
+	    this.experiencia = experiencia;
+	    this.nivel = nivel;
+	    this.experienciaNecesaria = experienciaNecesaria;
+
+	    this.enemigosEliminados = enemigosEliminados;
+
+	    nivelesPendientes = 0;
+	}
+
+	public void actualizarAnimacionRed(float delta) {
+
+	    if (estaVivo()) {
+	        tiempoAnimacion += delta;
+	    }
+	}
+	
 	public float obtenerAncho() {
 	    return ancho;
 	}

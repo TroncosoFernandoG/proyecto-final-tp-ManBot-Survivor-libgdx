@@ -1,3 +1,13 @@
+## [1.20.3] - 2026-11-15
+
+### Agregado
+* Incorporacion de experiencia compartida administrada por el servidor.
+* Sincronizacion del nivel y la experiencia de ambos jugadores.
+* Generacion individual de opciones de mejora para cada jugador.
+* Envio de selecciones de mejoras al servidor mediante UDP.
+* Aplicacion de mejoras de armas, vida y velocidad desde el servidor.
+* Pausa y reanudacion de la partida durante la seleccion de mejoras.
+
 ## [1.20.2] - 2026-11-15
 
 ### Agregado
