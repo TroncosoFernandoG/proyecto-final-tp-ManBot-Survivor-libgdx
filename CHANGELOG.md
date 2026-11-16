@@ -1,3 +1,13 @@
+## [1.20.0] - 2026-11-16
+
+### Agregado
+* Incorporacion de PartidaServidor para administrar el estado de la partida.
+* Traslado del movimiento de los jugadores al servidor.
+* Incorporacion del calculo de posiciones oficiales.
+* Actualizacion del servidor para procesar los mensajes recibidos de cada jugador.
+* Envio periodico del estado de la partida mediante UDP.
+* Incorporacion de la identificacion del jugador mediante IP y puerto.
+
 ## [1.19.1] - 2026-11-16
 
 ### Agregado
