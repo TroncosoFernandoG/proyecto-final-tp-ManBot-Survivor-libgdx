@@ -9,100 +9,154 @@ import java.net.SocketTimeoutException;
 
 public class HiloCliente extends Thread{
 
-	private DatagramSocket socket;
-    private InetAddress ipServidor;
-    private int puertoServidor;
+	 private DatagramSocket socket;
+	    private InetAddress ipServidor;
+	    private int puertoServidor;
 
-    private boolean clienteActivo;
-    private String ultimoMensaje;
+	    private boolean clienteActivo;
+	    private boolean servidorEncontrado;
+	    private String ultimoMensaje;
 
-    public HiloCliente(InetAddress ipServidor, int puertoServidor) throws SocketException {
+	    public HiloCliente() throws SocketException {
 
-        this.ipServidor = ipServidor;
-        this.puertoServidor = puertoServidor;
+	        socket = new DatagramSocket();
 
-        socket = new DatagramSocket();
-        socket.setSoTimeout(1000);
+	        socket.setBroadcast(true);
+	        socket.setSoTimeout(1000);
 
-        clienteActivo = true;
-        ultimoMensaje = "";
+	        puertoServidor = 50000;
 
-        enviarMensaje("conexion");
-    }
+	        clienteActivo = true;
+	        servidorEncontrado = false;
 
-    @Override
-    public void run() {
+	        ultimoMensaje = "";
+	    }
 
-        while (clienteActivo) {
+	    @Override
+	    public void run() {
 
-            try {
+	        long ultimoEnvio = 0;
 
-                byte[] datos = new byte[1024];
+	        while (clienteActivo) {
 
-                DatagramPacket paquete = new DatagramPacket(datos, datos.length);
+	            if (!servidorEncontrado && System.currentTimeMillis() - ultimoEnvio >= 2000) {
 
-                socket.receive(paquete);
+	                enviarConexion();
 
-                ultimoMensaje = new String(paquete.getData()).trim();
+	                ultimoEnvio = System.currentTimeMillis();
+	            }
 
-                System.out.println("Mensaje recibido del servidor: "+ ultimoMensaje);
+	            try {
 
-            } catch (SocketTimeoutException e) {
+	                byte[] datos = new byte[1024];
 
-            } catch (SocketException e) {
+	                DatagramPacket paquete = new DatagramPacket(datos, datos.length);
 
-                if (clienteActivo) {
-                    System.out.println("Se cerro el socket del cliente.");
-                }
+	                socket.receive(paquete);
 
-                clienteActivo = false;
+	                String mensaje = new String(paquete.getData()).trim();
 
-            } catch (IOException e) {
+	                if (mensaje.startsWith("ok")) {
 
-                System.out.println("Error al recibir datos del servidor.");
-            }
-        }
-    }
+	                    ipServidor = paquete.getAddress();
+	                    servidorEncontrado = true;
+	                }
 
-    public void enviarMensaje(String mensaje) {
+	                ultimoMensaje = mensaje;
 
-        if (socket == null || socket.isClosed()) {
-            return;
-        }
+	                System.out.println("Mensaje del servidor: " + mensaje);
 
-        try {
+	            } catch (SocketTimeoutException e) {
 
-            byte[] datos = mensaje.getBytes();
+	               
 
-            DatagramPacket paquete = new DatagramPacket(datos, datos.length, ipServidor, puertoServidor);
+	            } catch (SocketException e) {
 
-            socket.send(paquete);
+	                if (clienteActivo) {
+	                    System.out.println("Se cerro el socket del cliente.");
+	                }
 
-        } catch (IOException e) {
+	                clienteActivo = false;
 
-            System.out.println("Error al enviar datos al servidor.");
-        }
-    }
+	            } catch (IOException e) {
 
-    public String obtenerUltimoMensaje() {
+	                System.out.println("Error al recibir datos.");
+	            }
+	        }
+	    }
 
-        String mensaje = ultimoMensaje;
+	    private void enviarConexion() {
 
-        ultimoMensaje = "";
+	        try {
 
-        return mensaje;
-    }
+	            InetAddress direccionBroadcast =
+	                    InetAddress.getByName("255.255.255.255");
 
-    public void cerrar() {
+	            byte[] datos = "conexion".getBytes();
 
-        if (socket != null && !socket.isClosed()) {
+	            DatagramPacket paquete = new DatagramPacket(
+	                    datos,
+	                    datos.length,
+	                    direccionBroadcast,
+	                    puertoServidor
+	            );
 
-            enviarMensaje("desconexion");
+	            socket.send(paquete);
 
-            clienteActivo = false;
+	        } catch (IOException e) {
 
-            socket.close();
-        }
-    }
-	
+	            System.out.println("Error al buscar el servidor.");
+	        }
+	    }
+
+	    public void enviarMensaje(String mensaje) {
+
+	        if (!servidorEncontrado|| socket == null || socket.isClosed()) {
+	            return;
+	        }
+
+	        try {
+
+	            byte[] datos = mensaje.getBytes();
+
+	            DatagramPacket paquete = new DatagramPacket(
+	                    datos,
+	                    datos.length,
+	                    ipServidor,
+	                    puertoServidor
+	            );
+
+	            socket.send(paquete);
+
+	        } catch (IOException e) {
+
+	            System.out.println("Error al enviar mensaje al servidor.");
+	        }
+	    }
+
+	    public String obtenerUltimoMensaje() {
+
+	        String mensaje = ultimoMensaje;
+
+	        ultimoMensaje = "";
+
+	        return mensaje;
+	    }
+
+	    public boolean estaConectado() {
+	        return servidorEncontrado;
+	    }
+
+	    public void cerrar() {
+
+	        if (servidorEncontrado) {
+	            enviarMensaje("desconexion");
+	        }
+
+	        clienteActivo = false;
+
+	        if (socket != null && !socket.isClosed()) {
+	            socket.close();
+	        }
+	    }
 }

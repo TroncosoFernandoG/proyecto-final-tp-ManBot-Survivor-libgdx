@@ -1,3 +1,12 @@
+## [1.18.5] - 2026-11-16
+
+### Modificado
+* Implementacion de busqueda del servidor mediante broadcast.
+* Envio de solicitudes de conexion a la red local.
+* Obtencion automatica de la IP del servidor.
+* Incorporacion de reintentos cuando no se recibe respuesta.
+* Configuracion del socket para permitir broadcast.
+
 ## [1.18.4] - 2026-11-16
 
 ### Agregado
