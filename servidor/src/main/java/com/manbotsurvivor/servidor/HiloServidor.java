@@ -42,10 +42,7 @@ public class HiloServidor extends Thread {
             socket = new DatagramSocket(puertoServidor);
             socket.setSoTimeout(25);
 
-            System.out.println(
-                    "Servidor de ManBot Survivor iniciado en el puerto "
-                    + puertoServidor
-            );
+            System.out.println("Servidor de ManBot Survivor iniciado en el puerto " + puertoServidor);
 
             while (servidorActivo) {
 
@@ -53,26 +50,20 @@ public class HiloServidor extends Thread {
 
                     byte[] datos = new byte[1024];
 
-                    DatagramPacket paquete = new DatagramPacket(
-                            datos,
-                            datos.length
-                    );
+                    DatagramPacket paquete = new DatagramPacket(datos, datos.length);
 
                     socket.receive(paquete);
 
-                    String mensaje = new String(
-                            paquete.getData(),
-                            0,
-                            paquete.getLength(),
-                            StandardCharsets.UTF_8
-                    ).trim();
+                    String mensaje = new String(paquete.getData(), 0, paquete.getLength(), StandardCharsets.UTF_8).trim();
 
                     procesarMensaje(mensaje, paquete);
 
                 } catch (SocketTimeoutException e) {
 
-                    // Se aprovecha el tiempo sin paquetes para actualizar la partida.
+                   
                 }
+
+                controlarDesconexiones();
 
                 actualizarPartida();
 
@@ -81,10 +72,7 @@ public class HiloServidor extends Thread {
 
         } catch (BindException e) {
 
-            System.out.println(
-                    "No se pudo iniciar el servidor: el puerto "
-                    + puertoServidor + " ya esta ocupado."
-            );
+            System.out.println("No se pudo iniciar el servidor: el puerto " + puertoServidor + " ya esta ocupado.");
 
         } catch (SocketException e) {
 
@@ -110,20 +98,14 @@ public class HiloServidor extends Thread {
         }
     }
 
-    private void procesarMensaje(
-            String mensaje,
-            DatagramPacket paquete
-    ) {
+    private void procesarMensaje(String mensaje, DatagramPacket paquete) {
 
         if (mensaje.equals("conexion")) {
             registrarCliente(paquete);
             return;
         }
 
-        DireccionRed cliente = buscarCliente(
-                paquete.getAddress(),
-                paquete.getPort()
-        );
+        DireccionRed cliente = buscarCliente(paquete.getAddress(), paquete.getPort());
 
         if (cliente == null || !cliente.conectado) {
             return;
@@ -132,27 +114,25 @@ public class HiloServidor extends Thread {
         cliente.ultimoMensaje = System.currentTimeMillis();
 
         if (mensaje.equals("ping")) {
+
             enviarMensaje("pong", cliente.ip, cliente.puerto);
+
             return;
         }
 
         if (mensaje.equals("desconexion")) {
+
             desconectarCliente(cliente);
+
             return;
         }
 
-        partida.procesarMensaje(
-                cliente.numeroJugador,
-                mensaje
-        );
+        partida.procesarMensaje(cliente.numeroJugador, mensaje);
     }
 
     private void registrarCliente(DatagramPacket paquete) {
 
-        DireccionRed cliente = buscarCliente(
-                paquete.getAddress(),
-                paquete.getPort()
-        );
+        DireccionRed cliente = buscarCliente(paquete.getAddress(), paquete.getPort());
 
         if (cliente != null) {
 
@@ -163,15 +143,28 @@ public class HiloServidor extends Thread {
             return;
         }
 
+        cliente = buscarClienteDesconectadoPorIp(paquete.getAddress());
+
+        if (cliente != null) {
+
+            cliente.puerto = paquete.getPort();
+            cliente.ultimoMensaje = System.currentTimeMillis();
+            cliente.conectado = true;
+
+            partida.conectarJugador(cliente.numeroJugador);
+
+            System.out.println("Se reconecto el jugador " + cliente.numeroJugador + ".");
+
+            enviarRespuestaConexion(cliente);
+
+            return;
+        }
+
         cliente = buscarLugarDisponible();
 
         if (cliente == null) {
 
-            enviarMensaje(
-                    "lleno",
-                    paquete.getAddress(),
-                    paquete.getPort()
-            );
+            enviarMensaje("lleno", paquete.getAddress(), paquete.getPort());
 
             return;
         }
@@ -184,10 +177,7 @@ public class HiloServidor extends Thread {
 
         partida.conectarJugador(cliente.numeroJugador);
 
-        System.out.println(
-                "Se conecto el jugador " + cliente.numeroJugador
-                + " desde " + cliente.ip.getHostAddress()
-        );
+        System.out.println("Se conecto el jugador " + cliente.numeroJugador + " desde " + cliente.ip.getHostAddress());
 
         enviarRespuestaConexion(cliente);
 
@@ -195,13 +185,30 @@ public class HiloServidor extends Thread {
 
             enviarATodos("empieza");
 
-            System.out.println(
-                    "Los dos jugadores estan conectados. Comienza la partida."
-            );
+            System.out.println("Los dos jugadores estan conectados. Comienza la partida.");
         }
     }
 
+    private void enviarRespuestaConexion(DireccionRed cliente) {
+
+        enviarMensaje("ok-" + cliente.numeroJugador, cliente.ip, cliente.puerto);
+
+        if (cantidadClientes() == 2) {
+
+            enviarMensaje("empieza", cliente.ip, cliente.puerto);
+        }
+
+        enviarEstadoACliente(cliente);
+    }
+
     private DireccionRed buscarLugarDisponible() {
+
+        for (DireccionRed cliente : clientes) {
+
+            if (!cliente.conectado && cliente.ip == null) {
+                return cliente;
+            }
+        }
 
         for (DireccionRed cliente : clientes) {
 
@@ -212,17 +219,26 @@ public class HiloServidor extends Thread {
 
         if (clientes.size() < 2) {
 
-            DireccionRed nuevo = new DireccionRed(
-                    null,
-                    0,
-                    clientes.size() + 1
-            );
+            DireccionRed nuevo = new DireccionRed(null, 0, clientes.size() + 1);
 
             nuevo.conectado = false;
 
             clientes.add(nuevo);
 
             return nuevo;
+        }
+
+        return null;
+    }
+
+    private DireccionRed buscarClienteDesconectadoPorIp(InetAddress ip) {
+
+        for (DireccionRed cliente : clientes) {
+
+            if (!cliente.conectado && cliente.ip != null && cliente.ip.equals(ip)) {
+
+                return cliente;
+            }
         }
 
         return null;
@@ -250,29 +266,20 @@ public class HiloServidor extends Thread {
 
         partida.desconectarJugador(cliente.numeroJugador);
 
-        System.out.println(
-                "Se desconecto el jugador " + cliente.numeroJugador + "."
-        );
+        System.out.println("Se desconecto el jugador " + cliente.numeroJugador + ".");
     }
 
-    private void enviarRespuestaConexion(DireccionRed cliente) {
+    private void controlarDesconexiones() {
 
-        enviarMensaje(
-                "ok-" + cliente.numeroJugador,
-                cliente.ip,
-                cliente.puerto
-        );
+        long ahora = System.currentTimeMillis();
 
-        if (cantidadClientes() == 2) {
+        for (DireccionRed cliente : clientes) {
 
-            enviarMensaje(
-                    "empieza",
-                    cliente.ip,
-                    cliente.puerto
-            );
+            if (cliente.conectado && ahora - cliente.ultimoMensaje > 8000) {
+
+                desconectarCliente(cliente);
+            }
         }
-
-        enviarEstadoACliente(cliente);
     }
 
     private void actualizarPartida() {
@@ -308,52 +315,24 @@ public class HiloServidor extends Thread {
 
             if (cliente.conectado) {
 
-                enviarMensaje(
-                        partida.obtenerMensajeMejoras(cliente.numeroJugador),
-                        cliente.ip,
-                        cliente.puerto
-                );
+                enviarMensaje(partida.obtenerMensajeMejoras(cliente.numeroJugador), cliente.ip, cliente.puerto);
             }
         }
     }
 
     private void enviarEstadoACliente(DireccionRed cliente) {
 
-        enviarMensaje(
-                partida.obtenerMensajePartida(),
-                cliente.ip,
-                cliente.puerto
-        );
+        enviarMensaje(partida.obtenerMensajePartida(), cliente.ip, cliente.puerto);
 
-        enviarMensaje(
-                partida.obtenerMensajeJugadores(),
-                cliente.ip,
-                cliente.puerto
-        );
+        enviarMensaje(partida.obtenerMensajeJugadores(), cliente.ip, cliente.puerto);
 
-        enviarMensaje(
-                partida.obtenerMensajeEnemigos(),
-                cliente.ip,
-                cliente.puerto
-        );
+        enviarMensaje(partida.obtenerMensajeEnemigos(), cliente.ip, cliente.puerto);
 
-        enviarMensaje(
-                partida.obtenerMensajeProyectiles(),
-                cliente.ip,
-                cliente.puerto
-        );
+        enviarMensaje(partida.obtenerMensajeProyectiles(), cliente.ip, cliente.puerto);
 
-        enviarMensaje(
-                partida.obtenerMensajeChips(),
-                cliente.ip,
-                cliente.puerto
-        );
+        enviarMensaje(partida.obtenerMensajeChips(), cliente.ip, cliente.puerto);
 
-        enviarMensaje(
-                partida.obtenerMensajeMejoras(cliente.numeroJugador),
-                cliente.ip,
-                cliente.puerto
-        );
+        enviarMensaje(partida.obtenerMensajeMejoras(cliente.numeroJugador), cliente.ip, cliente.puerto);
     }
 
     private int cantidadClientes() {

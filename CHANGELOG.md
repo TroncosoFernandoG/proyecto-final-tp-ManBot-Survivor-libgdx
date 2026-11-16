@@ -1,3 +1,14 @@
+## [1.21.1] - 2026-11-16
+
+### Agregado
+* Deteccion de desconexiones voluntarias mediante el mensaje desconexion.
+* Incorporacion de mensajes ping y pong para comprobar la comunicacion.
+* Deteccion de clientes que dejan de enviar mensajes.
+* Liberacion del lugar de un jugador desconectado.
+* Incorporacion de reconexion mediante la IP del jugador.
+* Continuacion de la partida cuando uno de los jugadores se desconecta.
+* Busqueda automatica del servidor despues de perder la comunicacion.
+
 ## [1.21.0] - 2026-11-16
 
 ### Agregado
