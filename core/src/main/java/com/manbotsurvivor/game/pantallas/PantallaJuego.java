@@ -68,6 +68,7 @@ public class PantallaJuego implements Screen {
     private PanelResultado panelResultado;
     private HiloCliente hiloCliente;
     private boolean posicionesInicialesAplicadas;
+    private long ultimoEnvioMovimiento;
     
     public PantallaJuego(SpriteBatch batch, NavegacionPantallas navegacion, int anchoVista, int altoVista) {
 
@@ -209,6 +210,8 @@ public class PantallaJuego implements Screen {
             posicionesInicialesAplicadas = true;
         }
         
+        enviarMovimientoServidor();
+        
         if (controladorEntrada.consumirPulsacionEscape() && !haySeleccionActiva()) {
             if (gestorPartida.estaEnCurso()) {
                 gestorPartida.pausar();
@@ -243,7 +246,6 @@ public class PantallaJuego implements Screen {
             gestorEntidades.recogerChips();
             gestorProgresion.actualizar();
 
-            // Un jugador elige a la vez: el 2 espera a que el 1 termine
             if (!gestorProgresion.haySeleccionActiva()) {
                 gestorProgresion2.actualizar();
             }
@@ -394,7 +396,46 @@ public class PantallaJuego implements Screen {
         }
     }
 
-    @Override
+    private void enviarMovimientoServidor() {
+		
+    	if (hiloCliente == null || !EstadoRed.conectado) {
+            return;
+        }
+
+        long ahora = System.currentTimeMillis();
+
+        if (ahora - ultimoEnvioMovimiento < 100) {
+            return;
+        }
+
+        ultimoEnvioMovimiento = ahora;
+
+        int direccionX = 0;
+        int direccionY = 0;
+
+        if (controladorEntrada.estaIzquierda()) {
+            direccionX--;
+        }
+
+        if (controladorEntrada.estaDerecha()) {
+            direccionX++;
+        }
+
+        if (controladorEntrada.estaAbajo()) {
+            direccionY--;
+        }
+
+        if (controladorEntrada.estaArriba()) {
+            direccionY++;
+        }
+
+        hiloCliente.enviarMensaje(
+                "mover-" + (direccionX + 1) + "-" + (direccionY + 1)
+        );
+		
+	}
+
+	@Override
     public void resize(int width, int height) {
     	
     	gamePort.update(width, height);

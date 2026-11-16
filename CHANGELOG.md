@@ -1,3 +1,11 @@
+## [1.19.1] - 2026-11-16
+
+### Agregado
+* Envio de movimientos del jugador al servidor mediante UDP.
+* Incorporacion del mensaje parametrizado mover para representar las direcciones.
+* Envio periodico de las acciones del jugador.
+* Identificacion del jugador controlado por cada cliente.
+
 ## [1.19.0] - 2026-11-16
 
 ### Agregado
