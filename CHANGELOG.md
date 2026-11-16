@@ -1,3 +1,12 @@
+## [1.18.3] - 2026-11-16
+
+### Agregado
+* Implementacion del HiloServidor mediante Thread.
+* Apertura del socket UDP en el puerto 50000.
+* Recepcion de paquetes mediante DatagramPacket.
+* Incorporacion de DireccionRed para almacenar IP y puerto.
+* Deteccion de errores cuando el puerto del servidor esta ocupado.
+
 ## [1.18.2] - 2026-11-16
 
 ### Modificado
