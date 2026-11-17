@@ -1,3 +1,9 @@
+## [1.20.0] - 2026-11-16
+
+### Agregado
+
+* Incorporación de DibujoProyectiles para dibujar los láseres, granadas y explosiones recibidos del servidor.
+
 ## [1.19.0] - 2026-11-16
 
 ### Agregado
