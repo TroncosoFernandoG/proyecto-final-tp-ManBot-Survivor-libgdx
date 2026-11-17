@@ -1,3 +1,13 @@
+## [1.19.0] - 2026-11-16
+
+### Agregado
+
+* Incorporación de ProtocolosRed en el cliente, igual al del servidor.
+* Incorporación de HiloCliente, que recibe los paquetes UDP del servidor en un hilo aparte.
+* Búsqueda del servidor por broadcast en la red local, sin escribir la IP.
+* Detección de servidor completo, servidor cerrado y servidor que deja de responder (5 segundos).
+* Incorporación de DatosPartida, DatosJugador, DatosSeleccion, DatosEnemigo y DatosProyectil para guardar el estado recibido.
+
 ## [1.18.1] - 2026-11-13
 
 ### Modificado
