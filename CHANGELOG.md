@@ -1,3 +1,9 @@
+## [1.21.1] - 2026-11-16
+
+### Modificado
+
+* Se unificó la versión de gradle.properties con la del changelog.
+
 ## [1.21.0] - 2026-11-16
 
 ### Agregado
