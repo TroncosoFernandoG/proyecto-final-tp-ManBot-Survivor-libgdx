@@ -1,56 +1,38 @@
 package com.manbotsurvivor.game.jugador;
 
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.manbotsurvivor.game.elementos.ControladorEntrada;
-import com.manbotsurvivor.game.elementos.Mapa;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 
+// Jugador del CLIENTE: solo se dibuja.
+// La posicion, la vida y la experiencia las calcula el servidor.
 public class Jugador {
-	
+
+	// Cuanto mas alto, mas rapido alcanza la posicion que mando el servidor
+	private static final float VELOCIDAD_SUAVIZADO = 15f;
+	// Si la diferencia es muy grande (por ejemplo, una reconexion) se ubica directo
+	private static final float DISTANCIA_MAXIMA_SUAVIZADO = 150f;
+
 	private float posicionX;
 	private float posicionY;
-	private float velocidad;
 	private float ancho;
 	private float alto;
-	private int experiencia;
-	private int nivel = 1;
-	private int experienciaNecesaria = 100;
-	private int nivelesPendientes = 0;
-	private int enemigosEliminados;
-	private int vida;
-	private final int VIDA_MAXIMA;
-	
-	private float limiteMapaAncho;
-	private float limiteMapaAlto;
-	
+	private boolean posicionInicial;
+
 	private Texture texturaJugador;
 	private Animation<TextureRegion> animacionJugador;
 	private float tiempoAnimacion;
 	private boolean mirandoDerecha;
-	private ControladorEntrada controladorEntrada;
-	private Mapa mapa;
-	
-	public Jugador(float posicionX, float posicionY, float velocidad, ControladorEntrada controladorEntrada, float limiteMapaAncho, float limiteMapaAlto, Mapa mapa) {
+	private boolean moviendose;
 
-	    this.posicionX = posicionX;
-	    this.posicionY = posicionY;
-	    this.velocidad = velocidad;
-	    this.controladorEntrada = controladorEntrada;
-	    this.limiteMapaAncho = limiteMapaAncho;
-	    this.limiteMapaAlto = limiteMapaAlto;
-	    this.mapa = mapa;
+	public Jugador() {
+
 	    this.ancho = 32;
 	    this.alto = 32;
-	    this.experiencia = 0;
-	    this.enemigosEliminados = 0;
-	    this.VIDA_MAXIMA = 100;
-	    this.vida = VIDA_MAXIMA;
-	    
+	    this.posicionInicial = true;
+
 	    texturaJugador = new Texture("manbot.png");
 
 	    TextureRegion[][] cuadros = TextureRegion.split(texturaJugador, 64, 64);
@@ -67,9 +49,53 @@ public class Jugador {
 
 	    tiempoAnimacion = 0;
 	    mirandoDerecha = true;
-	    
 	}
-	
+
+	// Los estados llegan cada 50 ms (o con retardo): en vez de saltar a la posicion nueva,
+	// el jugador se acerca de a poco y el movimiento se ve fluido.
+	public void asignarPosicion(float x, float y, float delta) {
+
+	    float diferenciaX = x - posicionX;
+	    float diferenciaY = y - posicionY;
+
+	    boolean muyLejos = diferenciaX * diferenciaX + diferenciaY * diferenciaY
+	            > DISTANCIA_MAXIMA_SUAVIZADO * DISTANCIA_MAXIMA_SUAVIZADO;
+
+	    if (posicionInicial || muyLejos) {
+	        posicionX = x;
+	        posicionY = y;
+	        posicionInicial = false;
+	        return;
+	    }
+
+	    float factor = Math.min(1f, delta * VELOCIDAD_SUAVIZADO);
+
+	    posicionX += diferenciaX * factor;
+	    posicionY += diferenciaY * factor;
+	}
+
+	public void setMirandoDerecha(boolean mirandoDerecha) {
+	    this.mirandoDerecha = mirandoDerecha;
+	}
+
+	public void setMoviendose(boolean moviendose) {
+	    this.moviendose = moviendose;
+	}
+
+	public void animar(float delta) {
+	    if (moviendose) {
+	        tiempoAnimacion += delta;
+	    } else {
+	        tiempoAnimacion = 0;
+	    }
+	}
+
+	public void reiniciar() {
+	    posicionInicial = true;
+	    tiempoAnimacion = 0;
+	    moviendose = false;
+	}
+
 	public float obtenerPosicionX() {
 	    return posicionX;
 	}
@@ -77,198 +103,19 @@ public class Jugador {
 	public float obtenerPosicionY() {
 	    return posicionY;
 	}
-	
-	public float obtenerAncho() {
-	    return ancho;
-	}
 
-	public float obtenerAlto() {
-	    return alto;
-	}
-	
-	public int ganarExperiencia(int cantidad) {
-		 if (cantidad <= 0) {
-		        return 0;
-		    }
-	    experiencia += cantidad;
-	    int nivelesGanados = 0;
-	    
-	    while (experiencia >= experienciaNecesaria) {
-	        experiencia -= experienciaNecesaria;
-	        nivel++;
-	        nivelesPendientes++;
-	        nivelesGanados++;
-	    }
-	    
-	    return nivelesGanados;
-	}
-	
-	public int obtenerExperiencia() {
-	    return experiencia;
-	}
-	
-	public int obtenerNivel() {
-	    return nivel;
-	}
-
-	public int obtenerExperienciaNecesaria() {
-	    return experienciaNecesaria;
-	}
-
-	public boolean hayNivelPendiente() {
-	    return nivelesPendientes > 0;
-	}
-
-	public void consumirNivelPendiente() {
-	    if (nivelesPendientes > 0) {
-	        nivelesPendientes--;
-	    }
-	}
-	
-	public void registrarEnemigoEliminado() {
-	    enemigosEliminados++;
-	}
-
-	public int obtenerEnemigosEliminados() {
-	    return enemigosEliminados;
-	}
-	
-	public void recibirDaño(int daño) {
-	    vida -= daño;
-
-	    if (vida < 0) {
-	        vida = 0;
-	    }
-	    
-	}
-	
-	public int obtenerVida() {
-	    return vida;
-	}
-	
-	public boolean estaVivo() {
-	    return vida > 0;
-	}
-	
-	public int obtenerVidaMaxima() {
-	    return VIDA_MAXIMA;
-	}
-	
-	public void curar(int cantidad) {
-	    if (cantidad <= 0) {
-	        return;
-	    }
-
-	    vida = Math.min(VIDA_MAXIMA, vida + cantidad);
-	}
-	
-	public void aumentarVelocidad(float cantidad) {
-	    if (cantidad > 0) {
-	        velocidad += cantidad;
-	    }
-	}
-
-	public void mover(float movimientoX, float movimientoY) {
-
-	    float nuevaPosicionX = posicionX + movimientoX;
-	    float nuevaPosicionY = posicionY + movimientoY;
-
-	    if (!mapa.hayColision(nuevaPosicionX, posicionY, ancho, alto)) {
-	        posicionX = nuevaPosicionX;
-	    }
-
-	    if (!mapa.hayColision(posicionX, nuevaPosicionY, ancho, alto)) {
-	        posicionY = nuevaPosicionY;
-	    }
-
-	    if (posicionX < 0) {
-	        posicionX = 0;
-	    }
-
-	    if (posicionY < 0) {
-	        posicionY = 0;
-	    }
-
-	    if (posicionX + ancho > limiteMapaAncho) {
-	        posicionX = limiteMapaAncho - ancho;
-	    }
-
-	    if (posicionY + alto > limiteMapaAlto) {
-	        posicionY = limiteMapaAlto - alto;
-	    }
-
-	}
-	
-	public void actualizar(float delta) {
-		
-		if (!estaVivo()) {
-	        return;
-	    }
-
-	    float movimientoX = 0;
-	    float movimientoY = 0;
-
-	    if (controladorEntrada.estaArriba() ||
-	        controladorEntrada.consumirPulsacionArriba()) {
-
-	    	 movimientoY += 1;
-	    }
-
-	    if (controladorEntrada.estaAbajo() ||
-	        controladorEntrada.consumirPulsacionAbajo()) {
-
-	    	movimientoY -= 1;
-	    }
-
-	    if (controladorEntrada.estaIzquierda() ||
-	        controladorEntrada.consumirPulsacionIzquierda()) {
-
-	    	movimientoX -= 1;
-	        mirandoDerecha = false;
-	    }
-
-	    if (controladorEntrada.estaDerecha() ||
-	        controladorEntrada.consumirPulsacionDerecha()) {
-
-	    	movimientoX += 1;
-	        mirandoDerecha = true;
-	    }
-	    
-	    float longitudMovimiento = (float) Math.sqrt(movimientoX * movimientoX + movimientoY * movimientoY);
-
-	    if (longitudMovimiento > 0) {
-	        movimientoX = movimientoX / longitudMovimiento * velocidad * delta;
-	        movimientoY = movimientoY / longitudMovimiento * velocidad * delta;
-	    }
-
-	    boolean estaMoviendose = movimientoX != 0 || movimientoY != 0;
-
-	    if (estaMoviendose) {
-	        tiempoAnimacion += delta;
-	    } else {
-	        tiempoAnimacion = 0;
-	    }
-
-	    mover(movimientoX, movimientoY);
-	}
-	
 	public void dibujar(OrthographicCamera camaraJuego, SpriteBatch lote) {
-		
-		 if (!estaVivo()) {
-		        return;
-		    }
 
-	    TextureRegion cuadroActual = new TextureRegion(animacionJugador.getKeyFrame(tiempoAnimacion));
+	    TextureRegion cuadroActual = animacionJugador.getKeyFrame(tiempoAnimacion);
 
-	    if (!mirandoDerecha) {
-	        cuadroActual.flip(true, false);
+	    if (mirandoDerecha) {
+	        lote.draw(cuadroActual, posicionX, posicionY, ancho, alto);
+	    } else {
+	        lote.draw(cuadroActual, posicionX + ancho, posicionY, -ancho, alto); // espejado
 	    }
-	    
-	    lote.draw(cuadroActual, posicionX, posicionY, ancho, alto);
 	}
-	
+
 	public void disponer() {
 	    texturaJugador.dispose();
 	}
-	
 }

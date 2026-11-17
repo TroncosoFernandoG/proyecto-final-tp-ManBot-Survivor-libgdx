@@ -17,14 +17,13 @@ public class JefeMecanico extends Enemigo {
     private static Texture textura;
     private static Animation<TextureRegion> animacion;
 
-    public JefeMecanico(float x, float y,  Mapa mapa) {
-        super(x, y, 45f, 180, 25, mapa, obtenerAnimacion());
+    public JefeMecanico(float x, float y) {
+        super(x, y, obtenerAnimacion());
 
         ancho = 112;
         alto = 112;
-        hitbox.setSize(ancho, alto);
     }
-
+    
     private static Animation<TextureRegion> obtenerAnimacion() {
         if (animacion == null) {
             textura = new Texture("JefeMecanico.png");
@@ -43,37 +42,6 @@ public class JefeMecanico extends Enemigo {
 
         return animacion;
     }
-
-   @Override
-   public void mover(
-           float movimientoX,
-           float movimientoY,
-           Jugador jugador,
-           ArrayList<Enemigo> enemigos) {
-
-       float nuevaPosicionX = posicionX + movimientoX;
-       float nuevaPosicionY = posicionY + movimientoY;
-
-       Rectangle futuraHitboxX = new Rectangle(
-               nuevaPosicionX, posicionY, ancho, alto);
-
-       if ((!mapa.hayColision(nuevaPosicionX, posicionY, ancho, alto) || mapa.hayColision(nuevaPosicionX, posicionY, ancho, alto))
-               && !hayColisionConOtroEnemigo(futuraHitboxX, enemigos)) {
-
-           posicionX = nuevaPosicionX;
-       }
-
-       Rectangle futuraHitboxY = new Rectangle(
-               posicionX, nuevaPosicionY, ancho, alto);
-
-       if ((!mapa.hayColision(nuevaPosicionX, posicionY, ancho, alto) || mapa.hayColision(nuevaPosicionX, posicionY, ancho, alto))
-               && !hayColisionConOtroEnemigo(futuraHitboxY, enemigos)) {
-
-           posicionY = nuevaPosicionY;
-       }
-
-       hitbox.setPosition(posicionX, posicionY);
-   }
 
     public static void disponerTextura() {
         if (textura != null) {

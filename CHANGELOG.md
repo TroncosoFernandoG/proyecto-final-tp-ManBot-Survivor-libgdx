@@ -1,3 +1,26 @@
+## [1.21.0] - 2026-11-16
+
+### Agregado
+
+* Incorporación del juego en red: el cliente se conecta al servidor, envía sus teclas y dibuja el estado recibido.
+* Pantallas de "Buscando servidor", "Esperando jugador", cuenta regresiva, "Servidor completo" y "Servidor desconectado" (con reconexión).
+* Envío de las teclas como estado completo cada 100 ms para tolerar la pérdida de paquetes UDP.
+* Reenvío de la mejora elegida y del pedido de revancha hasta que el servidor los procesa.
+* Suavizado de las posiciones de jugadores y enemigos para que el movimiento se vea fluido con retardos de red.
+* Incorporación de TipoEnemigo (patrón Factory) para crear el enemigo que corresponde según el tipo recibido.
+* Aviso cuando el compañero se desconecta y efecto rojo al recibir daño.
+
+### Modificado
+
+* Jugador y Enemigo del cliente solo se dibujan: la lógica se ejecuta en el servidor.
+* Hud, PanelResultado y SelectorMejoras muestran los datos recibidos del servidor.
+* La pausa ya no detiene la partida (la partida sigue en el servidor).
+* La opción "NUEVA PARTIDA" del menú pasó a llamarse "JUGAR EN RED".
+
+### Eliminado
+
+* Se eliminaron SistemaCombate, ChipEnergia, GestorEntidades, GestorOleadas, GestorPartida, GestorProgresion, Arma, Laser y Granada del cliente (ahora están solo en el servidor).
+
 ## [1.20.0] - 2026-11-16
 
 ### Agregado

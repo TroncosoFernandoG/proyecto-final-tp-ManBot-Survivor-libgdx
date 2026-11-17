@@ -3,22 +3,30 @@ package com.manbotsurvivor.game.escenas;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.manbotsurvivor.game.cliente.DatosJugador;
+import com.manbotsurvivor.game.cliente.DatosPartida;
+import com.manbotsurvivor.game.cliente.HiloCliente;
 import com.manbotsurvivor.game.elementos.EstadoPartida;
-import com.manbotsurvivor.game.gestores.GestorPartida;
-import com.manbotsurvivor.game.jugador.Jugador;
 
 public class PanelResultado {
 
-    public void dibujar(SpriteBatch batch, BitmapFont fuente, GestorPartida partida, Jugador jugador, Jugador segundoJugador, float ancho, float alto) {
+    public void dibujar(SpriteBatch batch, BitmapFont fuente, HiloCliente hiloCliente, float ancho, float alto) {
 
-        String titulo = partida.obtenerEstado() == EstadoPartida.VICTORIA ? "VICTORIA" : "DERROTA";
+        DatosPartida partida = hiloCliente.getDatosPartida();
+        DatosJugador jugador = hiloCliente.getDatosJugador(1);
+        DatosJugador segundoJugador = hiloCliente.getDatosJugador(2);
 
-        int minutos = (int) (partida.obtenerTiempoEnJuego() / 60f);
-        int segundos = (int) (partida.obtenerTiempoEnJuego() % 60f);
+        int eliminados1 = jugador == null ? 0 : jugador.getEnemigosEliminados();
+        int eliminados2 = segundoJugador == null ? 0 : segundoJugador.getEnemigosEliminados();
+
+        String titulo = partida.getEstado() == EstadoPartida.VICTORIA ? "VICTORIA" : "DERROTA";
+
+        int minutos = (int) (partida.getTiempoEnJuego() / 60f);
+        int segundos = (int) (partida.getTiempoEnJuego() % 60f);
 
         batch.begin();
 
-        fuente.setColor(partida.obtenerEstado() == EstadoPartida.VICTORIA ? Color.GREEN : Color.RED);
+        fuente.setColor(partida.getEstado() == EstadoPartida.VICTORIA ? Color.GREEN : Color.RED);
 
         fuente.draw(batch, titulo, ancho * 0.43f, alto * 0.90f);
 
@@ -26,16 +34,23 @@ public class PanelResultado {
 
         fuente.draw(batch, String.format("Tiempo: %02d:%02d", minutos, segundos), ancho * 0.34f, alto * 0.75f);
 
-        fuente.draw(batch, "Jugador 1 - Enemigos: " + jugador.obtenerEnemigosEliminados()
-                + " | Nivel: " + jugador.obtenerNivel(), ancho * 0.25f, alto * 0.62f);
+        fuente.draw(batch, "Jugador 1 - Enemigos: " + eliminados1
+                + " | Nivel: " + partida.getNivel(), ancho * 0.25f, alto * 0.62f);
 
-        fuente.draw(batch, "Jugador 2 - Enemigos: " + segundoJugador.obtenerEnemigosEliminados()
-                + " | Nivel: " + segundoJugador.obtenerNivel(), ancho * 0.25f, alto * 0.52f);
+        fuente.draw(batch, "Jugador 2 - Enemigos: " + eliminados2
+                + " | Nivel: " + partida.getNivel(), ancho * 0.25f, alto * 0.52f);
 
-        fuente.draw(batch, "Total eliminados: "
-                + (jugador.obtenerEnemigosEliminados() + segundoJugador.obtenerEnemigosEliminados()), ancho * 0.34f, alto * 0.42f);
+        fuente.draw(batch, "Total eliminados: " + (eliminados1 + eliminados2), ancho * 0.34f, alto * 0.42f);
 
-        fuente.draw(batch, "ENTER - Volver al menú", ancho * 0.34f, alto * 0.30f);
+        if (hiloCliente.isEsperandoNuevaPartida()) {
+            fuente.setColor(Color.YELLOW);
+            fuente.draw(batch, "Esperando al otro jugador...", ancho * 0.30f, alto * 0.30f);
+            fuente.setColor(Color.WHITE);
+        } else {
+            fuente.draw(batch, "ENTER - Jugar otra vez", ancho * 0.34f, alto * 0.30f);
+        }
+
+        fuente.draw(batch, "M - Volver al menú", ancho * 0.34f, alto * 0.20f);
 
         batch.end();
     }

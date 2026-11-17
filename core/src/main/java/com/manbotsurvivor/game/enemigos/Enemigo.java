@@ -1,248 +1,56 @@
 package com.manbotsurvivor.game.enemigos;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
-import com.manbotsurvivor.game.elementos.Mapa;
-import com.manbotsurvivor.game.jugador.Jugador;
 
+// Enemigo del CLIENTE: solo se dibuja.
+// La persecucion, el daño y la vida los calcula el servidor.
 public abstract class Enemigo {
+
+    private static final float VELOCIDAD_SUAVIZADO = 15f;
+    private static final float DISTANCIA_MAXIMA_SUAVIZADO = 150f;
 
     protected float posicionX;
     protected float posicionY;
-    protected float velocidad;
 
     protected float ancho;
     protected float alto;
-    protected int vida;
-
-    protected Rectangle hitbox;
-    protected final int DAÑO;
-    protected float tiempoDesdeUltimoDaño;
-    protected final float TIEMPO_ENTRE_DAÑOS;
 
     protected Animation<TextureRegion> animacionEnemigo;
     protected float tiempoAnimacion;
 
-    protected Mapa mapa;
-
-    protected Jugador ultimoAtacante;
-
-    protected Enemigo(float posicionX, float posicionY, float velocidad, int vida, int daño, Mapa mapa, Animation<TextureRegion> animacionEnemigo) {
+    protected Enemigo(float posicionX, float posicionY, Animation<TextureRegion> animacionEnemigo) {
 
         this.posicionX = posicionX;
         this.posicionY = posicionY;
-        this.velocidad = velocidad;
         this.ancho = 32;
         this.alto = 32;
-        this.vida = vida;
-        this.mapa = mapa;
-        this.hitbox = new Rectangle(posicionX, posicionY, ancho, alto);
-        this.DAÑO = daño;
-        this.TIEMPO_ENTRE_DAÑOS = 1;
-        this.tiempoDesdeUltimoDaño = 1;
         this.animacionEnemigo = animacionEnemigo;
         this.tiempoAnimacion = 0;
     }
 
-    public float obtenerPosicionX() {
-        return posicionX;
-    }
+    // Se acerca suavemente a la posicion que mando el servidor
+    public void asignarPosicion(float x, float y, float delta) {
 
-    public float obtenerPosicionY() {
-        return posicionY;
-    }
+        float diferenciaX = x - posicionX;
+        float diferenciaY = y - posicionY;
 
-    public float obtenerAncho() {
-        return ancho;
-    }
-
-    public float obtenerAlto() {
-        return alto;
-    }
-
-    public Rectangle obtenerHitbox() {
-        return hitbox;
-    }
-
-    public int obtenerDaño() {
-        return DAÑO;
-    }
-
-    public void recibirDaño(int daño) {
-        vida -= daño;
-
-        if (vida < 0) {
-            vida = 0;
-        }
-    }
-
-    public void recibirDaño(int daño, Jugador origen) {
-        if (origen != null) {
-            ultimoAtacante = origen;
-        }
-
-        recibirDaño(daño);
-    }
-
-    public Jugador obtenerUltimoAtacante() {
-        return ultimoAtacante;
-    }
-
-    public boolean estaVivo() {
-        return vida > 0;
-    }
-    
-    public void aumentarDificultad(float factor) {
-        velocidad *= factor;
-        vida = Math.max(1, Math.round(vida * factor));
-    }
-
-    protected Jugador elegirObjetivo(List<Jugador> jugadores) {
-
-        Jugador objetivo = null;
-        float distanciaMinima = Float.MAX_VALUE;
-
-        for (Jugador jugador : jugadores) {
-
-            if (!jugador.estaVivo()) {
-                continue;
-            }
-
-            float dx = jugador.obtenerPosicionX() - posicionX;
-            float dy = jugador.obtenerPosicionY() - posicionY;
-            float distancia = dx * dx + dy * dy;
-
-            if (distancia < distanciaMinima) {
-                distanciaMinima = distancia;
-                objetivo = jugador;
-            }
-        }
-
-        return objetivo;
-    }
-
-    public void intentarHacerDaño(List<Jugador> jugadores) {
-
-        if (tiempoDesdeUltimoDaño < TIEMPO_ENTRE_DAÑOS) {
+        if (diferenciaX * diferenciaX + diferenciaY * diferenciaY > DISTANCIA_MAXIMA_SUAVIZADO * DISTANCIA_MAXIMA_SUAVIZADO) {
+            posicionX = x;
+            posicionY = y;
             return;
         }
 
-        boolean hizoDaño = false;
+        float factor = Math.min(1f, delta * VELOCIDAD_SUAVIZADO);
 
-        for (Jugador jugador : jugadores) {
-
-            if (!jugador.estaVivo()) {
-                continue;
-            }
-
-            Rectangle hitboxJugador = new Rectangle(
-                    jugador.obtenerPosicionX(),
-                    jugador.obtenerPosicionY(),
-                    jugador.obtenerAncho(),
-                    jugador.obtenerAlto());
-
-            if (hitbox.overlaps(hitboxJugador)) {
-                jugador.recibirDaño(DAÑO);
-                hizoDaño = true;
-            }
-        }
-
-        if (hizoDaño) {
-            tiempoDesdeUltimoDaño = 0;
-        }
+        posicionX += diferenciaX * factor;
+        posicionY += diferenciaY * factor;
     }
 
-    public void mover(
-            float movimientoX,
-            float movimientoY,
-            Jugador jugador,
-            ArrayList<Enemigo> enemigos) {
-
-        float nuevaPosicionX = posicionX + movimientoX;
-        float nuevaPosicionY = posicionY + movimientoY;
-
-        Rectangle futuraHitboxX = new Rectangle(
-                nuevaPosicionX, posicionY, ancho, alto);
-
-        if (!mapa.hayColision(nuevaPosicionX, posicionY, ancho, alto)
-                && !hayColisionConOtroEnemigo(futuraHitboxX, enemigos)) {
-
-            posicionX = nuevaPosicionX;
-        }
-
-        Rectangle futuraHitboxY = new Rectangle(
-                posicionX, nuevaPosicionY, ancho, alto);
-
-        if (!mapa.hayColision(posicionX, nuevaPosicionY, ancho, alto)
-                && !hayColisionConOtroEnemigo(futuraHitboxY, enemigos)) {
-
-            posicionY = nuevaPosicionY;
-        }
-
-        hitbox.setPosition(posicionX, posicionY);
-    }
-
-    public void perseguir(
-            Jugador jugador,
-            float delta,
-            ArrayList<Enemigo> enemigos) {
-
-        float diferenciaX = jugador.obtenerPosicionX() - posicionX;
-        float diferenciaY = jugador.obtenerPosicionY() - posicionY;
-
-        float movimientoX = 0;
-        float movimientoY = 0;
-
-        if (diferenciaX > 0) {
-            movimientoX = 1;
-        }
-
-        if (diferenciaX < 0) {
-            movimientoX = -1;
-        }
-
-        if (diferenciaY > 0) {
-            movimientoY = 1;
-        }
-
-        if (diferenciaY < 0) {
-            movimientoY = -1;
-        }
-
-        float longitudMovimiento = (float) Math.sqrt(
-                movimientoX * movimientoX + movimientoY * movimientoY);
-
-        if (longitudMovimiento > 0) {
-            movimientoX = movimientoX / longitudMovimiento * velocidad * delta;
-            movimientoY = movimientoY / longitudMovimiento * velocidad * delta;
-        }
-
-        mover(movimientoX, movimientoY, jugador, enemigos);
-    }
-
-    protected boolean hayColisionConOtroEnemigo(
-            Rectangle futuraHitbox,
-            ArrayList<Enemigo> enemigos) {
-
-        for (Enemigo enemigo : enemigos) {
-
-            if (enemigo == this) {
-                continue;
-            }
-
-            if (futuraHitbox.overlaps(enemigo.obtenerHitbox())) {
-                return true;
-            }
-        }
-
-        return false;
+    public void animar(float delta) {
+        tiempoAnimacion += delta;
     }
 
     public void dibujar(OrthographicCamera camaraJuego, SpriteBatch lote) {
@@ -251,31 +59,5 @@ public abstract class Enemigo {
                 animacionEnemigo.getKeyFrame(tiempoAnimacion);
 
         lote.draw(cuadroActual, posicionX, posicionY, ancho, alto);
-    }
-
-    public void actualizar(
-            float delta,
-            List<Jugador> jugadores,
-            ArrayList<Enemigo> enemigos) {
-
-        Jugador objetivo = elegirObjetivo(jugadores);
-
-        if (objetivo == null) {
-            return;
-        }
-
-        tiempoDesdeUltimoDaño += delta;
-
-        perseguir(objetivo, delta, enemigos);
-        intentarHacerDaño(jugadores);
-        tiempoAnimacion += delta;
-    }
-
-    public void actualizar(
-            float delta,
-            Jugador jugador,
-            ArrayList<Enemigo> enemigos) {
-
-        actualizar(delta, Collections.singletonList(jugador), enemigos);
     }
 }

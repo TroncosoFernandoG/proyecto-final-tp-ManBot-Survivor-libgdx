@@ -10,8 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.manbotsurvivor.game.ManBotSurvivor;
-import com.manbotsurvivor.game.jugador.Jugador;
-import com.manbotsurvivor.game.gestores.GestorPartida;
+import com.manbotsurvivor.game.cliente.DatosJugador;
+import com.manbotsurvivor.game.cliente.DatosPartida;
+import com.manbotsurvivor.game.cliente.HiloCliente;
 
 public class Hud {
 
@@ -19,9 +20,7 @@ public class Hud {
     private Viewport viewport;
     private BitmapFont fuente;
     private BitmapFont fuenteGrande;
-    private Jugador jugador;
-    private Jugador segundoJugador;
-    private GestorPartida gestorPartida;
+    private HiloCliente hiloCliente;
 
     private Label vidaLabel;
     private Label nivelLabel;
@@ -34,10 +33,9 @@ public class Hud {
     private Label experienciaLabel2;
     private Label enemigosEliminadosLabel2;
 
-    public Hud(SpriteBatch sb, Jugador jugador, Jugador segundoJugador, GestorPartida gestorPartida) {
-        this.jugador = jugador;
-        this.segundoJugador = segundoJugador;
-        this.gestorPartida = gestorPartida;
+    // El HUD muestra los datos que manda el servidor (vida y experiencia compartidas)
+    public Hud(SpriteBatch sb, HiloCliente hiloCliente) {
+        this.hiloCliente = hiloCliente;
 
         viewport = new FitViewport(ManBotSurvivor.V_WIDTH, ManBotSurvivor.V_HEIGHT, new OrthographicCamera());
 
@@ -102,20 +100,34 @@ public class Hud {
     }
 
     public void actualizar() {
-        int minutosJuego = (int) (gestorPartida.obtenerTiempoEnJuego() / 60);
-        int segundosJuego = (int) (gestorPartida.obtenerTiempoEnJuego() % 60);
+        DatosPartida partida = hiloCliente.getDatosPartida();
 
-        vidaLabel.setText("Vida: " + jugador.obtenerVida() + "/" + jugador.obtenerVidaMaxima());
-        nivelLabel.setText("J1 - NIVEL " + jugador.obtenerNivel());
-        experienciaLabel.setText("XP: " + jugador.obtenerExperiencia() + " / " + jugador.obtenerExperienciaNecesaria());
+        if (partida == null) {
+            return;
+        }
+
+        int minutosJuego = (int) (partida.getTiempoEnJuego() / 60);
+        int segundosJuego = (int) (partida.getTiempoEnJuego() % 60);
+
         tiempoLabel.setText(String.format("%02d:%02d", minutosJuego, segundosJuego));
-        
-        enemigosEliminadosLabel.setText("Kills: " + jugador.obtenerEnemigosEliminados());
 
-        vidaLabel2.setText("Vida: " + segundoJugador.obtenerVida() + "/" + segundoJugador.obtenerVidaMaxima());
-        nivelLabel2.setText("J2 - NIVEL " + segundoJugador.obtenerNivel());
-        experienciaLabel2.setText("XP: " + segundoJugador.obtenerExperiencia() + " / " + segundoJugador.obtenerExperienciaNecesaria());
-        enemigosEliminadosLabel2.setText("Kills: " + segundoJugador.obtenerEnemigosEliminados());
+        actualizarJugador(1, nivelLabel, vidaLabel, experienciaLabel, enemigosEliminadosLabel, partida);
+        actualizarJugador(2, nivelLabel2, vidaLabel2, experienciaLabel2, enemigosEliminadosLabel2, partida);
+    }
+
+    private void actualizarJugador(int numero, Label nivel, Label vida, Label experiencia, Label eliminados, DatosPartida partida) {
+        DatosJugador datos = hiloCliente.getDatosJugador(numero);
+
+        String nombre = "J" + numero + (numero == hiloCliente.getNumeroJugador() ? " (VOS)" : "");
+
+        if (datos != null && !datos.isConectado()) {
+            nombre += " - DESCONECTADO";
+        }
+
+        nivel.setText(nombre + " - NIVEL " + partida.getNivel());
+        vida.setText("Vida: " + partida.getVida() + "/" + partida.getVidaMaxima());
+        experiencia.setText("XP: " + partida.getExperiencia() + " / " + partida.getExperienciaNecesaria());
+        eliminados.setText("Kills: " + (datos == null ? 0 : datos.getEnemigosEliminados()));
     }
 
     public void dibujar() {

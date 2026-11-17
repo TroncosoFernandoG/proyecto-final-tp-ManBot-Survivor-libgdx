@@ -1,19 +1,17 @@
-
 package com.manbotsurvivor.game.enemigos;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.manbotsurvivor.game.elementos.Mapa;
 
 public class DroneBasico extends Enemigo {
 
     private static Texture texturaDrone;
     private static Animation<TextureRegion> animacionDrone;
 
-    public DroneBasico(float posicionX, float posicionY, float velocidad, Mapa mapa) {
+    public DroneBasico(float posicionX, float posicionY) {
 
-        super(posicionX, posicionY, velocidad, 3, 10, mapa, obtenerAnimacionDrone());
+        super(posicionX, posicionY, obtenerAnimacionDrone());
     }
 
     private static Animation<TextureRegion> obtenerAnimacionDrone() {

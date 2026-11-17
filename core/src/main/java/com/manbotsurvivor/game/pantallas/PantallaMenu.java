@@ -30,7 +30,7 @@ public class PantallaMenu implements Screen {
     private int opcionSeleccionada;
 
     private final String[] OPCIONES = {
-        "NUEVA PARTIDA",
+        "JUGAR EN RED",
         "OPCIONES",
         "SALIR"
     };

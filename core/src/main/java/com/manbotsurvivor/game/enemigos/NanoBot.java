@@ -17,9 +17,9 @@ public class NanoBot extends Enemigo {
     private static Texture texturaNanoBot;
     private static Animation<TextureRegion> animacionNanoBot;
 
-    public NanoBot(float posicionX, float posicionY, Mapa mapa) {
+    public NanoBot(float posicionX, float posicionY) {
 
-        super(posicionX, posicionY, 85, 1, 5, mapa, obtenerAnimacionNanoBot());
+        super(posicionX, posicionY, obtenerAnimacionNanoBot());
     }
 
     private static Animation<TextureRegion> obtenerAnimacionNanoBot() {
@@ -42,16 +42,6 @@ public class NanoBot extends Enemigo {
         }
 
         return animacionNanoBot;
-    }
-
-
-    @Override
-    public void actualizar(
-            float delta,
-            Jugador jugador,
-            ArrayList<Enemigo> enemigos) {
-
-        super.actualizar(delta, jugador, enemigos);
     }
 
     public static void disponerTextura() {

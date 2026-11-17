@@ -3,7 +3,6 @@ package com.manbotsurvivor.game.enemigos;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.manbotsurvivor.game.elementos.Mapa;
 
 
 public class RobotTanque extends Enemigo {
@@ -11,12 +10,11 @@ public class RobotTanque extends Enemigo {
     private static Texture texturaTanque;
     private static Animation<TextureRegion> animacionTanque;
 
-    public RobotTanque(float posicionX, float posicionY, float velocidad, Mapa mapa) {
+    public RobotTanque(float posicionX, float posicionY) {
 
-        super(posicionX, posicionY, velocidad, 10, 25, mapa, obtenerAnimacionTanque());
+        super(posicionX, posicionY, obtenerAnimacionTanque());
         ancho=64;
         alto=64;
-        hitbox.setSize(ancho, alto);
     }
 
     private static Animation<TextureRegion> obtenerAnimacionTanque() {
